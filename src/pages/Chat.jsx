@@ -79,7 +79,7 @@ export default function Chat({ salaryData, expensesData }) {
             </p>
           </div>
 
-          <h3 style={ fontSize: 14, fontWeight: 800, margin: 0 }>AI Capabilities</h3>
+          <h3 style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>AI Capabilities</h3>
             <div style={{ display: 'flex', gap: 10 }}>
               <Sparkles size={16} color="var(--accent)" />
               <div style={{ fontSize: 12 }}>
