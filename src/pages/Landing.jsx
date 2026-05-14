@@ -1,21 +1,23 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, TrendingUp, Clock, Shield, Sparkles } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+const { ArrowLeft } = LucideIcons;
 import AnimatedCounter from '../components/ui/AnimatedCounter';
 import { useLanguage } from '../context/LanguageContext';
+import { useAdminUI } from '../hooks/useAdminUI';
 
 const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 
 export default function Landing({ onStart }) {
   const { lang, t } = useLanguage();
+  const { settings } = useAdminUI();
 
-  const FEATURES = [
-    { icon: Clock, title: t.landing.feature1, desc: t.landing.feature1Desc },
-    { icon: TrendingUp, title: t.landing.feature2, desc: t.landing.feature2Desc },
-    { icon: Sparkles, title: t.landing.feature3, desc: t.landing.feature3Desc },
-    { icon: Shield, title: t.landing.feature4, desc: t.landing.feature4Desc },
-  ];
+  const FEATURES = (settings.landingFeatures || []).map(f => ({
+    icon: LucideIcons[f.icon] || LucideIcons.Sparkles,
+    title: f.title,
+    desc: f.desc
+  }));
 
   return (
     <motion.div initial="hidden" animate="show" variants={stagger}

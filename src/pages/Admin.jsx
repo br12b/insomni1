@@ -13,7 +13,7 @@ const MOCK_LOGS = [
 ];
 
 export default function Admin({ onClose }) {
-  const { settings, updateSetting, updateLayout, undoLayout, resetSettings, commitSettings, revertToSaved, addCustomElement } = useAdminUI();
+  const { settings, updateSetting, updateLayout, undoLayout, resetSettings, commitSettings, revertToSaved, addCustomElement, updateLandingFeature } = useAdminUI();
   const { isDark } = useTheme();
   const [logs, setLogs] = useState(MOCK_LOGS);
   const [activeTab, setActiveTab] = useState('editor'); // 'ui' or 'editor'

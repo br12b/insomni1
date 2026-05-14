@@ -12,7 +12,13 @@ const DEFAULT_SETTINGS = {
     landing_aria: { x: 0, y: 0, scale: 1 },
     landing_remSmall: { x: 0, y: 0, scale: 1 }
   },
-  customElements: [] // Array of { id, type, src }
+  landingFeatures: [
+    { id: 1, icon: 'Clock', title: 'Time Gap Analizi', desc: 'Maaş ile harcama arasındaki her atıl günü takip eder' },
+    { id: 2, icon: 'TrendingUp', title: 'PPF Entegrasyonu', desc: 'Paranızın günlük %0.14-0.16 faizle ne kazandırdığını gösterir' },
+    { id: 3, icon: 'Sparkles', title: 'R.E.M AI', desc: 'Finansal verinizi analiz eden kişisel AI danışmanınız' },
+    { id: 4, icon: 'Shield', title: 'Abonelik Takibi', desc: 'Netflix, Spotify ve diğer planların gerçek yıllık maliyeti' }
+  ],
+  customElements: []
 };
 
 const loadFromStorage = () => {
@@ -121,6 +127,13 @@ export function AdminUIProvider({ children }) {
     setSettings(DEFAULT_SETTINGS);
   };
 
+  const updateLandingFeature = (id, data) => {
+    setSettings(prev => ({
+      ...prev,
+      landingFeatures: prev.landingFeatures.map(f => f.id === id ? { ...f, ...data } : f)
+    }));
+  };
+
   const value = {
     settings,
     updateSetting,
@@ -129,7 +142,8 @@ export function AdminUIProvider({ children }) {
     undoLayout,
     commitSettings,
     revertToSaved,
-    resetSettings
+    resetSettings,
+    updateLandingFeature
   };
 
   return (
