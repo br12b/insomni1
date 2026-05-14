@@ -1,8 +1,8 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Settings, Sparkles, Target, Database, Brain } from 'lucide-react';
+import { User, Settings, Sparkles, Target } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
-import { AdminUIProvider } from './context/AdminUIContext';
+import { AdminUIProvider, AdminUIContext } from './context/AdminUIContext';
 import { storage } from './lib/storage';
 import ThemeToggle from './components/ui/ThemeToggle';
 import Landing from './pages/Landing';
@@ -10,7 +10,6 @@ import Dashboard from './pages/Dashboard';
 import Opportunities from './pages/Opportunities';
 import Goals from './pages/Goals';
 import Chat from './pages/Chat';
-import Efrozu from './pages/Efrozu';
 import SalaryInput from './components/onboarding/SalaryInput';
 import ExpenseInput from './components/onboarding/ExpenseInput';
 import ProfileModal from './components/ProfileModal';
@@ -52,10 +51,20 @@ function AppContent() {
     }
   }, [profile, salaryData, expensesData]);
 
+  useEffect(() => {
+    const handleLocationChange = () => {
+      if (window.location.pathname === '/admin') {
+        setView('admin');
+      }
+    };
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
   const goTo = (v) => {
     if (v === 'admin') {
       window.history.pushState({}, '', '/admin');
-    } else {
+    } else if (view === 'admin') {
       window.history.pushState({}, '', '/');
     }
     setView(v);
@@ -83,13 +92,10 @@ function AppContent() {
                 {lang === 'tr' ? 'Fırsatlar' : 'Opportunities'}
               </button>
               <button onClick={() => goTo('chat')} className={`btn btn-sm ${view === 'chat' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
-                <Brain size={14} /> {lang === 'tr' ? 'Intelligence' : 'Intelligence'}
+                <Sparkles size={14} /> {lang === 'tr' ? 'R.E.M AI' : 'R.E.M AI'}
               </button>
               <button onClick={() => goTo('goals')} className={`btn btn-sm ${view === 'goals' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
                 <Target size={14} /> {lang === 'tr' ? 'Hedefler' : 'Goals'}
-              </button>
-              <button onClick={() => goTo('efrozu')} className={`btn btn-sm ${view === 'efrozu' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
-                <Database size={14} /> {lang === 'tr' ? 'Efrozu Hub' : 'Efrozu Hub'}
               </button>
             </div>
           )}
@@ -105,6 +111,7 @@ function AppContent() {
             </>
           )}
           <ThemeToggle />
+
         </div>
       </nav>
       )}
@@ -113,16 +120,15 @@ function AppContent() {
       <AnimatePresence mode="wait">
         <motion.div key={view} variants={pageVariants} initial="initial" animate="animate" exit="exit"
           transition={{ duration: 0.22, ease: 'easeOut' }}
-          style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: (view === 'dashboard' || view === 'opportunities') ? 'visible' : 'hidden' }}>
           {view === 'landing' && <Landing onStart={() => goTo('salary')} />}
           {view === 'profile' && <ProfileModal initialName={profile} onComplete={name => { setProfile(name); goTo('landing'); }} />}
           {view === 'salary' && <SalaryInput onComplete={d => { setSalaryData(d); goTo('expenses'); }} />}
           {view === 'expenses' && <ExpenseInput onComplete={d => { setExpensesData(d); goTo('dashboard'); }} />}
           {view === 'dashboard' && <Dashboard salaryData={salaryData} expensesData={expensesData} profileName={profile} />}
-          {view === 'opportunities' && <Opportunities expenses={expensesData} salaryData={salaryData} />}
-          {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
+          {view === 'opportunities' && <Opportunities expenses={expensesData} />}
+                    {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
           {view === 'goals' && <Goals financialData={{ salaryData, expensesData }} />}
-          {view === 'efrozu' && <Efrozu />}
           {view === 'admin' && <Admin onClose={() => goTo('landing')} />}
         </motion.div>
       </AnimatePresence>
