@@ -16,7 +16,7 @@ import {
   ShoppingBag,
   Tv,
   Music,
-  Youtube
+  Play
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { 
@@ -113,14 +113,14 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
       });
     }
 
-    if (lowerExpenses.some(e => e.includes('youtube'))) {
+    if (lowerExpenses.some(e => e.includes('Play'))) {
       list.push({
-        id: 'youtube',
-        brand: 'YOUTUBE',
-        icon: Youtube,
+        id: 'Play',
+        brand: 'Play',
+        icon: Play,
         color: '#FF0000',
-        title: lang === 'tr' ? 'YouTube Premium Cashback' : 'YouTube Premium Cashback',
-        desc: lang === 'tr' ? `YouTube Premium üyeliğin için %50 iade alarak tasarruf edebilirsin.` : `Save by getting 50% cashback for your YouTube Premium membership.`
+        title: lang === 'tr' ? 'Play Premium Cashback' : 'Play Premium Cashback',
+        desc: lang === 'tr' ? `Play Premium üyeliğin için %50 iade alarak tasarruf edebilirsin.` : `Save by getting 50% cashback for your Play Premium membership.`
       });
     }
 
@@ -230,6 +230,7 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
     </div>
   );
 }
+
 
 
 
