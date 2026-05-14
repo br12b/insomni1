@@ -13,11 +13,25 @@ import {
   Activity,
   Layers,
   Search,
-  CheckCircle2
+  CheckCircle2,
+  Info,
+  Lock
 } from 'lucide-react';
 
 const fadeUp = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
+
+const TechInfo = ({ title, content, icon: Icon, color }) => (
+  <motion.div variants={fadeUp} className="glass" style={{ padding: 24, border: '1px solid var(--accent-dim)', display: 'flex', gap: 16 }}>
+    <div style={{ width: 40, height: 40, borderRadius: 10, background: color + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <Icon size={20} color={color} />
+    </div>
+    <div>
+      <div style={{ fontSize: 14, fontWeight: 900, marginBottom: 4 }}>{title}</div>
+      <div style={{ fontSize: 11, color: 'var(--text2)', lineHeight: 1.5 }}>{content}</div>
+    </div>
+  </motion.div>
+);
 
 const TransactionCard = ({ tx, index }) => (
   <motion.div
@@ -53,7 +67,9 @@ const TransactionCard = ({ tx, index }) => (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 8 }}>
        <div>
           <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--text2)', marginBottom: 4 }}>METOD</div>
-          <div style={{ fontSize: 12, fontWeight: 700 }}>{tx.method}</div>
+          <div style={{ fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+            {tx.method} <Info size={10} color="var(--accent)" />
+          </div>
        </div>
        <div style={{ fontSize: 24, fontWeight: 950, color: tx.amount.startsWith('+') ? '#10b981' : 'var(--text0)' }}>
          {tx.amount} <span style={{ fontSize: 14 }}>₺</span>
@@ -63,8 +79,6 @@ const TransactionCard = ({ tx, index }) => (
 );
 
 export default function RemSync() {
-  const [activeNode, setActiveNode] = useState(null);
-
   const transactions = [
     { id: 1, name: 'Migros Ticaret', amount: '-245.50', category: 'Market', date: 'Bugün 14:20', icon: Globe, color: 'var(--accent)', method: 'Direct API' },
     { id: 2, name: 'Spotify Premium', amount: '-59.90', category: 'Eğlence', date: 'Bugün 11:05', icon: Zap, color: '#f59e0b', method: 'Cloud Sync' },
@@ -89,93 +103,70 @@ export default function RemSync() {
         <div style={{ textAlign: 'right' }}>
            <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--text2)', marginBottom: 8 }}>BAĞLI KAYNAKLAR</div>
            <div style={{ display: 'flex', gap: 12 }}>
-              {['Garanti', 'Akbank', 'Papara'].map(b => (
+              {['Garanti', 'Akbank'].map(b => (
                 <div key={b} className="glass" style={{ padding: '8px 16px', borderRadius: 100, fontSize: 12, fontWeight: 900, border: '1px solid var(--accent-dim)' }}>{b}</div>
               ))}
            </div>
         </div>
       </div>
 
-      {/* PEAK VISUALIZATION - THE DIGITAL LEDGER SPHERE */}
+      {/* PEAK VISUALIZATION */}
       <div style={{ position: 'relative', height: 400, marginBottom: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        
-        {/* Background Radial Glow */}
         <div style={{ position: 'absolute', width: 600, height: 600, background: 'radial-gradient(circle, var(--accent-dim) 0%, transparent 70%)', filter: 'blur(100px)', opacity: 0.15 }} />
-
-        {/* The Core Orb */}
         <div style={{ position: 'relative', width: 280, height: 280, z_index: 20 }}>
-           <motion.div 
-             animate={{ rotate: 360 }}
-             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-             style={{ position: 'absolute', inset: -40, border: '1px dashed var(--accent-dim)', borderRadius: '50%', opacity: 0.3 }}
-           />
-           <motion.div 
-             animate={{ rotate: -360 }}
-             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-             style={{ position: 'absolute', inset: -20, border: '1px solid rgba(129,140,248,0.1)', borderRadius: '50%' }}
-           />
-           
-           <motion.div 
-             animate={{ scale: [1, 1.05, 1], boxShadow: ['0 0 40px var(--accent-dim)', '0 0 100px var(--accent)', '0 0 40px var(--accent-dim)'] }}
-             transition={{ duration: 4, repeat: Infinity }}
-             style={{ 
-               width: '100%', height: '100%', borderRadius: '50%', background: 'var(--bg1)', 
-               border: '3px solid var(--accent)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-               position: 'relative', overflow: 'hidden', backdropFilter: 'blur(20px)'
-             }}>
+           <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} style={{ position: 'absolute', inset: -40, border: '1px dashed var(--accent-dim)', borderRadius: '50%', opacity: 0.3 }} />
+           <motion.div animate={{ scale: [1, 1.05, 1], boxShadow: ['0 0 40px var(--accent-dim)', '0 0 100px var(--accent)', '0 0 40px var(--accent-dim)'] }} transition={{ duration: 4, repeat: Infinity }}
+             style={{ width: '100%', height: '100%', borderRadius: '50%', background: 'var(--bg1)', border: '3px solid var(--accent)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', backdropFilter: 'blur(20px)' }}>
              <RefreshCw size={80} color="var(--accent)" />
              <div style={{ marginTop: 20, textAlign: 'center' }}>
                 <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--accent)', letterSpacing: 2 }}>SYNCING</div>
                 <div style={{ fontSize: 24, fontWeight: 950 }}>98.4<span style={{ fontSize: 14 }}>%</span></div>
              </div>
-             {/* Scanning Line */}
-             <motion.div 
-               animate={{ top: ['-10%', '110%'] }}
-               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-               style={{ position: 'absolute', left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--accent), transparent)', boxShadow: '0 0 10px var(--accent)' }} 
-             />
+             <motion.div animate={{ top: ['-10%', '110%'] }} transition={{ duration: 3, repeat: Infinity, ease: "linear" }} style={{ position: 'absolute', left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--accent), transparent)', boxShadow: '0 0 10px var(--accent)' }} />
            </motion.div>
         </div>
-
-        {/* Floating Data Nodes (Orbs) */}
-        {[
-          { label: 'Bank Feeds', icon: Globe, angle: 0 },
-          { label: 'Cloud Sync', icon: Database, angle: 120 },
-          { label: 'OCR Engine', icon: FileSearch, angle: 240 },
-        ].map((node, i) => {
-          const radius = 220;
-          const x = Math.cos(node.angle * Math.PI / 180) * radius;
-          const y = Math.sin(node.angle * Math.PI / 180) * radius;
-
-          return (
-            <motion.div 
-              key={i}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1, x, y }}
-              transition={{ delay: 0.5 + i * 0.2, type: 'spring' }}
-              style={{ 
-                position: 'absolute', padding: '16px 24px', borderRadius: 20, 
-                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)',
-                backdropFilter: 'blur(16px)', display: 'flex', alignItems: 'center', gap: 12, zIndex: 30,
-                boxShadow: '0 10px 30px rgba(0,0,0,0.4)'
-              }}>
-              <node.icon size={20} color="var(--accent)" />
-              <span style={{ fontSize: 14, fontWeight: 900 }}>{node.label}</span>
-            </motion.div>
-          );
-        })}
       </div>
 
-      {/* DEEP LEDGER - THE TRANSACTION GRID */}
+      {/* TECHNOLOGY INFO NOTES SECTION [NEW] */}
+      <div style={{ marginBottom: 60 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 900, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Layers size={20} color="var(--accent)" /> Senkronizasyon Teknolojileri
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+           <TechInfo 
+             title="Direct API" 
+             icon={Globe} 
+             color="var(--accent)" 
+             content="Bankanızla kurulan doğrudan, 256-bit şifreli bağlantı. Veriler hiçbir aracı olmadan, milisaniyeler içinde R.E.M''e aktarılır." 
+           />
+           <TechInfo 
+             title="Cloud Sync" 
+             icon={Zap} 
+             color="#f59e0b" 
+             content="Bulut tabanlı veri eşitleme protokolü. Farklı platformlardaki harcamalarınızı otonom bir şekilde tek bir havuzda birleştirir." 
+           />
+           <TechInfo 
+             title="Core Uplink" 
+             icon={Database} 
+             color="#10b981" 
+             content="Maaş ve düzenli gelirler için kullanılan ana sunucu bağlantısı. Finansal çekirdek verilerinizin en yüksek hızda işlenmesini sağlar." 
+           />
+           <TechInfo 
+             title="Secure OCR" 
+             icon={FileSearch} 
+             color="#ef4444" 
+             content="Görsel zekâ ile dekont analizi. Kağıt faturaları dijital verilere dönüştürürken gizliliğinizi %100 korur." 
+           />
+        </div>
+      </div>
+
+      {/* DEEP LEDGER */}
       <div style={{ position: 'relative', zIndex: 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
            <h2 style={{ fontSize: 24, fontWeight: 900, margin: 0 }}>Akıllı İşlem Detayları</h2>
-           <div style={{ display: 'flex', gap: 12 }}>
-              <div className="glass" style={{ padding: '10px 20px', borderRadius: 100, display: 'flex', alignItems: 'center', gap: 10 }}>
-                 <Search size={14} color="var(--text2)" />
-                 <span style={{ fontSize: 12, color: 'var(--text2)' }}>İşlemlerde ara...</span>
-              </div>
-              <button className="btn btn-primary btn-sm" style={{ padding: '10px 24px', borderRadius: 100, fontWeight: 800 }}>Yeni Kaynak Ekle</button>
+           <div className="glass" style={{ padding: '10px 20px', borderRadius: 100, display: 'flex', alignItems: 'center', gap: 10 }}>
+              <Search size={14} color="var(--text2)" />
+              <span style={{ fontSize: 12, color: 'var(--text2)' }}>İşlemlerde ara...</span>
            </div>
         </div>
 
