@@ -60,9 +60,7 @@ function OpportunityCard({ icon: Icon, title, desc, value, color, action, lang }
         <p style={{ fontSize: 13, color: 'var(--text2)', lineHeight: 1.6 }}>{desc}</p>
       </div>
 
-      <button className="btn btn-ghost btn-sm" style={{ alignSelf: 'flex-start', padding: '0 0', height: 'auto', color: color, gap: 6, marginTop: 10 }}>
-        {action} <ArrowRight size={14} />
-      </button>
+      
     </motion.div>
   );
 }
@@ -232,3 +230,4 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
     </div>
   );
 }
+
