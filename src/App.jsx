@@ -54,9 +54,9 @@ function AppContent() {
 
   const goTo = (v) => {
     if (v === 'admin') {
-      window.history.pushState({}, ', '/admin');
+      window.history.pushState({}, '', '/admin');
     } else {
-      window.history.pushState({}, ', '/');
+      window.history.pushState({}, '', '/');
     }
     setView(v);
   };
@@ -78,10 +78,10 @@ function AppContent() {
             </button>
             {profile && (
               <>
-                <button onClick={() => goTo('profile')} className="btn btn-ghost btn-icon btn-sm" title={profile}>
+                <button onClick={() => goTo(''profile'')} className="btn btn-ghost btn-icon btn-sm" title={profile}>
                   <User size={16} />
                 </button>
-                <button onClick={() => goTo('admin')} className={`btn btn-icon btn-sm ${view === 'admin' ? 'btn-accent' : 'btn-ghost'}`} title="Admin Panel">
+                <button onClick={() => goTo(''admin'')} className={`btn btn-icon btn-sm ${view === ''admin'' ? ''btn-accent'' : ''btn-ghost''}`} title="Admin Panel">
                   <Settings size={16} />
                 </button>
               </>
