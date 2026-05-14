@@ -124,7 +124,7 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
       });
     }
 
-    if (expenses.some(e => (e.category || ').toLowerCase() === 'market' || e.name.toLowerCase().includes('migros') || e.name.toLowerCase().includes('carrefour'))) {
+    if (expenses.some(e => (e.category || '').toLowerCase() === 'market' || e.name.toLowerCase().includes('migros') || e.name.toLowerCase().includes('carrefour'))) {
       list.push({
         id: 'market',
         brand: 'MARKET',
@@ -230,6 +230,7 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
     </div>
   );
 }
+
 
 
 
