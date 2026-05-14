@@ -164,7 +164,39 @@ export default function Admin({ onClose }) {
                 </div>
 
                 <div>
-                  <h3 style={{ fontSize: 13, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text2)', marginBottom: 16 }}>Scale Overrides</h3>
+                                  {/* LANDING FEATURES EDITOR */}
+                <div>
+                  <h3 style={{ fontSize: 13, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text2)', marginBottom: 16 }}>Landing Features</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    {settings.landingFeatures?.map(feature => (
+                      <div key={feature.id} className="glass" style={{ padding: 14, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--glass-border)' }}>
+                        <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+                           <div style={{ flex: 1 }}>
+                             <label style={{ fontSize: 9, color: 'var(--text2)', display: 'block', marginBottom: 2 }}>Başlık</label>
+                             <input className="input" style={{ padding: '4px 8px', fontSize: 11, height: 'auto' }} 
+                               value={feature.title} onChange={e => updateLandingFeature(feature.id, { title: e.target.value })} />
+                           </div>
+                           <div style={{ width: 80 }}>
+                             <label style={{ fontSize: 9, color: 'var(--text2)', display: 'block', marginBottom: 2 }}>İkon</label>
+                             <select className="input" style={{ padding: '4px 8px', fontSize: 10, height: 'auto', appearance: 'auto' }}
+                               value={feature.icon} onChange={e => updateLandingFeature(feature.id, { icon: e.target.value })}>
+                               <option value="Clock">Saat</option>
+                               <option value="TrendingUp">Grafik</option>
+                               <option value="Sparkles">Yıldız</option>
+                               <option value="Shield">Kalkan</option>
+                               <option value="Zap">Şimşek</option>
+                             </select>
+                           </div>
+                        </div>
+                        <label style={{ fontSize: 9, color: 'var(--text2)', display: 'block', marginBottom: 2 }}>Açıklama</label>
+                        <textarea className="input" style={{ padding: '4px 8px', fontSize: 10, height: 40, resize: 'none' }}
+                          value={feature.desc} onChange={e => updateLandingFeature(feature.id, { desc: e.target.value })} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <h3 style={ fontSize: 13, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text2)', marginBottom: 16 }>Scale Overrides</h3>
                   <div style={{ marginBottom: 16 }}>
                     <label className="label" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                       <span>Aria Scale</span>
