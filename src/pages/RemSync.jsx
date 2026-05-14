@@ -15,7 +15,7 @@ import {
   CheckCircle2,
   Info,
   Lock,
-  Cpu,
+  Cpu, Link,
   Key,
   EyeOff
 } from 'lucide-react';
@@ -182,3 +182,4 @@ export default function RemSync() {
     </motion.div>
   );
 }
+
