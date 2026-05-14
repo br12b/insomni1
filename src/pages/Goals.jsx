@@ -4,16 +4,22 @@ import { Plus, Target, TrendingUp, Calendar, Trash2, Zap, Smartphone, Plane, Hom
 import { useLanguage } from '../context/LanguageContext';
 import { calculateGoalTimeline, getAggregateGoalStats } from '../lib/financialTools';
 
+const CategoryIcon = ({ id, size = 20, color = "var(--accent)" }) => {
+  const cat = CATEGORIES.find(c => c.id === id) || CATEGORIES[0];
+  const Icon = cat.icon;
+  return <Icon size={size} color={color} />;
+};
+
 const STORAGE_KEY = 'insomni_goals';
 
-const EMOJI_CATEGORIES = [
-  { label: 'Teknoloji', emoji: '📱' },
-  { label: 'Tatil', emoji: '✈️' },
-  { label: 'Ev', emoji: '🏠' },
-  { label: 'Araç', emoji: '🚗' },
-  { label: 'Eğitim', emoji: '🎓' },
-  { label: 'Lüks', emoji: '💎' },
-  { label: 'Diğer', emoji: '☕' },
+const CATEGORIES = [
+  { id: 'tech', icon: Smartphone, label: 'Teknoloji' },
+  { id: 'travel', icon: Plane, label: 'Tatil' },
+  { id: 'home', icon: Home, label: 'Ev' },
+  { id: 'car', icon: Car, label: 'Araç' },
+  { id: 'edu', icon: GraduationCap, label: 'Eğitim' },
+  { id: 'luxury', icon: Diamond, label: 'Lüks' },
+  { id: 'other', icon: Coffee, label: 'Diğer' },
 ];
 
 function GlobalRadar({ stats, lang }) {
@@ -79,7 +85,7 @@ function TimelineItem({ goal, index, financialData, lang }) {
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.1 }}
       style={{ minWidth: 200, padding: '15px', borderRadius: 16, background: 'var(--bg2)', border: '1px solid var(--glass-border)', position: 'relative' }}>
-      <div style={{ fontSize: 24, marginBottom: 8 }}>{goal.emoji}</div>
+      <div style={{ fontSize: 24, marginBottom: 8 }}><CategoryIcon id={goal.category} size={24} /></div>
       <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{goal.name}</div>
       <div style={{ fontSize: 11, color: 'var(--accent)', fontWeight: 700 }}>{timeline.targetDate}</div>
       <div style={{ position: 'absolute', top: -10, right: -10, width: 24, height: 24, borderRadius: '50%', background: 'var(--accent)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 900 }}>
@@ -98,7 +104,7 @@ function GoalCard({ goal, onDelete, financialData, lang }) {
       className="glass" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: 15 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          <div style={{ fontSize: 28 }}>{goal.emoji}</div>
+          <div style={{ fontSize: 28 }}><CategoryIcon id={goal.category} size={24} /></div>
           <div>
             <div style={{ fontWeight: 800, fontSize: 15 }}>{goal.name}</div>
             <div style={{ fontSize: 11, color: 'var(--text2)' }}>₺{goal.targetAmount.toLocaleString('tr-TR')}</div>
@@ -133,13 +139,13 @@ function GoalModal({ onAdd, onClose, lang }) {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [saved, setSaved] = useState('');
-  const [emoji, setEmoji] = useState('📱');
+  const [categoryId, setCategoryId] = useState('tech');
 
   const submit = (e) => {
     e.preventDefault();
     const target = parseFloat(amount.replace(/[^0-9.]/g, ''));
     if (!name || !target) return;
-    onAdd({
+    onAdd({ category: categoryId, 
       id: Math.random().toString(36).slice(2),
       name,
       targetAmount: target,
@@ -161,9 +167,9 @@ function GoalModal({ onAdd, onClose, lang }) {
         
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 25 }}>
           {EMOJI_CATEGORIES.map(c => (
-            <button key={c.emoji} onClick={() => setEmoji(c.emoji)} type="button"
-              style={{ fontSize: 24, width: 48, height: 48, borderRadius: 12, border: `2px solid ${emoji === c.emoji ? 'var(--accent)' : 'transparent'}`, background: emoji === c.emoji ? 'var(--accent-dim)' : 'var(--bg2)', cursor: 'pointer', transition: 'all 0.2s' }}>
-              {c.emoji}
+            <button key=<c.icon size={20} color={categoryId === c.id ? "var(--accent)" : "var(--text2)"} /> onClick={() => setCategoryId(c.id)} type="button"
+              style={{ fontSize: 24, width: 48, height: 48, borderRadius: 12, border: `2px solid ${categoryId === c.id ? 'var(--accent)' : 'transparent'}`, background: categoryId === c.id ? 'var(--accent-dim)' : 'var(--bg2)', cursor: 'pointer', transition: 'all 0.2s' }}>
+              <c.icon size={20} color={categoryId === c.id ? "var(--accent)" : "var(--text2)"} />
             </button>
           ))}
         </div>
@@ -263,4 +269,5 @@ export default function Goals({ financialData }) {
     </div>
   );
 }
+
 
