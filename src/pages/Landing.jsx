@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 const { ArrowLeft } = LucideIcons;
@@ -76,7 +76,7 @@ export default function Landing({ onStart, editMode = false }) {
         <motion.h1 variants={fadeUp}
           style={{ fontSize: 'clamp(44px, 8vw, 110px)', fontWeight: 900, lineHeight: 0.9, letterSpacing: '-0.06em', margin: 0, maxWidth: 1000, marginBottom: 28 }}>
           {lang === 'tr' ? (
-            <>Atıl nakdin <span style={{ color: 'var(--accent)' }}>gerçek</span> maliyeti nedir?</>
+            <>AtÄ±l nakdin <span style={{ color: 'var(--accent)' }}>gerÃ§ek</span> maliyeti nedir?</>
           ) : (
             <>What is the <span style={{ color: 'var(--accent)' }}>real</span> cost of idle cash?</>
           )}
@@ -141,7 +141,7 @@ export default function Landing({ onStart, editMode = false }) {
               alignItems: 'center',
               gap: 14
             }}>
-            <ArrowLeft size={20} /> R.E.M ile Analize Başla
+            <ArrowLeft size={20} /> R.E.M ile Analize BaÅŸla
           </motion.button>
         </motion.div>
 
@@ -176,3 +176,4 @@ export default function Landing({ onStart, editMode = false }) {
     </motion.div>
   );
 }
+
