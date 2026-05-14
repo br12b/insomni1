@@ -22,9 +22,30 @@ export default function ProfileModal({ initialName, onComplete }) {
         border: '1px solid var(--accent)'
       }}>
         
-        {/* LEFT SIDE - R.E.M VISUAL */}
-        <div style={{ flex: 1, background: '#fff', position: 'relative', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', borderRight: '1px solid var(--glass-border)' }}>
-           <img src="/rem_profile.png" alt="R.E.M" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'bottom center', transform: 'scaleX(-1)' }} />
+        {/* LEFT SIDE - R.E.M VISUAL (FRONT FACING & CENTERED) */}
+        <div style={{ 
+          flex: 1.2, // Give a bit more space to R.E.M
+          background: '#fff', 
+          position: 'relative', 
+          display: 'flex', 
+          alignItems: 'center', // Center vertically
+          justifyContent: 'center', // Center horizontally
+          borderRight: '1px solid var(--glass-border)',
+          overflow: 'hidden'
+        }}>
+           <motion.img 
+             initial={{ scale: 0.8, opacity: 0 }}
+             animate={{ scale: 1.1, opacity: 1 }} // Enlarged to 1.1x
+             transition={{ duration: 0.8, ease: "easeOut" }}
+             src="/rem_avatar.png" 
+             alt="R.E.M Front" 
+             style={{ 
+               width: '85%', // Make it large
+               height: '85%', 
+               objectFit: 'contain',
+               filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.1))'
+             }} 
+           />
         </div>
 
         {/* RIGHT SIDE - FORM */}
