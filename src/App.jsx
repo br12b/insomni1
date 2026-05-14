@@ -54,9 +54,9 @@ function AppContent() {
 
   const goTo = (v) => {
     if (v === 'admin') {
-      window.history.pushState({}, '', '/admin');
+      window.history.pushState({}, ', '/admin');
     } else {
-      window.history.pushState({}, '', '/');
+      window.history.pushState({}, ', '/');
     }
     setView(v);
   };
@@ -130,4 +130,3 @@ export default function App() {
     </AdminUIProvider>
   );
 }
-
