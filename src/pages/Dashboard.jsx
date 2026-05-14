@@ -18,7 +18,16 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
   const totalExpense = expensesData?.reduce((sum, exp) => sum + parseFloat(exp.amount || 0), 0) || 0;
   const income = salaryData?.salary || 0;
   const currency = salaryData?.currency || '₺';
-  const remaining = income - totalExpense;
+    const remaining = income - totalExpense;
+
+  // Generate 30 days for the calendar
+  const dailyBalances = Array.from({ length: 30 }, (_, i) => {
+    const day = i + 1;
+    const dayExps = expensesData?.filter(e => parseInt(e.date) === day) || [];
+    const dayTotal = dayExps.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
+    // Simple logic: Start with income, subtract expenses as we go
+    return { day, balance: income - dayTotal, isNegative: (income - dayTotal) < 0 };
+  });
 
   return (
     <motion.div initial="hidden" animate="show" variants={stagger}
@@ -29,7 +38,7 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
         paddingRight: 'max(20px, 5vw)',
         display: 'flex', 
         flexDirection: 'column', 
-        gap: 32,
+        gap: 24,
         maxWidth: 1600,
         margin: '0 auto',
         width: '100%',
@@ -64,7 +73,7 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
       </motion.div>
 
       {/* Main Content: 50/50 Split Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
         
         {/* ROW 1 LEFT: Chart */}
         <motion.div variants={fadeUp} style={{ minWidth: 0 }}>
@@ -96,9 +105,9 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
       </div>
 
       {/* Bottom Row: Full-Width Calendar */}
-      <motion.div variants={fadeUp} style={{ width: '100%', marginTop: 8 }}>
+      <motion.div variants={fadeUp} style={{ width: '100%', marginTop: 0 }}>
         <div className="glass" style={{ padding: 24 }}>
-          <MonthlyCalendar expenses={expensesData} />
+          <MonthlyCalendar expenses={expensesData} dailyBalances={dailyBalances} />
         </div>
       </motion.div>
 
