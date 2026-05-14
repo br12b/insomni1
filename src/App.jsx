@@ -29,8 +29,18 @@ function AppContent() {
   const initialView = window.location.pathname === '/admin' ? 'admin' : (storage.getCurrentProfile() ? 'landing' : 'profile');
   const [view, setView] = useState(initialView);
   
-  const [salaryData, setSalaryData] = useState(() => { if (profile === 'Test User') return { income: 0, currency: '₺', day: 1 }; return profile ? storage.loadProfile(profile, 'salary') : null; });
-  const [expensesData, setExpensesData] = useState(() => { if (profile === 'Test User') return []; return profile ? storage.loadProfile(profile, 'expenses', []) : []; });
+  const [salaryData, setSalaryData] = useState(null);
+  const [expensesData, setExpensesData] = useState([]);
+
+  useEffect(() => {
+    if (profile === 'Test User') {
+      setSalaryData({ income: 0, currency: '₺', day: 1 });
+      setExpensesData([]);
+    } else if (profile) {
+      setSalaryData(storage.loadProfile(profile, 'salary'));
+      setExpensesData(storage.loadProfile(profile, 'expenses', []));
+    }
+  }, [profile]);
 
   useEffect(() => {
     if (profile) {

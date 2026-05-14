@@ -75,7 +75,7 @@ function MessageBubble({ msg }) {
               borderRadius: '50%', 
               overflow: 'hidden', 
               flexShrink: 0, 
-              background: 'transparent', 
+              background: 'transparent !important', 
               border: 'none',
               boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
             }}>
@@ -132,7 +132,7 @@ export default function AIChat({ financialData }) {
             borderRadius: '50%', 
             overflow: 'hidden', 
             border: 'none', // Removed border
-            background: 'transparent',
+            background: 'transparent !important',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -146,7 +146,7 @@ export default function AIChat({ financialData }) {
             objectFit: 'cover', 
             objectPosition: 'center center', 
             imageRendering: 'auto',
-            transform: 'scale(1.15)',
+            transform: 'scale(1.15)', background: 'transparent',
           }} />
         </motion.div>
         <div>
