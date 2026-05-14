@@ -98,7 +98,7 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
         icon: Tv,
         color: '#E50914',
         title: lang === 'tr' ? 'Netflix %50 Cashback' : 'Netflix 50% Cashback',
-        desc: lang === 'tr' ? 'Netflix harcamanı fark ettim! Nays kart ile ödemende her ay %50 iade alabilirsin.' : 'I noticed your Netflix expense! Get 50% cashback every month with Nays card.'
+        desc: lang === 'tr' ? `Netflix harcamanı fark ettim! Nays kart ile ödemende her ay %50 iade alabilirsin.` : `I noticed your Netflix expense! Get 50% cashback every month with Nays card.`
       });
     }
 
@@ -109,7 +109,7 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
         icon: Music,
         color: '#1DB954',
         title: lang === 'tr' ? 'Spotify %50 Cashback' : 'Spotify 50% Cashback',
-        desc: lang === 'tr' ? 'Müzik keyfini ucuza getir. Spotify ödemelerinde %50 iade fırsatını kaçırma.' : 'Enjoy music for less. Don\'t miss the 50% cashback on Spotify payments.'
+        desc: lang === 'tr' ? `Müzik keyfini ucuza getir. Spotify ödemelerinde %50 iade fırsatını kaçırma.` : `Enjoy music for less. Don't miss the 50% cashback on Spotify payments.`
       });
     }
 
@@ -120,18 +120,18 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
         icon: Youtube,
         color: '#FF0000',
         title: lang === 'tr' ? 'YouTube Premium Cashback' : 'YouTube Premium Cashback',
-        desc: lang === 'tr' ? 'YouTube Premium üyeliğin için %50 iade alarak tasarruf edebilirsin.' : 'Save by getting 50% cashback for your YouTube Premium membership.'
+        desc: lang === 'tr' ? `YouTube Premium üyeliğin için %50 iade alarak tasarruf edebilirsin.` : `Save by getting 50% cashback for your YouTube Premium membership.`
       });
     }
 
-    if (expenses.some(e => (e.category || '').toLowerCase() === 'market' || e.name.toLowerCase().includes('migros') || e.name.toLowerCase().includes('carrefour'))) {
+    if (expenses.some(e => (e.category || ').toLowerCase() === 'market' || e.name.toLowerCase().includes('migros') || e.name.toLowerCase().includes('carrefour'))) {
       list.push({
         id: 'market',
         brand: 'MARKET',
         icon: ShoppingBag,
         color: '#10B981',
         title: lang === 'tr' ? 'Market Harcaması Bonusu' : 'Grocery Shopping Bonus',
-        desc: lang === 'tr' ? 'Market alışverişlerini Garanti Bonus ile yaparak ayda 400 TL''ye kadar bonus kazanabilirsin.' : 'Earn up to 400 TL bonus per month by doing your market shopping with Garanti Bonus.'
+        desc: lang === 'tr' ? `Market alışverişlerini Garanti Bonus ile yaparak ayda 400 TL'ye kadar bonus kazanabilirsin.` : `Earn up to 400 TL bonus per month by doing your market shopping with Garanti Bonus.`
       });
     }
 
@@ -143,86 +143,86 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
         style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40, paddingTop: 40 }}>
         <div>
-          <h1 style={{ fontSize: 32, fontWeight: 900, letterSpacing: ''-0.04em'', margin: 0 }}>
+          <h1 style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-0.04em', margin: 0 }}>
             {lang === 'tr' ? 'Fırsat Analiz Merkezi' : 'Opportunity Hub'}
           </h1>
-          <p style={{ color: ''var(--text2)'', fontSize: 14, marginTop: 6 }}>
+          <p style={{ color: 'var(--text2)', fontSize: 14, marginTop: 6 }}>
             {lang === 'tr' ? 'R.E.M harcamalarını analiz etti ve sana özel fırsatları çıkardı.' : 'R.E.M analyzed your expenses and found tailored opportunities.'}
           </p>
         </div>
-        <div className="glass" style={{ padding: ''15px 25px'', display: ''flex'', alignItems: ''center'', gap: 15, border: ''1px solid var(--accent-dim)'' }}>
-          <div style={{ textAlign: ''right'' }}>
-            <div style={{ fontSize: 10, color: ''var(--text2)'', textTransform: ''uppercase'', letterSpacing: 1 }}>{lang === ''tr'' ? ''Verimlilik Puanı'' : ''Efficiency Score''}</div>
-            <div style={{ fontSize: 24, fontWeight: 900, color: ''var(--accent)'' }}>%{optimizationScore}</div>
+        <div className="glass" style={{ padding: '15px 25px', display: 'flex', alignItems: 'center', gap: 15, border: '1px solid var(--accent-dim)' }}>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: 10, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: 1 }}>{lang === 'tr' ? 'Verimlilik Puanı' : 'Efficiency Score'}</div>
+            <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--accent)' }}>%{optimizationScore}</div>
           </div>
-          <div style={{ width: 44, height: 44, borderRadius: ''50%'', border: ''4px solid var(--bg2)'', borderTopColor: ''var(--accent)'', transform: ''rotate(45deg)'' }} />
+          <div style={{ width: 44, height: 44, borderRadius: '50%', border: '4px solid var(--bg2)', borderTopColor: 'var(--accent)', transform: 'rotate(45deg)' }} />
         </div>
       </motion.div>
 
       <motion.div variants={containerVariants} initial="hidden" animate="show"
-        style={{ display: ''grid'', gridTemplateColumns: ''repeat(auto-fill, minmax(360px, 1fr))'', gap: 24 }}>
+        style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: 24 }}>
         
         <OpportunityCard 
           icon={Wallet}
           color="var(--accent)"
-          title={lang === ''tr'' ? ''Atıl Nakit Röntgeni'' : ''Idle Cash X-Ray''}
-          desc={lang === ''tr'' 
-            ? `Boşta duran ₺${idleCash.avgIdleBalance.toLocaleString(''tr-TR'')} bakiyen var. Bunu PPF ile değerlendirerek pasif gelir yaratabilirsin.`
-            : `You have ₺${idleCash.avgIdleBalance.toLocaleString(''tr-TR'')} sitting idle. Invest it in MMF to generate passive income.`}
-          value={lang === ''tr'' ? `₺${idleCash.monthlyYield}/ay` : `₺${idleCash.monthlyYield}/mo`}
-          action={lang === ''tr'' ? ''Stratejiyi Uygula'' : ''Apply Strategy''}
+          title={lang === 'tr' ? 'Atıl Nakit Röntgeni' : 'Idle Cash X-Ray'}
+          desc={lang === 'tr' 
+            ? `Boşta duran ₺${idleCash.avgIdleBalance.toLocaleString('tr-TR')} bakiyen var. Bunu PPF ile değerlendirerek pasif gelir yaratabilirsin.`
+            : `You have ₺${idleCash.avgIdleBalance.toLocaleString('tr-TR')} sitting idle. Invest it in MMF to generate passive income.`}
+          value={lang === 'tr' ? `₺${idleCash.monthlyYield}/ay` : `₺${idleCash.monthlyYield}/mo`}
+          action={lang === 'tr' ? 'Stratejiyi Uygula' : 'Apply Strategy'}
           lang={lang}
         />
 
         <OpportunityCard 
           icon={PieChart}
           color="var(--amber)"
-          title={lang === ''tr'' ? ''Abonelik Optimizasyonu'' : ''Subscription Pulse''}
-          desc={lang === ''tr''
-            ? `Aboneliklerin maaşının %${subscriptions.salaryPercent}''ine ulaştı. R.E.M kullanmadığın servisleri eleyebileceğini düşünüyor.`
+          title={lang === 'tr' ? 'Abonelik Optimizasyonu' : 'Subscription Pulse'}
+          desc={lang === 'tr'
+            ? `Aboneliklerin maaşının %${subscriptions.salaryPercent}'ine ulaştı. R.E.M kullanmadığın servisleri eleyebileceğini düşünüyor.`
             : `Your subscriptions reached ${subscriptions.salaryPercent}% of income. R.E.M thinks you can cut unused services.`}
-          value={lang === ''tr'' ? `₺${subscriptions.totalAnnual.toLocaleString(''tr-TR'')}/yıl` : `₺${subscriptions.totalAnnual.toLocaleString(''tr-TR'')}/yr`}
-          action={lang === ''tr'' ? ''Detayları Gör'' : ''See Details''}
+          value={lang === 'tr' ? `₺${subscriptions.totalAnnual.toLocaleString('tr-TR')}/yıl` : `₺${subscriptions.totalAnnual.toLocaleString('tr-TR')}/yr`}
+          action={lang === 'tr' ? 'Detayları Gör' : 'See Details'}
           lang={lang}
         />
 
         <OpportunityCard 
           icon={Clock}
           color="var(--green)"
-          title={lang === ''tr'' ? ''Ödeme Zamanlaması'' : ''Payment Timing''}
-          desc={lang === ''tr''
+          title={lang === 'tr' ? 'Ödeme Zamanlaması' : 'Payment Timing'}
+          desc={lang === 'tr'
             ? `Ödemelerini maaş gününden sonraya kaydırarak nakit akışını iyileştirebilir ve ek faiz geliri kazanabilirsin.`
             : `Shift your payments to after payday to improve cash flow and earn extra interest income.`}
-          value={lang === ''tr'' ? `+₺${timing.totalMonthlyGain}/ay` : `+₺${timing.totalMonthlyGain}/mo`}
-          action={lang === ''tr'' ? ''Optimize Et'' : ''Optimize Now''}
+          value={lang === 'tr' ? `+₺${timing.totalMonthlyGain}/ay` : `+₺${timing.totalMonthlyGain}/mo`}
+          action={lang === 'tr' ? 'Optimize Et' : 'Optimize Now'}
           lang={lang}
         />
       </motion.div>
 
       {/* Dynamic Cashback Feed */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} style={{ marginTop: 60 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, display: ''flex'', alignItems: ''center'', gap: 10 }}>
-          <ShieldCheck size={20} color="var(--green)" /> {lang === ''tr'' ? ''Sana Özel Cashback Fırsatları'' : ''Personalized Cashback Offers''}
+        <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <ShieldCheck size={20} color="var(--green)" /> {lang === 'tr' ? 'Sana Özel Cashback Fırsatları' : 'Personalized Cashback Offers'}
         </h2>
         
         {cashbackOpportunities.length > 0 ? (
-          <div style={{ display: ''grid'', gridTemplateColumns: ''repeat(auto-fill, minmax(300px, 1fr))'', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
             {cashbackOpportunities.map(opp => (
-              <motion.div key={opp.id} whileHover={{ y: -5 }} className="glass" style={{ padding: ''20px'', border: ''1px solid var(--glass-border)'', position: ''relative'' }}>
-                <div style={{ position: ''absolute'', top: 20, right: 20, opacity: 0.1 }}><opp.icon size={40} color={opp.color} /></div>
+              <motion.div key={opp.id} whileHover={{ y: -5 }} className="glass" style={{ padding: '20px', border: '1px solid var(--glass-border)', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 20, right: 20, opacity: 0.1 }}><opp.icon size={40} color={opp.color} /></div>
                 <div style={{ fontSize: 12, fontWeight: 800, color: opp.color, marginBottom: 8, letterSpacing: 1 }}>{opp.brand}</div>
-                <h4 style={{ margin: ''0 0 8px 0'', fontSize: 16, fontWeight: 800 }}>{opp.title}</h4>
-                <p style={{ fontSize: 13, color: ''var(--text2)'', margin: 0, lineHeight: 1.5 }}>{opp.desc}</p>
-                <div style={{ marginTop: 15, display: ''flex'', alignItems: ''center'', gap: 6, color: opp.color, fontSize: 12, fontWeight: 800 }}>
-                  <TrendingUp size={14} /> {lang === ''tr'' ? ''AKTİF FIRSAT'' : ''ACTIVE OPPORTUNITY''}
+                <h4 style={{ margin: '0 0 8px 0', fontSize: 16, fontWeight: 800 }}>{opp.title}</h4>
+                <p style={{ fontSize: 13, color: 'var(--text2)', margin: 0, lineHeight: 1.5 }}>{opp.desc}</p>
+                <div style={{ marginTop: 15, display: 'flex', alignItems: 'center', gap: 6, color: opp.color, fontSize: 12, fontWeight: 800 }}>
+                  <TrendingUp size={14} /> {lang === 'tr' ? 'AKTİF FIRSAT' : 'ACTIVE OPPORTUNITY'}
                 </div>
               </motion.div>
             ))}
           </div>
         ) : (
-          <div className="glass" style={{ padding: ''40px'', textAlign: ''center'', border: ''1px dashed var(--glass-border)'' }}>
-            <p style={{ color: ''var(--text2)'', fontSize: 14, margin: 0 }}>
-              {lang === ''tr'' ? ''Harcamaların için şu an eşleşen özel bir cashback fırsatı bulunamadı.'' : ''No matching cashback opportunities found for your expenses right now.''}
+          <div className="glass" style={{ padding: '40px', textAlign: 'center', border: '1px dashed var(--glass-border)' }}>
+            <p style={{ color: 'var(--text2)', fontSize: 14, margin: 0 }}>
+              {lang === 'tr' ? 'Harcamaların için şu an eşleşen özel bir cashback fırsatı bulunamadı.' : 'No matching cashback opportunities found for your expenses right now.'}
             </p>
           </div>
         )}
@@ -230,6 +230,7 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
     </div>
   );
 }
+
 
 
 
