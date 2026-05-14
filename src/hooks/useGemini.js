@@ -100,10 +100,15 @@ export function useGemini() {
         tools: [{ functionDeclarations: TOOL_DECLARATIONS }],
       });
 
+
+
+
       const fd = financialDataRef.current;
-      const contextSummary = fd
-        ? `[Kullanıcı Finansal Bağlamı: Maaş=₺${fd.salary || 0}, Gider sayısı=${(fd.expenses || []).length}, Sağlık Skoru=${fd.healthScore || 0}/100]`
-        : '';
+      let contextSummary = '';
+      if (fd) {
+        const expList = (fd.expensesData || fd.expenses || []).map(e => `${e.name}: ₺${e.amount}`).join(', ');
+        contextSummary = `[Kullanıcı Finansal Bağlamı: Maaş=₺${fd.salary || fd.salaryData?.salary || 0}, Harcamalar=[${expList}], Toplam Gider=₺${fd.totalExpense || 0}]`;
+      }
 
       // startChat ile oturum başlat
       const chat = model.startChat();
