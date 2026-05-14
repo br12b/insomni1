@@ -1,5 +1,5 @@
-﻿import React from 'react';
-import { motion } from 'framer-motion';
+﻿import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   RefreshCw, 
   Database, 
@@ -9,130 +9,183 @@ import {
   Zap,
   CreditCard,
   ArrowRight,
-  TrendingDown
+  TrendingDown,
+  Activity,
+  Layers,
+  Search,
+  CheckCircle2
 } from 'lucide-react';
 
-const fadeUp = { hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } };
+const fadeUp = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 
+const TransactionCard = ({ tx, index }) => (
+  <motion.div
+    variants={fadeUp}
+    whileHover={{ scale: 1.02, y: -5 }}
+    className="glass"
+    style={{ 
+      padding: 24, display: 'flex', flexDirection: 'column', gap: 16, 
+      border: '1px solid var(--accent-dim)', background: 'linear-gradient(135deg, rgba(255,255,255,0.03), transparent)',
+      position: 'relative', overflow: 'hidden'
+    }}>
+    <div style={{ position: 'absolute', top: -10, right: -10, opacity: 0.03 }}>
+       <tx.icon size={100} />
+    </div>
+    
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div style={{ width: 48, height: 48, borderRadius: 14, background: tx.color + '15', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <tx.icon size={24} color={tx.color} />
+      </div>
+      <div style={{ textAlign: 'right' }}>
+         <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text2)', letterSpacing: 1, marginBottom: 4 }}>DURUM</div>
+         <div style={{ fontSize: 11, fontWeight: 800, color: '#10b981', display: 'flex', alignItems: 'center', gap: 4 }}>
+           <CheckCircle2 size={12} /> DOĞRULANDI
+         </div>
+      </div>
+    </div>
+
+    <div>
+      <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--text0)' }}>{tx.name}</div>
+      <div style={{ fontSize: 12, color: 'var(--text2)', marginTop: 4 }}>{tx.category} • {tx.date}</div>
+    </div>
+
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 8 }}>
+       <div>
+          <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--text2)', marginBottom: 4 }}>METOD</div>
+          <div style={{ fontSize: 12, fontWeight: 700 }}>{tx.method}</div>
+       </div>
+       <div style={{ fontSize: 24, fontWeight: 950, color: tx.amount.startsWith('+') ? '#10b981' : 'var(--text0)' }}>
+         {tx.amount} <span style={{ fontSize: 14 }}>₺</span>
+       </div>
+    </div>
+  </motion.div>
+);
+
 export default function RemSync() {
-  const sampleTransactions = [
-    { id: 1, name: 'Migros Ticaret', amount: '-245.50', time: '14:20', type: 'Market' },
-    { id: 2, name: 'Spotify Premium', amount: '-59.90', time: '11:05', type: 'Eğlence' },
-    { id: 3, name: 'Akbank Maaş Ödemesi', amount: '+45,000', time: '09:00', type: 'Gelir' },
-    { id: 4, name: 'Shell Akaryakıt', amount: '-1,200', time: 'Dün', type: 'Ulaşım' },
-    { id: 5, name: 'Netflix Subscription', amount: '-159', time: 'Dün', type: 'Eğlence' },
+  const [activeNode, setActiveNode] = useState(null);
+
+  const transactions = [
+    { id: 1, name: 'Migros Ticaret', amount: '-245.50', category: 'Market', date: 'Bugün 14:20', icon: Globe, color: 'var(--accent)', method: 'Direct API' },
+    { id: 2, name: 'Spotify Premium', amount: '-59.90', category: 'Eğlence', date: 'Bugün 11:05', icon: Zap, color: '#f59e0b', method: 'Cloud Sync' },
+    { id: 3, name: 'Akbank Maaş Ödemesi', amount: '+45,000', category: 'Gelir', date: 'Dün 09:00', icon: Database, color: '#10b981', method: 'Core Uplink' },
+    { id: 4, name: 'Shell Akaryakıt', amount: '-1,200', category: 'Ulaşım', date: 'Dün 18:30', icon: ShieldCheck, color: '#ef4444', method: 'Direct API' },
   ];
 
   return (
     <motion.div initial="hidden" animate="show" variants={stagger}
-      style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 40px 40px 40px', overflowY: 'auto' }}>
+      style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 40px 60px 40px', overflowY: 'auto' }}>
       
-      {/* HEADER - CLEAN & PRO */}
-      <div style={{ marginBottom: 40, marginTop: 40 }}>
-        <h1 style={{ fontSize: 32, fontWeight: 900, margin: 0, letterSpacing: '-0.02em' }}>
-          REM <span style={{ color: 'var(--accent)' }}>Sync</span>
-        </h1>
-        <p style={{ color: 'var(--text2)', fontSize: 16, margin: '8px 0 0 0' }}>
-          Otomatik Hesap Akışı ve Akıllı İşlem Takibi
-        </p>
+      {/* HEADER SECTION */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 60, marginTop: 40 }}>
+        <div>
+          <motion.div variants={fadeUp} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 12px', borderRadius: 100, background: 'var(--accent-dim)', color: 'var(--accent)', fontSize: 10, fontWeight: 900, letterSpacing: 1, marginBottom: 16 }}>
+            <Activity size={12} /> REAL-TIME DATA HUB
+          </motion.div>
+          <motion.h1 variants={fadeUp} style={{ fontSize: 48, fontWeight: 950, margin: 0, letterSpacing: '-0.04em' }}>
+            REM <span style={{ color: 'var(--accent)', textShadow: '0 0 40px rgba(129,140,248,0.4)' }}>Sync</span>
+          </motion.h1>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+           <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--text2)', marginBottom: 8 }}>BAĞLI KAYNAKLAR</div>
+           <div style={{ display: 'flex', gap: 12 }}>
+              {['Garanti', 'Akbank', 'Papara'].map(b => (
+                <div key={b} className="glass" style={{ padding: '8px 16px', borderRadius: 100, fontSize: 12, fontWeight: 900, border: '1px solid var(--accent-dim)' }}>{b}</div>
+              ))}
+           </div>
+        </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 32, alignItems: 'start' }}>
+      {/* PEAK VISUALIZATION - THE DIGITAL LEDGER SPHERE */}
+      <div style={{ position: 'relative', height: 400, marginBottom: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         
-        {/* LEFT: COMPACT SYNC VISUALIZATION */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          <div className="glass" style={{ padding: 40, position: 'relative', overflow: 'hidden', minHeight: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* Minimal Flow Animation */}
-            <div style={{ position: 'absolute', inset: 0, opacity: 0.05, backgroundImage: 'radial-gradient(var(--accent) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-            
-            <div style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', gap: 30 }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ width: 60, height: 60, borderRadius: 16, background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
-                  <Globe size={24} color="var(--accent)" />
-                </div>
-                <div style={{ fontSize: 11, fontWeight: 800 }}>BANKALAR</div>
-              </div>
+        {/* Background Radial Glow */}
+        <div style={{ position: 'absolute', width: 600, height: 600, background: 'radial-gradient(circle, var(--accent-dim) 0%, transparent 70%)', filter: 'blur(100px)', opacity: 0.15 }} />
 
-              <div style={{ position: 'relative', width: 100, height: 2, background: 'rgba(255,255,255,0.1)' }}>
-                 <motion.div 
-                    animate={{ left: ['0%', '100%'] }} 
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    style={{ position: 'absolute', top: -2, width: 20, height: 6, background: 'var(--accent)', borderRadius: 10, boxShadow: '0 0 10px var(--accent)' }} 
-                 />
-              </div>
-
-              <div style={{ textAlign: 'center' }}>
-                <motion.div 
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                  style={{ width: 80, height: 80, borderRadius: 24, background: 'var(--bg1)', border: '2px solid var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
-                  <RefreshCw size={32} color="var(--accent)" />
-                </motion.div>
-                <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--accent)' }}>AKTİF AKIŞ</div>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <div className="glass" style={{ padding: 24 }}>
-              <ShieldCheck size={20} color="var(--accent)" style={{ marginBottom: 12 }} />
-              <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 4 }}>Uçtan Uca Güvenlik</div>
-              <div style={{ fontSize: 11, color: 'var(--text2)' }}>AES-256 Bankacılık Standartları</div>
-            </div>
-            <div className="glass" style={{ padding: 24 }}>
-              <Zap size={20} color="var(--accent)" style={{ marginBottom: 12 }} />
-              <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 4 }}>Anlık Senkronizasyon</div>
-              <div style={{ fontSize: 11, color: 'var(--text2)' }}>Milisaniyeler İçinde İşleme</div>
-            </div>
-          </div>
+        {/* The Core Orb */}
+        <div style={{ position: 'relative', width: 280, height: 280, z_index: 20 }}>
+           <motion.div 
+             animate={{ rotate: 360 }}
+             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+             style={{ position: 'absolute', inset: -40, border: '1px dashed var(--accent-dim)', borderRadius: '50%', opacity: 0.3 }}
+           />
+           <motion.div 
+             animate={{ rotate: -360 }}
+             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+             style={{ position: 'absolute', inset: -20, border: '1px solid rgba(129,140,248,0.1)', borderRadius: '50%' }}
+           />
+           
+           <motion.div 
+             animate={{ scale: [1, 1.05, 1], boxShadow: ['0 0 40px var(--accent-dim)', '0 0 100px var(--accent)', '0 0 40px var(--accent-dim)'] }}
+             transition={{ duration: 4, repeat: Infinity }}
+             style={{ 
+               width: '100%', height: '100%', borderRadius: '50%', background: 'var(--bg1)', 
+               border: '3px solid var(--accent)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+               position: 'relative', overflow: 'hidden', backdropFilter: 'blur(20px)'
+             }}>
+             <RefreshCw size={80} color="var(--accent)" />
+             <div style={{ marginTop: 20, textAlign: 'center' }}>
+                <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--accent)', letterSpacing: 2 }}>SYNCING</div>
+                <div style={{ fontSize: 24, fontWeight: 950 }}>98.4<span style={{ fontSize: 14 }}>%</span></div>
+             </div>
+             {/* Scanning Line */}
+             <motion.div 
+               animate={{ top: ['-10%', '110%'] }}
+               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+               style={{ position: 'absolute', left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--accent), transparent)', boxShadow: '0 0 10px var(--accent)' }} 
+             />
+           </motion.div>
         </div>
 
-        {/* RIGHT: LIVE TRANSACTION STREAM */}
-        <div className="glass" style={{ padding: 32, display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-             <h3 style={{ fontSize: 16, fontWeight: 900, margin: 0 }}>Canlı İşlem Akışı</h3>
-             <span style={{ fontSize: 10, fontWeight: 900, color: '#10b981', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }} /> BAĞLI
-             </span>
-          </div>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {sampleTransactions.map((tx) => (
-              <motion.div 
-                key={tx.id}
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: tx.id * 0.1 }}
-                style={{ 
-                  display: 'flex', alignItems: 'center', gap: 16, padding: '16px', 
-                  background: 'rgba(255,255,255,0.02)', borderRadius: 16, border: '1px solid rgba(255,255,255,0.05)' 
-                }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <CreditCard size={18} color="var(--text2)" />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 800 }}>{tx.name}</div>
-                  <div style={{ fontSize: 11, color: 'var(--text2)' }}>{tx.type} • {tx.time}</div>
-                </div>
-                <div style={{ fontSize: 14, fontWeight: 900, color: tx.amount.startsWith('+') ? '#10b981' : 'var(--text0)' }}>
-                  {tx.amount} ₺
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        {/* Floating Data Nodes (Orbs) */}
+        {[
+          { label: 'Bank Feeds', icon: Globe, angle: 0 },
+          { label: 'Cloud Sync', icon: Database, angle: 120 },
+          { label: 'OCR Engine', icon: FileSearch, angle: 240 },
+        ].map((node, i) => {
+          const radius = 220;
+          const x = Math.cos(node.angle * Math.PI / 180) * radius;
+          const y = Math.sin(node.angle * Math.PI / 180) * radius;
 
-          <div style={{ marginTop: 'auto', textAlign: 'center', paddingTop: 20 }}>
-             <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 20 }}>
-                Bu işlemler bankanızdan otonom olarak çekilip R.E.M tarafından analiz edilir.
-             </p>
-             <button className="btn btn-primary btn-sm" style={{ padding: '12px 32px', borderRadius: 100, fontWeight: 800 }}>
-                Yeni Hesap Bağla
-             </button>
-          </div>
-        </div>
-
+          return (
+            <motion.div 
+              key={i}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, x, y }}
+              transition={{ delay: 0.5 + i * 0.2, type: 'spring' }}
+              style={{ 
+                position: 'absolute', padding: '16px 24px', borderRadius: 20, 
+                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)',
+                backdropFilter: 'blur(16px)', display: 'flex', alignItems: 'center', gap: 12, zIndex: 30,
+                boxShadow: '0 10px 30px rgba(0,0,0,0.4)'
+              }}>
+              <node.icon size={20} color="var(--accent)" />
+              <span style={{ fontSize: 14, fontWeight: 900 }}>{node.label}</span>
+            </motion.div>
+          );
+        })}
       </div>
+
+      {/* DEEP LEDGER - THE TRANSACTION GRID */}
+      <div style={{ position: 'relative', zIndex: 10 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+           <h2 style={{ fontSize: 24, fontWeight: 900, margin: 0 }}>Akıllı İşlem Detayları</h2>
+           <div style={{ display: 'flex', gap: 12 }}>
+              <div className="glass" style={{ padding: '10px 20px', borderRadius: 100, display: 'flex', alignItems: 'center', gap: 10 }}>
+                 <Search size={14} color="var(--text2)" />
+                 <span style={{ fontSize: 12, color: 'var(--text2)' }}>İşlemlerde ara...</span>
+              </div>
+              <button className="btn btn-primary btn-sm" style={{ padding: '10px 24px', borderRadius: 100, fontWeight: 800 }}>Yeni Kaynak Ekle</button>
+           </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24 }}>
+          {transactions.map((tx, i) => (
+            <TransactionCard key={tx.id} tx={tx} index={i} />
+          ))}
+        </div>
+      </div>
+
     </motion.div>
   );
 }
