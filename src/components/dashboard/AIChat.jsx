@@ -75,8 +75,8 @@ function MessageBubble({ msg }) {
               borderRadius: '50%', 
               overflow: 'hidden', 
               flexShrink: 0, 
-              background: '#fff', 
-              border: '1px solid var(--glass-border)',
+              background: 'transparent', 
+              border: 'none',
               boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
             }}>
               <img src="/rem_avatar.png" alt="R.E.M" style={{ 
@@ -132,7 +132,7 @@ export default function AIChat({ financialData }) {
             borderRadius: '50%', 
             overflow: 'hidden', 
             border: 'none', // Removed border
-            background: 'transparent', // Transparent background
+            background: 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -146,7 +146,7 @@ export default function AIChat({ financialData }) {
             objectFit: 'cover', 
             objectPosition: 'center center', 
             imageRendering: 'auto',
-            transform: 'scale(1.15)', // Zoom in to remove any white edges
+            transform: 'scale(1.15)',
           }} />
         </motion.div>
         <div>
