@@ -196,7 +196,7 @@ export default function Admin({ onClose }) {
                   </div>
                 </div>
 
-                <h3 style={ fontSize: 13, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text2)', marginBottom: 16 }>Scale Overrides</h3>
+                <h3 style={{ fontSize: 13, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text2)', marginBottom: 16 }}>Scale Overrides</h3>
                   <div style={{ marginBottom: 16 }}>
                     <label className="label" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                       <span>Aria Scale</span>
