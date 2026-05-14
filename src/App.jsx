@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Settings } from 'lucide-react';
+import { User, Settings, Sparkles } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
 import { AdminUIProvider, AdminUIContext } from './context/AdminUIContext';
 import { storage } from './lib/storage';
@@ -8,6 +8,7 @@ import ThemeToggle from './components/ui/ThemeToggle';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Opportunities from './pages/Opportunities';
+import Chat from './pages/Chat';
 import SalaryInput from './components/onboarding/SalaryInput';
 import ExpenseInput from './components/onboarding/ExpenseInput';
 import ProfileModal from './components/ProfileModal';
@@ -74,42 +75,9 @@ function AppContent() {
 
           {profile && salaryData && (
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => goTo('dashboard')} className={`btn btn-sm ${view === 'dashboard' ? 'btn-accent' : 'btn-ghost'}`}>
-                {lang === 'tr' ? 'Dashboard' : 'Dashboard'}
-              </button>
-              <button onClick={() => goTo('opportunities')} className={`btn btn-sm ${view === 'opportunities' ? 'btn-accent' : 'btn-ghost'}`}>
-                {lang === 'tr' ? 'Fırsatlar' : 'Opportunities'}
-              </button>
-            </div>
-          )}
-
-          {profile && (
-            <>
-              <button onClick={() => goTo('profile')} className="btn btn-ghost btn-icon btn-sm" title={profile}>
-                <User size={16} />
-              </button>
-              <button onClick={() => goTo('admin')} className={`btn btn-icon btn-sm ${view === 'admin' ? 'btn-accent' : 'btn-ghost'}`} title="Admin Panel">
-                <Settings size={16} />
-              </button>
-            </>
-          )}
-          <ThemeToggle />
-
-        </div>
-      </nav>
-      )}
-
-      {/* Pages */}
-      <AnimatePresence mode="wait">
-        <motion.div key={view} variants={pageVariants} initial="initial" animate="animate" exit="exit"
-          transition={{ duration: 0.22, ease: 'easeOut' }}
-          style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: (view === 'dashboard' || view === 'opportunities') ? 'visible' : 'hidden' }}>
-          {view === 'landing' && <Landing onStart={() => goTo('salary')} />}
-          {view === 'profile' && <ProfileModal initialName={profile} onComplete={name => { setProfile(name); goTo('landing'); }} />}
-          {view === 'salary' && <SalaryInput onComplete={d => { setSalaryData(d); goTo('expenses'); }} />}
-          {view === 'expenses' && <ExpenseInput onComplete={d => { setExpensesData(d); goTo('dashboard'); }} />}
-          {view === 'dashboard' && <Dashboard salaryData={salaryData} expensesData={expensesData} profileName={profile} />}
+                            <button onClick={() => goTo('dashboard')} className={`btn btn-sm $          {view === 'dashboard' && <Dashboard salaryData={salaryData} expensesData={expensesData} profileName={profile} />}
           {view === 'opportunities' && <Opportunities expenses={expensesData} />}
+          {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />} />}
         
         
           {view === 'admin' && <Admin onClose={() => goTo('landing')} />}
