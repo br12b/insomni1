@@ -87,7 +87,7 @@ function AppContent() {
                 <RefreshCw size={14} /> REM Sync
               </button>
               <button onClick={() => goTo('chat')} className={`btn btn-sm ${view === 'chat' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
-                <Brain size={14} /> Intelligence
+                <Brain size={14} /> R.E.M AI
               </button>
               <button onClick={() => goTo('calendar')} className={`btn btn-sm ${view === 'calendar' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
                 <CalendarIcon size={14} /> {lang === 'tr' ? 'Takvim' : 'Calendar'}
@@ -144,3 +144,4 @@ export default function App() {
     </AdminUIProvider>
   );
 }
+
