@@ -1,8 +1,8 @@
-import { BBVA_DAILY_RATE } from './calculations';
+﻿import { BBVA_DAILY_RATE } from './calculations';
 
 /**
- * ARIA Tool Kit — Her fonksiyon Gemini'nin çağırabileceği bir araçtır.
- * Gerçek finansal veriye dayalı hesaplamalar yapar.
+ * ARIA Tool Kit â€” Her fonksiyon Gemini'nin Ã§aÄŸÄ±rabileceÄŸi bir araÃ§tÄ±r.
+ * GerÃ§ek finansal veriye dayalÄ± hesaplamalar yapar.
  */
 
 export function getCashFlowSummary(financialData) {
@@ -30,7 +30,7 @@ export function simulateExpenseRemoval(financialData, expenseName) {
   const { salary = 0, expenses = [], goals = [] } = financialData || {};
   const name = (expenseName || '').toLowerCase();
   const target = expenses.find(e => (e.name || '').toLowerCase().includes(name));
-  if (!target) return { found: false, message: `"${expenseName}" adında bir harcama bulunamadı.` };
+  if (!target) return { found: false, message: `"${expenseName}" adÄ±nda bir harcama bulunamadÄ±.` };
 
   const monthlyGain = parseFloat(target.amount) || 0;
   const annualGain = monthlyGain * 12;
@@ -70,7 +70,7 @@ export function calculateGoalTimeline(financialData, goalAmount, currentSaved = 
   const remaining = goalAmount - currentSaved;
 
   if (effectiveSurplus <= 0) {
-    return { possible: false, message: 'Mevcut gider yapısıyla bu hedefe ulaşmak mümkün görünmüyor. Giderleri azaltman gerekiyor.' };
+    return { possible: false, message: 'Mevcut gider yapÄ±sÄ±yla bu hedefe ulaÅŸmak mÃ¼mkÃ¼n gÃ¶rÃ¼nmÃ¼yor. Giderleri azaltman gerekiyor.' };
   }
 
   const months = Math.ceil(remaining / effectiveSurplus);
@@ -106,8 +106,8 @@ export function findIdleCashOpportunity(financialData) {
     monthlyYield: Math.round(monthlyYield),
     annualYield: Math.round(annualYield),
     recommendation: monthlyYield > 500
-      ? 'Bu miktar PPF için kesinlikle değerlendirilebilir.'
-      : 'Atıl nakdin görece düşük, daha fazla optimizasyon gerekiyor.',
+      ? 'Bu miktar PPF iÃ§in kesinlikle deÄŸerlendirilebilir.'
+      : 'AtÄ±l nakdin gÃ¶rece dÃ¼ÅŸÃ¼k, daha fazla optimizasyon gerekiyor.',
   };
 }
 
@@ -127,8 +127,8 @@ export function getSubscriptionBreakdown(financialData) {
     totalAnnual: Math.round(totalMonthly * 12),
     salaryPercent,
     verdict: salaryPercent > 10
-      ? 'Abonelikler maaşının %10\'unu aşıyor. Gözden geçirmen öneriliyor.'
-      : 'Abonelik harcamaları makul seviyede.',
+      ? 'Abonelikler maaÅŸÄ±nÄ±n %10\'unu aÅŸÄ±yor. GÃ¶zden geÃ§irmen Ã¶neriliyor.'
+      : 'Abonelik harcamalarÄ± makul seviyede.',
   };
 }
 
@@ -161,7 +161,20 @@ export function optimizeExpenseTiming(financialData) {
   };
 }
 
-// Tool dispatcher — Gemini'nin döndürdüğü araç adını çalıştırır
+// Tool dispatcher â€” Gemini'nin dÃ¶ndÃ¼rdÃ¼ÄŸÃ¼ araÃ§ adÄ±nÄ± Ã§alÄ±ÅŸtÄ±rÄ±r
+export function getAggregateGoalStats(financialData, goals = []) {
+  if (!goals.length) return { totalTarget: 0, totalSaved: 0, overallProgress: 0 };
+  const totalTarget = goals.reduce((s, g) => s + (g.targetAmount || 0), 0);
+  const totalSaved = goals.reduce((s, g) => s + (g.savedAmount || 0), 0);
+  const overallProgress = totalTarget > 0 ? (totalSaved / totalTarget) * 100 : 0;
+  return {
+    totalTarget,
+    totalSaved,
+    overallProgress: Math.round(overallProgress),
+    goalCount: goals.length,
+  };
+}
+
 export function executeTool(toolName, args, financialData) {
   switch (toolName) {
     case 'getCashFlowSummary':
@@ -177,6 +190,7 @@ export function executeTool(toolName, args, financialData) {
     case 'optimizeExpenseTiming':
       return optimizeExpenseTiming(financialData);
     default:
-      return { error: `Bilinmeyen araç: ${toolName}` };
+      return { error: `Bilinmeyen araÃ§: ${toolName}` };
   }
 }
+
