@@ -109,7 +109,7 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
         icon: Music,
         color: '#1DB954',
         title: lang === 'tr' ? 'Spotify %50 Cashback' : 'Spotify 50% Cashback',
-        desc: lang === 'tr' ? 'Müzik keyfini ucuza getir. Spotify ödemelerinde %50 iade fırsatını kaçırma.' : 'Enjoy music for less. Don''t miss the 50% cashback on Spotify payments.'
+        desc: lang === 'tr' ? 'Müzik keyfini ucuza getir. Spotify ödemelerinde %50 iade fırsatını kaçırma.' : 'Enjoy music for less. Don\'t miss the 50% cashback on Spotify payments.'
       });
     }
 
@@ -230,4 +230,6 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
     </div>
   );
 }
+
+
 
