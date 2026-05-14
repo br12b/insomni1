@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Settings, Sparkles } from 'lucide-react';
+import { User, Settings, Sparkles, Target } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
 import { AdminUIProvider, AdminUIContext } from './context/AdminUIContext';
 import { storage } from './lib/storage';
@@ -8,6 +8,7 @@ import ThemeToggle from './components/ui/ThemeToggle';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Opportunities from './pages/Opportunities';
+import Goals from './pages/Goals';
 import Chat from './pages/Chat';
 import SalaryInput from './components/onboarding/SalaryInput';
 import ExpenseInput from './components/onboarding/ExpenseInput';
@@ -93,6 +94,9 @@ function AppContent() {
               <button onClick={() => goTo('chat')} className={`btn btn-sm ${view === 'chat' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
                 <Sparkles size={14} /> {lang === 'tr' ? 'R.E.M AI' : 'R.E.M AI'}
               </button>
+              <button onClick={() => goTo('goals')} className={`btn btn-sm ${view === 'goals' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                <Target size={14} /> {lang === 'tr' ? 'Hedefler' : 'Goals'}
+              </button>
             </div>
           )}
 
@@ -123,7 +127,8 @@ function AppContent() {
           {view === 'expenses' && <ExpenseInput onComplete={d => { setExpensesData(d); goTo('dashboard'); }} />}
           {view === 'dashboard' && <Dashboard salaryData={salaryData} expensesData={expensesData} profileName={profile} />}
           {view === 'opportunities' && <Opportunities expenses={expensesData} />}
-          {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
+                    {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
+          {view === 'goals' && <Goals financialData={{ salaryData, expensesData }} />}
           {view === 'admin' && <Admin onClose={() => goTo('landing')} />}
         </motion.div>
       </AnimatePresence>
