@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Settings, Sparkles, Target, RefreshCw } from 'lucide-react';
+import { User, Settings, Sparkles, Target, RefreshCw, Calendar as CalendarIcon, Brain } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
 import { AdminUIProvider } from './context/AdminUIContext';
 import { storage } from './lib/storage';
@@ -11,6 +11,7 @@ import Opportunities from './pages/Opportunities';
 import Goals from './pages/Goals';
 import Chat from './pages/Chat';
 import RemSync from './pages/RemSync';
+import Calendar from './pages/Calendar';
 import SalaryInput from './components/onboarding/SalaryInput';
 import ExpenseInput from './components/onboarding/ExpenseInput';
 import ProfileModal from './components/ProfileModal';
@@ -86,7 +87,10 @@ function AppContent() {
                 <RefreshCw size={14} /> REM Sync
               </button>
               <button onClick={() => goTo('chat')} className={`btn btn-sm ${view === 'chat' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
-                <Sparkles size={14} /> R.E.M AI
+                <Brain size={14} /> Intelligence
+              </button>
+              <button onClick={() => goTo('calendar')} className={`btn btn-sm ${view === 'calendar' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                <CalendarIcon size={14} /> {lang === 'tr' ? 'Takvim' : 'Calendar'}
               </button>
               <button onClick={() => goTo('goals')} className={`btn btn-sm ${view === 'goals' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
                 <Target size={14} /> {lang === 'tr' ? 'Hedefler' : 'Goals'}
@@ -122,6 +126,7 @@ function AppContent() {
           {view === 'opportunities' && <Opportunities expenses={expensesData} salaryData={salaryData} />}
           {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
           {view === 'remsync' && <RemSync />}
+          {view === 'calendar' && <Calendar financialData={{ salaryData, expensesData }} />}
           {view === 'goals' && <Goals financialData={{ salaryData, expensesData }} />}
           {view === 'admin' && <Admin onClose={() => goTo('landing')} />}
         </motion.div>

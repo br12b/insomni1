@@ -91,7 +91,7 @@ export default function RemSync() {
         {/* THE AISUDIO GENERATED CORE IMAGE */}
         <div style={{ position: 'relative', zIndex: 20, width: 320, height: 320 }}>
            <motion.img 
-             src="/financial_intelligence_core_1778800180071.png" 
+             src="/financial_intelligence_core.png" 
              alt="Financial Intelligence Core"
              animate={{ y: [0, -15, 0], filter: ['drop-shadow(0 0 20px rgba(129,140,248,0.3))', 'drop-shadow(0 0 60px rgba(129,140,248,0.6))', 'drop-shadow(0 0 20px rgba(129,140,248,0.3))'] }}
              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
@@ -182,4 +182,5 @@ export default function RemSync() {
     </motion.div>
   );
 }
+
 
