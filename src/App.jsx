@@ -44,8 +44,6 @@ function AppContent() {
     const handleLocationChange = () => {
       if (window.location.pathname === '/admin') {
         setView('admin');
-      } else if (view === 'admin') {
-        setView(profile ? 'landing' : 'profile');
       }
     };
     window.addEventListener('popstate', handleLocationChange);
