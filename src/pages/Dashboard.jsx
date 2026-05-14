@@ -50,24 +50,24 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
 
       {/* Stats Row */}
       <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 20 }}>
-        <motion.div variants={fadeUp} className="glass" style={{ padding: 24, border: '1px solid var(--glass-border)' }}>
+        <motion.div variants={fadeUp} className="glass" style={{ padding: '16px 20px', border: '1px solid var(--glass-border)' }}>
           <div className="label" style={{ marginBottom: 12 }}><Wallet size={16}/> {t.dashboard?.salary || 'Maaş'}</div>
-          <div className="stat-num" style={{ fontSize: 32 }}><AnimatedCounter value={income} suffix={` ${currency}`} /></div>
+          <div className="stat-num" style={{ fontSize: 24 }}><AnimatedCounter value={income} suffix={` ${currency}`} /></div>
         </motion.div>
-        <motion.div variants={fadeUp} className="glass" style={{ padding: 24, border: '1px solid var(--glass-border)' }}>
+        <motion.div variants={fadeUp} className="glass" style={{ padding: '16px 20px', border: '1px solid var(--glass-border)' }}>
           <div className="label" style={{ marginBottom: 12 }}><TrendingDown size={16}/> {t.dashboard?.totalExp || 'Toplam Gider'}</div>
-          <div className="stat-num" style={{ color: 'var(--red)', fontSize: 32 }}><AnimatedCounter value={totalExpense} suffix={` ${currency}`} /></div>
+          <div className="stat-num" style={{ color: 'var(--red)', fontSize: 24 }}><AnimatedCounter value={totalExpense} suffix={` ${currency}`} /></div>
         </motion.div>
-        <motion.div variants={fadeUp} className="glass" style={{ padding: 24, border: '1px solid var(--glass-border)' }}>
+        <motion.div variants={fadeUp} className="glass" style={{ padding: '16px 20px', border: '1px solid var(--glass-border)' }}>
           <div className="label" style={{ marginBottom: 12 }}><LayoutDashboard size={16}/> {t.dashboard?.remaining || 'Kalan Atıl Nakit'}</div>
-          <div className="stat-num" style={{ color: 'var(--green)', fontSize: 32 }}><AnimatedCounter value={remaining} suffix={` ${currency}`} /></div>
+          <div className="stat-num" style={{ color: 'var(--green)', fontSize: 24 }}><AnimatedCounter value={remaining} suffix={` ${currency}`} /></div>
         </motion.div>
       </motion.div>
 
       {/* Main Grid: LEFT (Charts & Lists) | RIGHT (AI & Tools) */}
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: '1fr 380px', 
+        gridTemplateColumns: '1fr 480px', 
         gap: 32, 
         alignItems: 'start'
       }}>
