@@ -83,7 +83,7 @@ export default function Landing({ onStart }) {
               position: 'absolute', 
               right: '100%', 
               marginRight: -20, // Overlap slightly with the button area but to the left
-              top: '50%',
+              top: '35%',
               transform: 'translateY(-50%)',
               zIndex: 20
             }} 
