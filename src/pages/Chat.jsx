@@ -72,7 +72,14 @@ export default function Chat({ salaryData, expensesData }) {
           </div>
 
           <div className="glass" style={{ padding: 20, flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>AI Capabilities</h3>
+                      <div className="glass" style={{ padding: 20, border: '1px solid var(--accent-dim)', background: 'linear-gradient(to bottom right, rgba(129,140,248,0.1), transparent)' }}>
+            <h3 style={{ fontSize: 14, fontWeight: 900, color: 'var(--accent)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 }}>Our Vision</h3>
+            <p style={{ fontSize: 12, color: 'var(--text1)', lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
+              "Insomni, atıl nakdin sadece bir rakam değil, kaçırılmış bir gelecek olduğu inancıyla doğdu. R.E.M ile amacımız, finansal verilerinizdeki her bir saniyeyi değere dönüştürmek ve size paranın gerçek zamanlı maliyetini göstererek finansal özgürlüğünüzü optimize etmektir."
+            </p>
+          </div>
+
+          <h3 style={ fontSize: 14, fontWeight: 800, margin: 0 }>AI Capabilities</h3>
             <div style={{ display: 'flex', gap: 10 }}>
               <Sparkles size={16} color="var(--accent)" />
               <div style={{ fontSize: 12 }}>

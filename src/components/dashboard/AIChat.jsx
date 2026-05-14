@@ -127,19 +127,27 @@ export default function AIChat({ financialData }) {
           } : {}}
           transition={{ duration: 1.5, repeat: Infinity }}
           style={{ 
-            width: 64, 
-            height: 64, 
+            width: 70, // Slightly bigger
+            height: 70, 
             borderRadius: '50%', 
             overflow: 'hidden', 
-            border: '4px solid var(--accent)', 
-            background: '#fff',
+            border: '3px solid var(--accent)', // Cleaner border
+            background: 'var(--bg0)', // Match background better
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            boxShadow: '0 0 20px rgba(129,140,248,0.4)'
+            boxShadow: '0 0 25px rgba(129,140,248,0.5)',
+            position: 'relative'
           }}>
-          <img src="/rem_avatar.png" alt="R.E.M" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', imageRendering: 'auto', transform: 'translateZ(0)' }} />
+          <img src="/rem_avatar.png" alt="R.E.M" style={{ 
+            width: '120%', // Scale up to fill the border completely
+            height: '120%', 
+            objectFit: 'cover', 
+            objectPosition: 'center center', 
+            imageRendering: 'auto',
+            transform: 'scale(1.15)', // Zoom in to remove any white edges
+          }} />
         </motion.div>
         <div>
           <div style={{ fontWeight: 700, fontSize: 14 }}>R.E.M</div>
