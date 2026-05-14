@@ -65,8 +65,12 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
       </motion.div>
 
       {/* Main Grid: LEFT (Charts & Lists) | RIGHT (AI & Tools) */}
-      {/* Used minmax to ensure it wraps on smaller screens instead of overflowing */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 600px), 1fr))', gap: 32, alignItems: 'start' }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1fr 380px', 
+        gap: 32, 
+        alignItems: 'start'
+      }}>
         
         {/* LEFT SIDE: Visuals and Data */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 32, minWidth: 0 }}>
@@ -86,8 +90,15 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
         </div>
 
         {/* RIGHT SIDE: AI Assistant */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 32, minWidth: 0 }}>
-          <motion.div variants={fadeUp} className="glass" style={{ padding: '32px 24px', height: '100%', minHeight: 600, display: 'flex', flexDirection: 'column', border: '1px solid rgba(129,140,248,0.2)', boxShadow: '0 0 40px rgba(129,140,248,0.05)' }}>
+        <div style={{ position: 'sticky', top: 24, display: 'flex', flexDirection: 'column', gap: 32, minWidth: 0 }}>
+          <motion.div variants={fadeUp} className="glass" style={{ 
+            padding: '32px 24px', 
+            minHeight: '80vh', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            border: '1px solid rgba(129,140,248,0.2)', 
+            boxShadow: '0 0 40px rgba(129,140,248,0.05)' 
+          }}>
             <AIChat financialData={{ salaryData, expensesData }} />
           </motion.div>
         </div>
