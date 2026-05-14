@@ -70,21 +70,21 @@ export default function Landing({ onStart }) {
         {/* BUTTON AREA WITH ATTACHED LITTLE R.E.M */}
         <motion.div variants={fadeUp} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', marginBottom: 64 }}>
           <motion.img 
-            animate={{ y: [0, -8, 0], rotate: [0, 2, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
             src="/rem_profile.png" 
             alt="R.E.M Small" 
             style={{ 
-              width: 120, 
+              width: 140, 
               height: 'auto', 
               objectFit: 'contain',
-              filter: 'drop-shadow(0 0 30px rgba(129,140,248,0.3))',
+              filter: 'drop-shadow(0 0 40px rgba(129,140,248,0.4))',
               pointerEvents: 'none',
               position: 'absolute', 
-              right: '100%', 
-              marginRight: 8,
-              top: '50%',
-              marginTop: -60,
+              bottom: '100%', // Position above the button
+              left: '50%',
+              transform: 'translateX(-50%)', // Center horizontally
+              marginBottom: 20,
               zIndex: 20
             }} 
           />
