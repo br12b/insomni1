@@ -48,19 +48,7 @@ function AppContent() {
       }
     };
     window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
-  }, [view, profile]);
-
-  const goTo = (v) => {
-    if (v === 'admin') {
-      window.history.pushState({}, '', '/admin');
-    } else if (view === 'admin') {
-      window.history.pushState({}, '', '/');
-    }
-    setView(v);
-  };
-
-  return (
+      return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Nav */}
       {view !== 'admin' && (
@@ -75,11 +63,46 @@ function AppContent() {
 
           {profile && salaryData && (
             <div style={{ display: 'flex', gap: 8 }}>
-                            <button onClick={() => goTo('dashboard')} className={`btn btn-sm $          {view === 'dashboard' && <Dashboard salaryData={salaryData} expensesData={expensesData} profileName={profile} />}
+              <button onClick={() => goTo('dashboard')} className={`btn btn-sm ${view === 'dashboard' ? 'btn-accent' : 'btn-ghost'}`}>
+                {lang === 'tr' ? 'Dashboard' : 'Dashboard'}
+              </button>
+              <button onClick={() => goTo('opportunities')} className={`btn btn-sm ${view === 'opportunities' ? 'btn-accent' : 'btn-ghost'}`}>
+                {lang === 'tr' ? 'Fırsatlar' : 'Opportunities'}
+              </button>
+              <button onClick={() => goTo('chat')} className={`btn btn-sm ${view === 'chat' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                <Sparkles size={14} /> {lang === 'tr' ? 'R.E.M AI' : 'R.E.M AI'}
+              </button>
+            </div>
+          )}
+
+          {profile && (
+            <>
+              <button onClick={() => goTo('profile')} className="btn btn-ghost btn-icon btn-sm" title={profile}>
+                <User size={16} />
+              </button>
+              <button onClick={() => goTo('admin')} className={`btn btn-icon btn-sm ${view === 'admin' ? 'btn-accent' : 'btn-ghost'}`} title="Admin Panel">
+                <Settings size={16} />
+              </button>
+            </>
+          )}
+          <ThemeToggle />
+
+        </div>
+      </nav>
+      )}
+
+      {/* Pages */}
+      <AnimatePresence mode="wait">
+        <motion.div key={view} variants={pageVariants} initial="initial" animate="animate" exit="exit"
+          transition={{ duration: 0.22, ease: 'easeOut' }}
+          style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: (view === 'dashboard' || view === 'opportunities') ? 'visible' : 'hidden' }}>
+          {view === 'landing' && <Landing onStart={() => goTo('salary')} />}
+          {view === 'profile' && <ProfileModal initialName={profile} onComplete={name => { setProfile(name); goTo('landing'); }} />}
+          {view === 'salary' && <SalaryInput onComplete={d => { setSalaryData(d); goTo('expenses'); }} />}
+          {view === 'expenses' && <ExpenseInput onComplete={d => { setExpensesData(d); goTo('dashboard'); }} />}
+          {view === 'dashboard' && <Dashboard salaryData={salaryData} expensesData={expensesData} profileName={profile} />}
           {view === 'opportunities' && <Opportunities expenses={expensesData} />}
-          {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />} />}
-        
-        
+          {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
           {view === 'admin' && <Admin onClose={() => goTo('landing')} />}
         </motion.div>
       </AnimatePresence>
