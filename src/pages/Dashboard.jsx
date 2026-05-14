@@ -72,39 +72,43 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
         </motion.div>
       </motion.div>
 
-      {/* Main Content: 50/50 Split Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
+      {/* Main Content: Two Independent Columns */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'start' }}>
         
-        {/* ROW 1 LEFT: Chart */}
-        <motion.div variants={fadeUp} style={{ minWidth: 0 }}>
-          <ExpenseChart expenses={expensesData} currency={currency} salary={income} />
-        </motion.div>
+        {/* LEFT COLUMN: Data Sequence */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 32, minWidth: 0 }}>
+          <motion.div variants={fadeUp}>
+            <ExpenseChart expenses={expensesData} currency={currency} salary={income} />
+          </motion.div>
+          
+          <motion.div variants={fadeUp}>
+            <ExpenseList expenses={expensesData} currency={currency} />
+          </motion.div>
 
-        {/* ROW 1 RIGHT: AI Chat */}
-        <motion.div variants={fadeUp} className="glass" style={{ 
-          padding: '32px 24px', 
-          minHeight: 450, 
-          display: 'flex', 
-          flexDirection: 'column', 
-          border: '1px solid rgba(129,140,248,0.2)', 
-          boxShadow: '0 0 40px rgba(129,140,248,0.05)' 
-        }}>
-          <AIChat financialData={{ salaryData, expensesData }} />
-        </motion.div>
+          <motion.div variants={fadeUp}>
+            <SubscriptionTracker expenses={expensesData} currency={currency} />
+          </motion.div>
+        </div>
 
-        {/* ROW 2 LEFT: Expense List */}
-        <motion.div variants={fadeUp} style={{ minWidth: 0 }}>
-          <ExpenseList expenses={expensesData} currency={currency} />
-        </motion.div>
-
-        {/* ROW 2 RIGHT: Subscriptions */}
-        <motion.div variants={fadeUp} style={{ minWidth: 0 }}>
-          <SubscriptionTracker expenses={expensesData} currency={currency} />
-        </motion.div>
+        {/* RIGHT COLUMN: AI Assistant (Fixed Height & Scrollable) */}
+        <div style={{ position: 'sticky', top: 24, minWidth: 0 }}>
+          <motion.div variants={fadeUp} className="glass" style={{ 
+            padding: '32px 24px', 
+            height: 'calc(100vh - 200px)', // Fixed height to prevent pushing content
+            maxHeight: 800,
+            display: 'flex', 
+            flexDirection: 'column', 
+            border: '1px solid rgba(129,140,248,0.2)', 
+            boxShadow: '0 0 40px rgba(129,140,248,0.05)',
+            overflow: 'hidden' // Let internal AIChat handle scrolling
+          }}>
+            <AIChat financialData={{ salaryData, expensesData, totalExpense, remaining }} />
+          </motion.div>
+        </div>
 
       </div>
 
-      {/* Bottom Row: Full-Width Calendar */}
+            {/* Bottom Row: Full-Width Calendar */}
       <motion.div variants={fadeUp} style={{ width: '100%', marginTop: 0 }}>
         <div className="glass" style={{ padding: 24 }}>
           <MonthlyCalendar expenses={expensesData} dailyBalances={dailyBalances} />
