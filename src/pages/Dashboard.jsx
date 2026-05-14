@@ -78,10 +78,11 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
             <ExpenseChart expenses={expensesData} currency={currency} salary={income} />
           </motion.div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr', gap: 24, alignItems: 'stretch' }}>
              <motion.div variants={fadeUp}>
                <ExpenseList expenses={expensesData} currency={currency} />
              </motion.div>
+             <div style={{ width: 1, background: 'var(--glass-border)', margin: '20px 0' }} />
              <motion.div variants={fadeUp}>
                <SubscriptionTracker expenses={expensesData} currency={currency} />
              </motion.div>
@@ -102,6 +103,11 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
           </motion.div>
         </div>
       </div>
+      
+      {/* Bottom Full-Width Calendar */}
+      <motion.div variants={fadeUp} style={{ width: '100%', marginTop: 8 }}>
+        <MonthlyCalendar expenses={expensesData} />
+      </motion.div>
     </motion.div>
   );
 }
