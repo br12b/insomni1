@@ -75,16 +75,16 @@ export default function Landing({ onStart }) {
             src="/rem_profile.png" 
             alt="R.E.M Small" 
             style={{ 
-              width: 140, 
+              width: 120, 
               height: 'auto', 
               objectFit: 'contain',
               filter: 'drop-shadow(0 0 40px rgba(129,140,248,0.4))',
               pointerEvents: 'none',
               position: 'absolute', 
-              bottom: '100%', // Position above the button
-              left: '50%',
-              transform: 'translateX(-50%)', // Center horizontally
-              marginBottom: 20,
+              right: '100%', 
+              marginRight: -20, // Overlap slightly with the button area but to the left
+              top: '50%',
+              transform: 'translateY(-50%)',
               zIndex: 20
             }} 
           />
