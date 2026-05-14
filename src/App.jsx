@@ -23,7 +23,6 @@ const pageVariants = {
 
 function AppContent() {
   const { isDark } = useTheme();
-  
   const { lang, t, toggleLang } = useLanguage();
   const [profile, setProfile] = useState(() => storage.getCurrentProfile());
   
@@ -48,7 +47,19 @@ function AppContent() {
       }
     };
     window.addEventListener('popstate', handleLocationChange);
-      return (
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
+  const goTo = (v) => {
+    if (v === 'admin') {
+      window.history.pushState({}, '', '/admin');
+    } else if (view === 'admin') {
+      window.history.pushState({}, '', '/');
+    }
+    setView(v);
+  };
+
+  return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Nav */}
       {view !== 'admin' && (
