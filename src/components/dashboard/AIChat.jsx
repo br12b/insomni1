@@ -75,9 +75,9 @@ function MessageBubble({ msg }) {
               borderRadius: '50%', 
               overflow: 'hidden', 
               flexShrink: 0, 
-              background: 'transparent !important', 
+              background: 'none !important', 
               border: 'none',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+              boxShadow: 'none'
             }}>
               <img src="/rem_avatar.png" alt="R.E.M" style={{ 
                 width: '100%', 
@@ -132,12 +132,12 @@ export default function AIChat({ financialData }) {
             borderRadius: '50%', 
             overflow: 'hidden', 
             border: 'none', // Removed border
-            background: 'transparent !important',
+            background: 'none !important',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            boxShadow: '0 0 30px rgba(129,140,248,0.2)', // Subtler glow
+            boxShadow: 'none',
             position: 'relative'
           }}>
           <img src="/rem_avatar.png" alt="R.E.M" style={{ 
