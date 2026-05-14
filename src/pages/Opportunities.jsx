@@ -12,7 +12,11 @@ import {
   Wallet,
   Clock,
   PieChart,
-  Target
+  Target,
+  ShoppingBag,
+  Tv,
+  Music,
+  Youtube
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { 
@@ -75,117 +79,155 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
   const idleCash = useMemo(() => findIdleCashOpportunity(financialData), [financialData]);
   const subscriptions = useMemo(() => getSubscriptionBreakdown(financialData), [financialData]);
   const timing = useMemo(() => optimizeExpenseTiming(financialData), [financialData]);
-  const summary = useMemo(() => getCashFlowSummary(financialData), [financialData]);
 
   const optimizationScore = useMemo(() => {
-    let score = 85;
+    let score = 95;
     if (subscriptions.salaryPercent > 10) score -= 15;
     if (idleCash.monthlyYield > 1000) score -= 10;
     if (timing.hasSuggestions) score -= 5;
     return Math.max(score, 40);
   }, [subscriptions, idleCash, timing]);
 
+  // Dynamic Cashback Matching Logic
+  const cashbackOpportunities = useMemo(() => {
+    const list = [];
+    const lowerExpenses = expenses.map(e => e.name.toLowerCase());
+
+    if (lowerExpenses.some(e => e.includes('netflix'))) {
+      list.push({
+        id: 'netflix',
+        brand: 'NETFLIX',
+        icon: Tv,
+        color: '#E50914',
+        title: lang === 'tr' ? 'Netflix %50 Cashback' : 'Netflix 50% Cashback',
+        desc: lang === 'tr' ? 'Netflix harcamanı fark ettim! Nays kart ile ödemende her ay %50 iade alabilirsin.' : 'I noticed your Netflix expense! Get 50% cashback every month with Nays card.'
+      });
+    }
+
+    if (lowerExpenses.some(e => e.includes('spotify'))) {
+      list.push({
+        id: 'spotify',
+        brand: 'SPOTIFY',
+        icon: Music,
+        color: '#1DB954',
+        title: lang === 'tr' ? 'Spotify %50 Cashback' : 'Spotify 50% Cashback',
+        desc: lang === 'tr' ? 'Müzik keyfini ucuza getir. Spotify ödemelerinde %50 iade fırsatını kaçırma.' : 'Enjoy music for less. Don''t miss the 50% cashback on Spotify payments.'
+      });
+    }
+
+    if (lowerExpenses.some(e => e.includes('youtube'))) {
+      list.push({
+        id: 'youtube',
+        brand: 'YOUTUBE',
+        icon: Youtube,
+        color: '#FF0000',
+        title: lang === 'tr' ? 'YouTube Premium Cashback' : 'YouTube Premium Cashback',
+        desc: lang === 'tr' ? 'YouTube Premium üyeliğin için %50 iade alarak tasarruf edebilirsin.' : 'Save by getting 50% cashback for your YouTube Premium membership.'
+      });
+    }
+
+    if (expenses.some(e => (e.category || '').toLowerCase() === 'market' || e.name.toLowerCase().includes('migros') || e.name.toLowerCase().includes('carrefour'))) {
+      list.push({
+        id: 'market',
+        brand: 'MARKET',
+        icon: ShoppingBag,
+        color: '#10B981',
+        title: lang === 'tr' ? 'Market Harcaması Bonusu' : 'Grocery Shopping Bonus',
+        desc: lang === 'tr' ? 'Market alışverişlerini Garanti Bonus ile yaparak ayda 400 TL''ye kadar bonus kazanabilirsin.' : 'Earn up to 400 TL bonus per month by doing your market shopping with Garanti Bonus.'
+      });
+    }
+
+    return list;
+  }, [expenses, lang]);
+
   return (
     <div style={{ padding: '0 40px 80px', maxWidth: 1400, margin: '0 auto' }}>
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
         style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40, paddingTop: 40 }}>
         <div>
-          <h1 style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-0.04em', margin: 0 }}>
+          <h1 style={{ fontSize: 32, fontWeight: 900, letterSpacing: ''-0.04em'', margin: 0 }}>
             {lang === 'tr' ? 'Fırsat Analiz Merkezi' : 'Opportunity Hub'}
           </h1>
-          <p style={{ color: 'var(--text2)', fontSize: 14, marginTop: 6 }}>
-            {lang === 'tr' ? 'R.E.M nakit akışındaki her kuruşu senin için optimize eder.' : 'R.E.M optimizes every penny in your cash flow.'}
+          <p style={{ color: ''var(--text2)'', fontSize: 14, marginTop: 6 }}>
+            {lang === 'tr' ? 'R.E.M harcamalarını analiz etti ve sana özel fırsatları çıkardı.' : 'R.E.M analyzed your expenses and found tailored opportunities.'}
           </p>
         </div>
-        <div className="glass" style={{ padding: '15px 25px', display: 'flex', alignItems: 'center', gap: 15, border: '1px solid var(--accent-dim)' }}>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 10, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: 1 }}>{lang === 'tr' ? 'Verimlilik Puanı' : 'Efficiency Score'}</div>
-            <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--accent)' }}>%{optimizationScore}</div>
+        <div className="glass" style={{ padding: ''15px 25px'', display: ''flex'', alignItems: ''center'', gap: 15, border: ''1px solid var(--accent-dim)'' }}>
+          <div style={{ textAlign: ''right'' }}>
+            <div style={{ fontSize: 10, color: ''var(--text2)'', textTransform: ''uppercase'', letterSpacing: 1 }}>{lang === ''tr'' ? ''Verimlilik Puanı'' : ''Efficiency Score''}</div>
+            <div style={{ fontSize: 24, fontWeight: 900, color: ''var(--accent)'' }}>%{optimizationScore}</div>
           </div>
-          <div style={{ width: 44, height: 44, borderRadius: '50%', border: '4px solid var(--bg2)', borderTopColor: 'var(--accent)', transform: 'rotate(45deg)' }} />
+          <div style={{ width: 44, height: 44, borderRadius: ''50%'', border: ''4px solid var(--bg2)'', borderTopColor: ''var(--accent)'', transform: ''rotate(45deg)'' }} />
         </div>
       </motion.div>
 
       <motion.div variants={containerVariants} initial="hidden" animate="show"
-        style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: 24 }}>
+        style={{ display: ''grid'', gridTemplateColumns: ''repeat(auto-fill, minmax(360px, 1fr))'', gap: 24 }}>
         
         <OpportunityCard 
           icon={Wallet}
           color="var(--accent)"
-          title={lang === 'tr' ? 'Atıl Nakit Röntgeni' : 'Idle Cash X-Ray'}
-          desc={lang === 'tr' 
-            ? `Boşta duran ₺${idleCash.avgIdleBalance.toLocaleString('tr-TR')} bakiyen var. Bunu PPF ile değerlendirerek pasif gelir yaratabilirsin.`
-            : `You have ₺${idleCash.avgIdleBalance.toLocaleString('tr-TR')} sitting idle. Invest it in MMF to generate passive income.`}
-          value={lang === 'tr' ? `₺${idleCash.monthlyYield}/ay` : `₺${idleCash.monthlyYield}/mo`}
-          action={lang === 'tr' ? 'PPF Stratejisini Gör' : 'See MMF Strategy'}
+          title={lang === ''tr'' ? ''Atıl Nakit Röntgeni'' : ''Idle Cash X-Ray''}
+          desc={lang === ''tr'' 
+            ? `Boşta duran ₺${idleCash.avgIdleBalance.toLocaleString(''tr-TR'')} bakiyen var. Bunu PPF ile değerlendirerek pasif gelir yaratabilirsin.`
+            : `You have ₺${idleCash.avgIdleBalance.toLocaleString(''tr-TR'')} sitting idle. Invest it in MMF to generate passive income.`}
+          value={lang === ''tr'' ? `₺${idleCash.monthlyYield}/ay` : `₺${idleCash.monthlyYield}/mo`}
+          action={lang === ''tr'' ? ''Stratejiyi Uygula'' : ''Apply Strategy''}
           lang={lang}
         />
 
         <OpportunityCard 
           icon={PieChart}
           color="var(--amber)"
-          title={lang === 'tr' ? 'Abonelik Optimizasyonu' : 'Subscription Pulse'}
-          desc={lang === 'tr'
-            ? `Aboneliklerin maaşının %${subscriptions.salaryPercent}'ine ulaştı. Kullanmadığın servisleri eleyerek tasarruf edebilirsin.`
-            : `Your subscriptions reached ${subscriptions.salaryPercent}% of income. Save by cutting unused services.`}
-          value={lang === 'tr' ? `₺${subscriptions.totalAnnual.toLocaleString('tr-TR')}/yıl` : `₺${subscriptions.totalAnnual.toLocaleString('tr-TR')}/yr`}
-          action={lang === 'tr' ? 'Abonelikleri Yönet' : 'Manage Subscriptions'}
+          title={lang === ''tr'' ? ''Abonelik Optimizasyonu'' : ''Subscription Pulse''}
+          desc={lang === ''tr''
+            ? `Aboneliklerin maaşının %${subscriptions.salaryPercent}''ine ulaştı. R.E.M kullanmadığın servisleri eleyebileceğini düşünüyor.`
+            : `Your subscriptions reached ${subscriptions.salaryPercent}% of income. R.E.M thinks you can cut unused services.`}
+          value={lang === ''tr'' ? `₺${subscriptions.totalAnnual.toLocaleString(''tr-TR'')}/yıl` : `₺${subscriptions.totalAnnual.toLocaleString(''tr-TR'')}/yr`}
+          action={lang === ''tr'' ? ''Detayları Gör'' : ''See Details''}
           lang={lang}
         />
 
         <OpportunityCard 
           icon={Clock}
           color="var(--green)"
-          title={lang === 'tr' ? 'Zamanlama Sihirbazı' : 'Timing Wizard'}
-          desc={lang === 'tr'
+          title={lang === ''tr'' ? ''Ödeme Zamanlaması'' : ''Payment Timing''}
+          desc={lang === ''tr''
             ? `Ödemelerini maaş gününden sonraya kaydırarak nakit akışını iyileştirebilir ve ek faiz geliri kazanabilirsin.`
             : `Shift your payments to after payday to improve cash flow and earn extra interest income.`}
-          value={lang === 'tr' ? `+₺${timing.totalMonthlyGain}/ay` : `+₺${timing.totalMonthlyGain}/mo`}
-          action={lang === 'tr' ? 'Planlamayı Optimize Et' : 'Optimize Schedule'}
+          value={lang === ''tr'' ? `+₺${timing.totalMonthlyGain}/ay` : `+₺${timing.totalMonthlyGain}/mo`}
+          action={lang === ''tr'' ? ''Optimize Et'' : ''Optimize Now''}
           lang={lang}
         />
-
-        <motion.div variants={itemVariants} className="glass" 
-          style={{ gridColumn: '1 / -1', padding: '30px', background: 'linear-gradient(135deg, rgba(129,140,248,0.1), rgba(16,185,129,0.05))', border: '1px solid var(--accent-dim)', display: 'flex', gap: 24, alignItems: 'center' }}>
-          <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Zap size={30} color="var(--accent)" />
-          </div>
-          <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
-              {lang === 'tr' ? 'R.E.M Stratejik Öneri' : 'R.E.M Strategic Recommendation'} 
-              <Sparkles size={16} color="var(--amber)" />
-            </h3>
-            <p style={{ fontSize: 14, color: 'var(--text2)', lineHeight: 1.6 }}>
-              {lang === 'tr'
-                ? `Toplam optimizasyon potansiyelin yıllık ₺${(idleCash.annualYield + subscriptions.totalAnnual).toLocaleString('tr-TR')} seviyesinde. Bu miktar, mevcut hedeflerinden birini tam 4 ay erkene çekebilir.`
-                : `Your total optimization potential is ₺${(idleCash.annualYield + subscriptions.totalAnnual).toLocaleString('tr-TR')} per year. This could pull one of your goals forward by 4 months.`}
-            </p>
-          </div>
-          <button className="btn btn-primary" style={{ height: 48, padding: '0 24px' }}>
-            {lang === 'tr' ? 'Hemen Uygula' : 'Apply Now'}
-          </button>
-        </motion.div>
-
       </motion.div>
 
+      {/* Dynamic Cashback Feed */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} style={{ marginTop: 60 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <ShieldCheck size={20} color="var(--green)" /> {lang === 'tr' ? 'Doğrulanmış Banka Fırsatları' : 'Verified Bank Offers'}
+        <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, display: ''flex'', alignItems: ''center'', gap: 10 }}>
+          <ShieldCheck size={20} color="var(--green)" /> {lang === ''tr'' ? ''Sana Özel Cashback Fırsatları'' : ''Personalized Cashback Offers''}
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
-          <div className="glass" style={{ padding: '20px', border: '1px solid var(--glass-border)' }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--accent)', marginBottom: 8 }}>NAYS</div>
-            <h4 style={{ margin: '0 0 8px 0', fontSize: 15 }}>Aboneliklerde %50 İade</h4>
-            <p style={{ fontSize: 13, color: 'var(--text2)', margin: 0 }}>Netflix, Spotify ve YouTube ödemelerinde anında nakit iade.</p>
+        
+        {cashbackOpportunities.length > 0 ? (
+          <div style={{ display: ''grid'', gridTemplateColumns: ''repeat(auto-fill, minmax(300px, 1fr))'', gap: 20 }}>
+            {cashbackOpportunities.map(opp => (
+              <motion.div key={opp.id} whileHover={{ y: -5 }} className="glass" style={{ padding: ''20px'', border: ''1px solid var(--glass-border)'', position: ''relative'' }}>
+                <div style={{ position: ''absolute'', top: 20, right: 20, opacity: 0.1 }}><opp.icon size={40} color={opp.color} /></div>
+                <div style={{ fontSize: 12, fontWeight: 800, color: opp.color, marginBottom: 8, letterSpacing: 1 }}>{opp.brand}</div>
+                <h4 style={{ margin: ''0 0 8px 0'', fontSize: 16, fontWeight: 800 }}>{opp.title}</h4>
+                <p style={{ fontSize: 13, color: ''var(--text2)'', margin: 0, lineHeight: 1.5 }}>{opp.desc}</p>
+                <div style={{ marginTop: 15, display: ''flex'', alignItems: ''center'', gap: 6, color: opp.color, fontSize: 12, fontWeight: 800 }}>
+                  <TrendingUp size={14} /> {lang === ''tr'' ? ''AKTİF FIRSAT'' : ''ACTIVE OPPORTUNITY''}
+                </div>
+              </motion.div>
+            ))}
           </div>
-          <div className="glass" style={{ padding: '20px', border: '1px solid var(--glass-border)' }}>
-            <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--green)', marginBottom: 8 }}>GARANTİ</div>
-            <h4 style={{ margin: '0 0 8px 0', fontSize: 15 }}>Market Harcaması Bonus</h4>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 10, color: 'var(--green)', fontWeight: 800, fontSize: 12 }}>
-              <TrendingUp size={14} /> 400₺ BONUS
-            </div>
+        ) : (
+          <div className="glass" style={{ padding: ''40px'', textAlign: ''center'', border: ''1px dashed var(--glass-border)'' }}>
+            <p style={{ color: ''var(--text2)'', fontSize: 14, margin: 0 }}>
+              {lang === ''tr'' ? ''Harcamaların için şu an eşleşen özel bir cashback fırsatı bulunamadı.'' : ''No matching cashback opportunities found for your expenses right now.''}
+            </p>
           </div>
-        </div>
+        )}
       </motion.div>
     </div>
   );
