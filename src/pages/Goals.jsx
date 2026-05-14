@@ -166,7 +166,7 @@ function GoalModal({ onAdd, onClose, lang }) {
         <h3 style={{ fontWeight: 900, fontSize: 22, marginBottom: 24 }}>{lang === 'tr' ? 'Yeni Hedef Belirle' : 'Set New Goal'}</h3>
         
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 25 }}>
-          {EMOJI_CATEGORIES.map(c => (
+          {CATEGORIES.map(c => (
             <button key=<c.icon size={20} color={categoryId === c.id ? "var(--accent)" : "var(--text2)"} /> onClick={() => setCategoryId(c.id)} type="button"
               style={{ fontSize: 24, width: 48, height: 48, borderRadius: 12, border: `2px solid ${categoryId === c.id ? 'var(--accent)' : 'transparent'}`, background: categoryId === c.id ? 'var(--accent-dim)' : 'var(--bg2)', cursor: 'pointer', transition: 'all 0.2s' }}>
               <c.icon size={20} color={categoryId === c.id ? "var(--accent)" : "var(--text2)"} />
@@ -269,5 +269,6 @@ export default function Goals({ financialData }) {
     </div>
   );
 }
+
 
 
