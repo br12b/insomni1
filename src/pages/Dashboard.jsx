@@ -16,7 +16,7 @@ const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 export default function Dashboard({ salaryData, expensesData = [], profileName }) {
   const { lang, t } = useLanguage();
 
-  const totalExpense = expensesData?.reduce((sum, exp) => sum + exp.amount, 0) || 0;
+  const totalExpense = expensesData?.reduce((sum, exp) => sum + parseFloat(exp.amount || 0), 0) || 0;
   const income = salaryData?.salary || 0;
   const currency = salaryData?.currency || '₺';
   const remaining = income - totalExpense;
@@ -67,7 +67,7 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
       {/* Main Grid: LEFT (Charts & Lists) | RIGHT (AI & Tools) */}
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: '1fr 480px', 
+        gridTemplateColumns: '1fr 1fr', 
         gap: 32, 
         alignItems: 'start'
       }}>
@@ -93,7 +93,7 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
         <div style={{ position: 'sticky', top: 24, display: 'flex', flexDirection: 'column', gap: 32, minWidth: 0 }}>
           <motion.div variants={fadeUp} className="glass" style={{ 
             padding: '32px 24px', 
-            minHeight: '80vh', 
+            minHeight: 450, 
             display: 'flex', 
             flexDirection: 'column', 
             border: '1px solid rgba(129,140,248,0.2)', 
