@@ -4,7 +4,7 @@ import { Wallet, TrendingDown, LayoutDashboard, Plus } from 'lucide-react';
 import AnimatedCounter from '../components/ui/AnimatedCounter';
 import AIChat from '../components/dashboard/AIChat';
 import MonthlyCalendar from '../components/dashboard/MonthlyCalendar';
-import ScenarioSimulator from '../components/dashboard/ScenarioSimulator';
+
 import SubscriptionTracker from '../components/dashboard/SubscriptionTracker';
 import ExpenseChart from '../components/dashboard/ExpenseChart';
 import ExpenseList from '../components/dashboard/ExpenseList';
@@ -78,12 +78,11 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
             <ExpenseChart expenses={expensesData} currency={currency} salary={income} />
           </motion.div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 24 }}>
-             <motion.div variants={fadeUp} style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+             <motion.div variants={fadeUp}>
                <ExpenseList expenses={expensesData} currency={currency} />
              </motion.div>
-             <motion.div variants={fadeUp} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-               <ScenarioSimulator currentIdleBalance={remaining} />
+             <motion.div variants={fadeUp}>
                <SubscriptionTracker expenses={expensesData} currency={currency} />
              </motion.div>
           </div>
