@@ -35,8 +35,14 @@ export default function Chat({ salaryData, expensesData }) {
         {/* LEFT SIDE - CONTEXT & STATS */}
         <div style={{ width: 350, display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <MessageSquare size={20} color="var(--accent)" />
+            <div style={{ width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 15 }}>
+              <img src="/rem_avatar.png" alt="R.E.M" style={{ 
+                width: '100%', 
+                height: '100%', 
+                objectFit: 'contain', 
+                transform: 'scale(2.2)', // 2x and a bit more for impact
+                filter: 'drop-shadow(0 0 10px rgba(129,140,248,0.3))' 
+              }} />
             </div>
             <div>
               <h1 style={{ fontSize: 24, fontWeight: 900, margin: 0 }}>R.E.M AI</h1>
