@@ -141,12 +141,13 @@ export default function AIChat({ financialData }) {
             position: 'relative'
           }}>
           <img src="/rem_avatar.png" alt="R.E.M" style={{ 
-            width: '120%', // Scale up to fill the border completely
-            height: '120%', 
-            objectFit: 'cover', 
-            objectPosition: 'center center', 
+            width: '100%', 
+            height: '100%', 
+            objectFit: 'contain', // Using contain to prevent squashing
+            objectPosition: 'center', 
             imageRendering: 'auto',
-            transform: 'scale(1.15)', background: 'transparent',
+            transform: 'scale(1.3)', // Scale up uniformly
+            background: 'none',
           }} />
         </motion.div>
         <div>
