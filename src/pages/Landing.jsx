@@ -9,9 +9,9 @@ import { useAdminUI } from '../hooks/useAdminUI';
 const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 
-export default function Landing({ onStart }) {
+export default function Landing({ onStart, editMode = false }) {
   const { lang, t } = useLanguage();
-  const { settings } = useAdminUI();
+  const { settings, updateLayout } = useAdminUI();
 
   const FEATURES = (settings.landingFeatures || []).map(f => ({
     icon: LucideIcons[f.icon] || LucideIcons.Sparkles,
@@ -25,9 +25,24 @@ export default function Landing({ onStart }) {
 
       {/* ARIA - CENTER BACKGROUND */}
       <motion.div 
+        drag={editMode}
+        dragMomentum={false}
+        onDragEnd={(e, info) => {
+          if(editMode) {
+            updateLayout('landing_aria', { 
+              x: (settings.layout?.landing_aria?.x || 0) + info.offset.x, 
+              y: (settings.layout?.landing_aria?.y || 0) + info.offset.y 
+            });
+          }
+        }}
         initial={{ opacity: 0, scale: 0.95, y: 50 }} 
-        animate={{ opacity: 1, scale: 1, y: 0 }} 
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        animate={{ 
+          opacity: 1, 
+          scale: settings.layout?.landing_aria?.scale || 1,
+          x: settings.layout?.landing_aria?.x || 0,
+          y: settings.layout?.landing_aria?.y || 0
+        }} 
+        transition={{ duration: editMode ? 0 : 1.2, ease: [0.16, 1, 0.3, 1] }}
         style={{ 
           position: 'absolute', 
           bottom: 0, 
@@ -36,6 +51,9 @@ export default function Landing({ onStart }) {
           width: 'min(850px, 100vw)', 
           height: 'min(950px, 95vh)', 
           zIndex: 1,
+          cursor: editMode ? 'move' : 'default',
+          border: editMode ? '2px dashed rgba(129,140,248,0.4)' : 'none',
+          pointerEvents: editMode ? 'auto' : 'none'
         }}
       >
         <img src="/aria_standing.png" alt="Aria" 
@@ -72,8 +90,23 @@ export default function Landing({ onStart }) {
         {/* BUTTON AREA WITH ATTACHED LITTLE R.E.M */}
         <motion.div variants={fadeUp} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', marginBottom: 64 }}>
           <motion.img 
+            drag={editMode}
+            dragMomentum={false}
+            onDragEnd={(e, info) => {
+              if(editMode) {
+                updateLayout('landing_remSmall', { 
+                  x: (settings.layout?.landing_remSmall?.x || 0) + info.offset.x, 
+                  y: (settings.layout?.landing_remSmall?.y || 0) + info.offset.y 
+                });
+              }
+            }}
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={{ 
+              opacity: 1, 
+              scale: settings.layout?.landing_remSmall?.scale || 1,
+              x: settings.layout?.landing_remSmall?.x || 0,
+              y: settings.layout?.landing_remSmall?.y || 0
+            }}
             src="/rem_profile.png" 
             alt="R.E.M Small" 
             style={{ 
@@ -81,13 +114,16 @@ export default function Landing({ onStart }) {
               height: 'auto', 
               objectFit: 'contain',
               filter: 'drop-shadow(0 0 40px rgba(129,140,248,0.4))',
-              pointerEvents: 'none',
+              pointerEvents: editMode ? 'auto' : 'none',
+              cursor: editMode ? 'move' : 'default',
               position: 'absolute', 
               right: '100%', 
-              marginRight: -20, // Overlap slightly with the button area but to the left
+              marginRight: -20,
               top: '35%',
-              transform: 'translateY(-50%)',
-              zIndex: 20
+              zIndex: 20,
+              border: editMode ? '2px dashed var(--accent)' : 'none',
+              padding: editMode ? '8px' : '0',
+              borderRadius: '50%'
             }} 
           />
 
