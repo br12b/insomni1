@@ -119,7 +119,7 @@ export default function AIChat({ financialData }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingBottom: 14, borderBottom: '1px solid var(--glass-border)', flexShrink: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingBottom: 14, borderBottom: 'none', flexShrink: 0 }}>
         <motion.div 
           animate={isTyping ? { 
             borderColor: ['var(--accent)', 'rgba(129,140,248,0.2)', 'var(--accent)'],
@@ -127,17 +127,17 @@ export default function AIChat({ financialData }) {
           } : {}}
           transition={{ duration: 1.5, repeat: Infinity }}
           style={{ 
-            width: 70, // Slightly bigger
+            width: 70, 
             height: 70, 
             borderRadius: '50%', 
             overflow: 'hidden', 
-            border: '3px solid var(--accent)', // Cleaner border
-            background: 'var(--bg0)', // Match background better
+            border: 'none', // Removed border
+            background: 'transparent', // Transparent background
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            boxShadow: '0 0 25px rgba(129,140,248,0.5)',
+            boxShadow: '0 0 30px rgba(129,140,248,0.2)', // Subtler glow
             position: 'relative'
           }}>
           <img src="/rem_avatar.png" alt="R.E.M" style={{ 
