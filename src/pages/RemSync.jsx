@@ -118,15 +118,53 @@ export default function RemSync() {
         </motion.p>
       </div>
 
-      {/* PEAK VISUALIZATION - THE CORE */}
-      <div style={{ position: 'relative', height: 500, marginBottom: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {/* PEAK VISUALIZATION - THE CORE (NO IMAGE, PURE CSS/ICON) */}
+      <div style={{ position: 'relative', height: 450, marginBottom: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ position: 'absolute', width: 600, height: 600, background: 'radial-gradient(circle, var(--accent-dim) 0%, transparent 70%)', filter: 'blur(100px)', opacity: 0.15 }} />
+        
+        {/* Animated Rings */}
         {[1, 2, 3].map(i => (
           <motion.div key={i} animate={{ rotate: i % 2 === 0 ? 360 : -360, scale: [1, 1.05, 1] }} transition={{ duration: 10 + i * 5, repeat: Infinity, ease: "linear" }}
-            style={{ position: 'absolute', width: 300 + i * 100, height: 300 + i * 100, borderRadius: '50%', border: '1px solid rgba(129,140,248,0.1)', zIndex: 1 }} />
+            style={{ position: 'absolute', width: 280 + i * 100, height: 280 + i * 100, borderRadius: '50%', border: '1px solid rgba(129,140,248,0.15)', zIndex: 1 }} />
         ))}
-        <div style={{ position: 'relative', zIndex: 20, width: 320, height: 320 }}>
-           <motion.img src="/financial_intelligence_core.png" alt="Core" animate={{ y: [0, -15, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 0 40px var(--accent-dim))' }} />
+
+        {/* PURE CSS CORE - NO IMAGE */}
+        <div style={{ position: 'relative', zIndex: 20, width: 200, height: 200 }}>
+           <motion.div 
+             animate={{ scale: [1, 1.1, 1], boxShadow: ['0 0 40px var(--accent-dim)', '0 0 100px var(--accent)', '0 0 40px var(--accent-dim)'] }}
+             transition={{ duration: 4, repeat: Infinity }}
+             style={{ 
+               width: '100%', height: '100%', borderRadius: '50%', background: 'var(--bg1)', 
+               border: '4px solid var(--accent)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+               position: 'relative', overflow: 'hidden', backdropFilter: 'blur(30px)'
+             }}>
+             <RefreshCw size={80} color="var(--accent)" className="animate-spin-slow" />
+             <div style={{ marginTop: 20, textAlign: 'center' }}>
+                <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--accent)', letterSpacing: 2 }}>SYNCING</div>
+                <div style={{ fontSize: 24, fontWeight: 950 }}>98.4<span style={{ fontSize: 14 }}>%</span></div>
+             </div>
+             
+             {/* Scanning Line Animation */}
+             <motion.div 
+               animate={{ top: ['-10%', '110%'] }}
+               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+               style={{ position: 'absolute', left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--accent), transparent)', boxShadow: '0 0 15px var(--accent)' }} 
+             />
+           </motion.div>
+           
+           {/* Floating Particles */}
+           {[...Array(6)].map((_, i) => (
+             <motion.div 
+               key={i}
+               animate={{ 
+                 x: [Math.cos(i*60)*120, Math.cos(i*60)*140, Math.cos(i*60)*120],
+                 y: [Math.sin(i*60)*120, Math.sin(i*60)*140, Math.sin(i*60)*120],
+                 opacity: [0.3, 0.8, 0.3]
+               }}
+               transition={{ duration: 3 + i, repeat: Infinity }}
+               style={{ position: 'absolute', top: '50%', left: '50%', width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 10px var(--accent)', zIndex: 10 }}
+             />
+           ))}
         </div>
       </div>
 
