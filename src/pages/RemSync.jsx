@@ -2,200 +2,177 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   RefreshCw, 
-  Database, 
-  FileSearch, 
   Globe, 
   ShieldCheck, 
   Zap,
-  CreditCard,
-  ArrowRight,
-  TrendingDown,
   Activity,
-  Layers,
-  Search,
-  CheckCircle2,
-  Info,
-  Lock,
-  Cpu,
   Key,
-  EyeOff,
-  Link
+  ExternalLink,
+  Loader2,
+  Lock,
+  ArrowRight,
+  Database,
+  CheckCircle2
 } from 'lucide-react';
 
 const fadeUp = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 
-const TechDeepDive = ({ title, content, specs, icon: Icon, color }) => (
-  <motion.div variants={fadeUp} whileHover={{ y: -8 }} className="glass" 
-    style={{ padding: 32, border: '1px solid var(--accent-dim)', background: 'linear-gradient(135deg, rgba(255,255,255,0.03), transparent)', display: 'flex', flexDirection: 'column', gap: 20 }}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-      <div style={{ width: 56, height: 56, borderRadius: 16, background: color + '15', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Icon size={28} color={color} />
-      </div>
-      <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text2)', background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: 4 }}>TECHNICAL SPEC</div>
-    </div>
-    <div>
-      <h3 style={{ fontSize: 20, fontWeight: 950, marginBottom: 12 }}>{title}</h3>
-      <p style={{ fontSize: 13, color: 'var(--text2)', lineHeight: 1.6, marginBottom: 20 }}>{content}</p>
-    </div>
-    <div style={{ marginTop: 'auto', display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-      {specs.map(s => (
-        <span key={s} style={{ fontSize: 9, fontWeight: 900, padding: '4px 8px', borderRadius: 4, background: color + '10', color: color, border: `1px solid ${color}30` }}>
-          {s}
-        </span>
-      ))}
-    </div>
-  </motion.div>
-);
-
-const TransactionCard = ({ tx, index }) => (
-  <motion.div
-    variants={fadeUp}
-    whileHover={{ scale: 1.02, y: -5 }}
-    className="glass"
-    style={{ 
-      padding: 24, display: 'flex', flexDirection: 'column', gap: 16, 
-      border: '1px solid var(--accent-dim)', background: 'linear-gradient(135deg, rgba(255,255,255,0.03), transparent)',
-      position: 'relative', overflow: 'hidden'
-    }}>
-    <div style={{ position: 'absolute', top: -10, right: -10, opacity: 0.03 }}>
-       <tx.icon size={100} />
-    </div>
-    
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-      <div style={{ width: 48, height: 48, borderRadius: 14, background: tx.color + '15', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <tx.icon size={24} color={tx.color} />
-      </div>
-      <div style={{ textAlign: 'right' }}>
-         <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text2)', letterSpacing: 1, marginBottom: 4 }}>DURUM</div>
-         <div style={{ fontSize: 11, fontWeight: 800, color: '#10b981', display: 'flex', alignItems: 'center', gap: 4 }}>
-           <CheckCircle2 size={12} /> DOĞRULANDI
-         </div>
-      </div>
-    </div>
-
-    <div>
-      <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--text0)' }}>{tx.name}</div>
-      <div style={{ fontSize: 12, color: 'var(--text2)', marginTop: 4 }}>{tx.category} • {tx.date}</div>
-    </div>
-
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 8 }}>
-       <div>
-          <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--text2)', marginBottom: 4 }}>METOD</div>
-          <div style={{ fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
-            {tx.method} <Info size={10} color="var(--accent)" />
-          </div>
-       </div>
-       <div style={{ fontSize: 24, fontWeight: 950, color: tx.amount.startsWith('+') ? '#10b981' : 'var(--text0)' }}>
-         {tx.amount} <span style={{ fontSize: 14 }}>₺</span>
-       </div>
-    </div>
-  </motion.div>
-);
-
 export default function RemSync() {
-  const transactions = [
-    { id: 1, name: 'MGRS-IST-1234', normalized: 'Migros Ticaret', amount: '-245.50', category: 'Market', date: 'Bugün 14:20', icon: Globe, color: 'var(--accent)', method: 'Open Banking (OAuth 2.0)' },
-    { id: 2, name: 'SPOTIFY-PREM-SYC', normalized: 'Spotify Premium', amount: '-59.90', category: 'Eğlence', date: 'Bugün 11:05', icon: Zap, color: '#f59e0b', method: 'Cloud Sync' },
-    { id: 3, name: 'AKBNK-SALARY-PAY', normalized: 'Akbank Maaş Ödemesi', amount: '+45,000', category: 'Gelir', date: 'Dün 09:00', icon: Database, color: '#10b981', method: 'Core Uplink' },
-    { id: 4, name: 'Shell Akaryakıt', amount: '-1,200', category: 'Ulaşım', date: 'Dün 18:30', icon: ShieldCheck, color: '#ef4444', method: 'Direct API' },
-  ];
+  const [step, setStep] = useState('selection'); // selection, garanti_setup, connected
+  const [keys, setKeys] = useState({ clientId: '', clientSecret: '' });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGarantiConnect = () => {
+    setIsLoading(true);
+    // Simulate Garanti OAuth2 Handshake
+    setTimeout(() => {
+      setIsLoading(false);
+      setStep('connected');
+    }, 2000);
+  };
 
   return (
     <motion.div initial="hidden" animate="show" variants={stagger}
       style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 40px 60px 40px', overflowY: 'auto' }}>
       
-      {/* HEADER SECTION */}
-      <div style={{ marginBottom: 60, marginTop: 40, textAlign: 'center' }}>
-        <motion.div variants={fadeUp} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 100, background: 'var(--accent-dim)', color: 'var(--accent)', fontSize: 11, fontWeight: 900, letterSpacing: 2, marginBottom: 20 }}>
-          <Activity size={14} /> AUTONOMOUS DATA PIPELINE v4.0
+      {/* HEADER */}
+      <div style={{ marginBottom: 40, marginTop: 40, textAlign: 'center' }}>
+        <motion.div variants={fadeUp} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 100, background: 'rgba(129,140,248,0.1)', color: 'var(--accent)', fontSize: 10, fontWeight: 900, letterSpacing: 2, marginBottom: 20 }}>
+          <Activity size={14} /> DIRECT BANKING GATEWAY v1.0
         </motion.div>
-        <motion.h1 variants={fadeUp} style={{ fontSize: 64, fontWeight: 950, margin: 0, letterSpacing: '-0.04em', lineHeight: 1 }}>
-          REM <span style={{ color: 'var(--accent)', textShadow: '0 0 40px rgba(129,140,248,0.4)' }}>Sync</span>
+        <motion.h1 variants={fadeUp} style={{ fontSize: 56, fontWeight: 950, margin: 0, letterSpacing: '-0.04em' }}>
+          REM <span style={{ color: 'var(--accent)' }}>Sync</span>
         </motion.h1>
-        <motion.p variants={fadeUp} style={{ color: 'var(--text2)', fontSize: 18, maxWidth: 700, margin: '20px auto 0', lineHeight: 1.6 }}>
-          Finansal verinin ham halden (RAW) zekâya (IQ) dönüştüğü otonom köprü. PSD2 standartlarında, tam yetkili Open Banking entegrasyonu.
-        </motion.p>
+        <p style={{ color: 'var(--text2)', fontSize: 16, marginTop: 12 }}>Aracısız, doğrudan banka bağlantı merkezi.</p>
       </div>
 
-      {/* PEAK VISUALIZATION - THE CORE (NO IMAGE, PURE CSS/ICON) */}
-      <div style={{ position: 'relative', height: 450, marginBottom: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ position: 'absolute', width: 600, height: 600, background: 'radial-gradient(circle, var(--accent-dim) 0%, transparent 70%)', filter: 'blur(100px)', opacity: 0.15 }} />
+      <div style={{ maxWidth: 1000, margin: '0 auto', width: '100%' }}>
         
-        {/* Animated Rings */}
-        {[1, 2, 3].map(i => (
-          <motion.div key={i} animate={{ rotate: i % 2 === 0 ? 360 : -360, scale: [1, 1.05, 1] }} transition={{ duration: 10 + i * 5, repeat: Infinity, ease: "linear" }}
-            style={{ position: 'absolute', width: 280 + i * 100, height: 280 + i * 100, borderRadius: '50%', border: '1px solid rgba(129,140,248,0.15)', zIndex: 1 }} />
-        ))}
+        {step === 'selection' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+            <motion.div 
+              whileHover={{ y: -8, borderColor: 'var(--accent)' }}
+              onClick={() => setStep('garanti_setup')}
+              className="glass" 
+              style={{ padding: 40, cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}
+            >
+              <div style={{ width: 80, height: 80, borderRadius: 20, background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                <Globe size={40} color="#10b981" />
+              </div>
+              <h3 style={{ fontSize: 24, fontWeight: 900, marginBottom: 8 }}>Garanti BBVA</h3>
+              <p style={{ fontSize: 14, color: 'var(--text2)' }}>API Market üzerinden doğrudan bağlantı kurun.</p>
+              <div style={{ marginTop: 24, color: 'var(--accent)', fontWeight: 800, fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                BAĞLAN <ArrowRight size={16} />
+              </div>
+            </motion.div>
 
-        {/* PURE CSS CORE - NO IMAGE */}
-        <div style={{ position: 'relative', zIndex: 20, width: 200, height: 200 }}>
-           <motion.div 
-             animate={{ scale: [1, 1.1, 1], boxShadow: ['0 0 40px var(--accent-dim)', '0 0 100px var(--accent)', '0 0 40px var(--accent-dim)'] }}
-             transition={{ duration: 4, repeat: Infinity }}
-             style={{ 
-               width: '100%', height: '100%', borderRadius: '50%', background: 'var(--bg1)', 
-               border: '4px solid var(--accent)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-               position: 'relative', overflow: 'hidden', backdropFilter: 'blur(30px)'
-             }}>
-             <RefreshCw size={80} color="var(--accent)" className="animate-spin-slow" />
-             <div style={{ marginTop: 20, textAlign: 'center' }}>
-                <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--accent)', letterSpacing: 2 }}>SYNCING</div>
-                <div style={{ fontSize: 24, fontWeight: 950 }}>98.4<span style={{ fontSize: 14 }}>%</span></div>
-             </div>
-             
-             {/* Scanning Line Animation */}
-             <motion.div 
-               animate={{ top: ['-10%', '110%'] }}
-               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-               style={{ position: 'absolute', left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--accent), transparent)', boxShadow: '0 0 15px var(--accent)' }} 
-             />
-           </motion.div>
-           
-           {/* Floating Particles */}
-           {[...Array(6)].map((_, i) => (
-             <motion.div 
-               key={i}
-               animate={{ 
-                 x: [Math.cos(i*60)*120, Math.cos(i*60)*140, Math.cos(i*60)*120],
-                 y: [Math.sin(i*60)*120, Math.sin(i*60)*140, Math.sin(i*60)*120],
-                 opacity: [0.3, 0.8, 0.3]
-               }}
-               transition={{ duration: 3 + i, repeat: Infinity }}
-               style={{ position: 'absolute', top: '50%', left: '50%', width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 10px var(--accent)', zIndex: 10 }}
-             />
-           ))}
-        </div>
-      </div>
+            <motion.div 
+              style={{ padding: 40, opacity: 0.5, textAlign: 'center', border: '1px dashed rgba(255,255,255,0.1)' }}
+              className="glass"
+            >
+              <div style={{ width: 80, height: 80, borderRadius: 20, background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                <Lock size={40} color="var(--text2)" />
+              </div>
+              <h3 style={{ fontSize: 24, fontWeight: 900, marginBottom: 8 }}>Diğer Bankalar</h3>
+              <p style={{ fontSize: 14, color: 'var(--text2)' }}>Yakında eklenecek...</p>
+            </motion.div>
+          </div>
+        )}
 
-      {/* DEEP TECHNICAL GRID */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: 32, marginBottom: 80 }}>
-         <TechDeepDive title="Open Banking (PSD2)" icon={Globe} color="var(--accent)"
-           content="Evrensel bankacılık standartları ile tam entegrasyon. Kullanıcı onayıyla (Consent) oluşturulan geçici tokenlar sayesinde en yüksek güvenliği sağlar."
-           specs={['OAuth 2.0', 'PSD2 Compliant', 'Token Based']} />
-         <TechDeepDive title="Merchant Normalization" icon={RefreshCw} color="#10b981"
-           content="Karmaşık ve okunamaz banka ekstre verilerini R.E.M zekâsıyla anlamlı ticari markalara ve kategorilere dönüştürür."
-           specs={['NLP Analysis', '99.9% Accuracy', 'Auto-Category']} />
-         <TechDeepDive title="Zero-Knowledge Logic" icon={ShieldCheck} color="#f59e0b"
-           content="Verileriniz sadece R.E.M''in izole zekâ hücresinde işlenir. Şirket çalışanları dahil hiç kimse ham finansal verilerinize erişemez."
-           specs={['SHA-256', 'End-to-End', 'Isolated Core']} />
-      </div>
-
-      {/* DATA RESOLUTION LIST */}
-      <div className="glass" style={{ padding: 48, borderRadius: 32, border: '1px solid var(--accent-dim)' }}>
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-            <h2 style={{ fontSize: 24, fontWeight: 950, margin: 0 }}>Data Resolution Engine</h2>
-            <div style={{ fontSize: 12, fontWeight: 800, color: '#10b981', display: 'flex', alignItems: 'center', gap: 8 }}>
-               <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }} /> LIVE RESOLUTION ACTIVE
+        {step === 'garanti_setup' && (
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="glass" style={{ padding: 60, border: '1px solid var(--accent-dim)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 48 }}>
+               <div style={{ width: 64, height: 64, borderRadius: 16, background: '#10b98115', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Key size={32} color="#10b981" />
+               </div>
+               <div>
+                  <h2 style={{ fontSize: 28, fontWeight: 950, margin: 0 }}>Garanti BBVA API Gateway</h2>
+                  <p style={{ fontSize: 14, color: 'var(--text2)', margin: 0 }}>Lütfen API Market anahtarlarınızı girin.</p>
+               </div>
             </div>
-         </div>
-         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24 }}>
-          {transactions.map((tx, i) => (
-            <TransactionCard key={tx.id} tx={tx} index={i} />
-          ))}
-        </div>
-      </div>
 
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 40 }}>
+               <div className="glass" style={{ padding: 24, border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text2)', marginBottom: 8, letterSpacing: 1 }}>CLIENT ID</div>
+                  <input 
+                    type="password" 
+                    placeholder="Garanti Client ID"
+                    style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text1)', fontSize: 16, outline: 'none' }} 
+                    value={keys.clientId}
+                    onChange={(e) => setKeys({...keys, clientId: e.target.value})}
+                  />
+               </div>
+               <div className="glass" style={{ padding: 24, border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text2)', marginBottom: 8, letterSpacing: 1 }}>CLIENT SECRET</div>
+                  <input 
+                    type="password" 
+                    placeholder="Garanti Client Secret"
+                    style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text1)', fontSize: 16, outline: 'none' }} 
+                    value={keys.clientSecret}
+                    onChange={(e) => setKeys({...keys, clientSecret: e.target.value})}
+                  />
+               </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 16, marginBottom: 48 }}>
+               <div className="glass" style={{ flex: 1, padding: 24, background: 'rgba(16,185,129,0.03)' }}>
+                  <h4 style={{ fontSize: 14, fontWeight: 900, marginBottom: 8, color: '#10b981' }}>OAuth 2.0 Güvenliği</h4>
+                  <p style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.5, margin: 0 }}>
+                    Bilgileriniz sadece yerel cihazınızda tutulur ve doğrudan Garanti sunucularına iletilir.
+                  </p>
+               </div>
+               <div className="glass" style={{ flex: 1, padding: 24 }}>
+                  <h4 style={{ fontSize: 14, fontWeight: 900, marginBottom: 8 }}>Nasıl Alınır?</h4>
+                  <a href="https://apimarket.garantibbva.com.tr/" target="_blank" style={{ fontSize: 12, color: 'var(--accent)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    API Market''e Git <ExternalLink size={12} />
+                  </a>
+               </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 16 }}>
+               <button onClick={() => setStep('selection')} className="btn btn-ghost" style={{ padding: '20px 40px' }}>Geri Dön</button>
+               <button 
+                 onClick={handleGarantiConnect}
+                 disabled={!keys.clientId || !keys.clientSecret || isLoading}
+                 className="btn btn-primary" 
+                 style={{ flex: 1, padding: '20px', borderRadius: 16, fontWeight: 900, fontSize: 16, gap: 12 }}
+               >
+                 {isLoading ? <Loader2 className="animate-spin" /> : <Zap size={18} />}
+                 Bağlantıyı Doğrula ve Yetkilendir
+               </button>
+            </div>
+          </motion.div>
+        )}
+
+        {step === 'connected' && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass" style={{ padding: 60, textAlign: 'center', border: '1px solid #10b981' }}>
+             <div style={{ width: 100, height: 100, borderRadius: '50%', background: '#10b98120', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 32px', border: '2px solid #10b981' }}>
+                <CheckCircle2 size={50} color="#10b981" />
+             </div>
+             <h2 style={{ fontSize: 32, fontWeight: 950, marginBottom: 12 }}>Garanti BBVA Bağlandı</h2>
+             <p style={{ color: 'var(--text2)', fontSize: 16, marginBottom: 48 }}>Hesap hareketleriniz R.E.M tarafından otonom olarak çekilmeye hazır.</p>
+             
+             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 20, marginBottom: 48 }}>
+                <div className="glass" style={{ padding: 20 }}>
+                   <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text2)', marginBottom: 8 }}>SON SENK.</div>
+                   <div style={{ fontSize: 14, fontWeight: 800 }}>Şimdi</div>
+                </div>
+                <div className="glass" style={{ padding: 20 }}>
+                   <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text2)', marginBottom: 8 }}>DURUM</div>
+                   <div style={{ fontSize: 14, fontWeight: 800, color: '#10b981' }}>Aktif</div>
+                </div>
+                <div className="glass" style={{ padding: 20 }}>
+                   <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text2)', marginBottom: 8 }}>YETKİ</div>
+                   <div style={{ fontSize: 14, fontWeight: 800 }}>90 Gün</div>
+                </div>
+             </div>
+
+             <button onClick={() => setStep('selection')} className="btn btn-ghost" style={{ fontSize: 13 }}>Bağlantıyı Kes</button>
+          </motion.div>
+        )}
+
+      </div>
     </motion.div>
   );
 }
