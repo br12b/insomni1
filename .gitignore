@@ -2,3 +2,4 @@ node_modules
 dist  
 .env  
 npm_run.log 
+.vercel

@@ -36,7 +36,7 @@ export default function RemSync() {
         { id: 3, raw: 'GRNT-SPOTIFY-STOCK', clean: 'Spotify Premium', amount: '-59.90', category: 'Eğlence', icon: Activity },
       ]);
       setIsSyncing(false);
-    }, 3000);
+    } else { alert('Bağlantı Hatası: ' + data.error); }
   };
 
   return (
@@ -150,3 +150,4 @@ export default function RemSync() {
     </motion.div>
   );
 }
+
