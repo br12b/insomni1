@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Globe, 
+  Globe, RefreshCw, 
   ShieldCheck, 
   Zap,
   Database,
@@ -122,3 +122,4 @@ export default function RemSync() {
     </motion.div>
   );
 }
+
