@@ -32,7 +32,7 @@ export default function RemSync() {
       const response = await fetch('/api/sync');
       const data = await response.json();
       
-      if (data.status) {
+      if (data.redirectUrl) { window.location.href = data.redirectUrl; return; } if (data.status) {
         // Simulate a slight delay for R.E.M logic visualization
         setTimeout(() => {
           setSyncedData([
@@ -163,3 +163,4 @@ export default function RemSync() {
     </motion.div>
   );
 }
+
