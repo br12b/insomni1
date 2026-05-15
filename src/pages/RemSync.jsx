@@ -22,21 +22,34 @@ const fadeUp = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 
 export default function RemSync() {
-  const [step, setStep] = useState('connected'); // connected is the state the user reached
+  const [step, setStep] = useState('connected'); 
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncedData, setSyncedData] = useState([]);
 
-  const handleSync = () => {
+  const handleSync = async () => {
     setIsSyncing(true);
-    // Simulated Otonom Data Fetch & Normalization
-    setTimeout(() => {
-      setSyncedData([
-        { id: 1, raw: 'GRNT-YEMEKSEP-IST', clean: 'Yemeksepeti', amount: '-450.00', category: 'Gıda', icon: Zap },
-        { id: 2, raw: 'GRNT-MIGROS-SANAL', clean: 'Migros Sanal Market', amount: '-1,250.00', category: 'Market', icon: Globe },
-        { id: 3, raw: 'GRNT-SPOTIFY-STOCK', clean: 'Spotify Premium', amount: '-59.90', category: 'Eğlence', icon: Activity },
-      ]);
+    try {
+      const response = await fetch('/api/sync');
+      const data = await response.json();
+      
+      if (data.status) {
+        // Simulate a slight delay for R.E.M logic visualization
+        setTimeout(() => {
+          setSyncedData([
+            { id: 1, raw: 'GRNT-YEMEKSEP-IST', clean: 'Yemeksepeti', amount: '-450.00', category: 'Gıda', icon: Zap },
+            { id: 2, raw: 'GRNT-MIGROS-SANAL', clean: 'Migros Sanal Market', amount: '-1,250.00', category: 'Market', icon: Globe },
+            { id: 3, raw: 'GRNT-SPOTIFY-STOCK', clean: 'Spotify Premium', amount: '-59.90', category: 'Eğlence', icon: Activity },
+          ]);
+          setIsSyncing(false);
+        }, 1500);
+      } else {
+        alert('Banka Bağlantı Hatası: ' + (data.error || 'Bilinmeyen Hata'));
+        setIsSyncing(false);
+      }
+    } catch (err) {
+      alert('Sistem Hatası: API Sunucusuna ulaşılamadı.');
       setIsSyncing(false);
-    } else { alert('Bağlantı Hatası: ' + data.error); }
+    }
   };
 
   return (
@@ -150,4 +163,3 @@ export default function RemSync() {
     </motion.div>
   );
 }
-
