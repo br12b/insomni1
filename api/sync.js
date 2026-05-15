@@ -1,27 +1,19 @@
 ﻿export default async function handler(req, res) {
-  const { GARANTI_CLIENT_ID, GARANTI_CLIENT_SECRET } = process.env;
-  
   try {
-    // Using native fetch or direct mock response for stability in sandbox
-    const consentId = "1daac6c2-9fd1-55c6-a926-c3f2247405ab";
+    const customBalance = "48,250.00"; 
     
-    const mockResponse = {
-      "result": { "returnCode": 200, "messageText": "Başarılı" },
-      "accounts": [
-        {
-          "balances": [
-            { "type": "AvailableBalance", "Amount": "9,995,559.34" }
-          ],
-          "IBAN": "TR620006200029500006291296",
-          "currencyCode": "TL"
-        }
-      ]
-    };
+    // Adding some mock transactions to demonstrate animations
+    const mockTransactions = [
+      { id: 1, raw: "GRNT-STARBUCKS-IST", clean: "Starbucks Coffee", amount: "-185.00", category: "GIDA", type: "SPENDING" },
+      { id: 2, raw: "GRNT-MIGROS-SANAL", clean: "Migros Sanal Market", amount: "-1,565.00", category: "MARKET", type: "SPENDING" }
+    ];
 
     return res.status(200).json({ 
       status: 'Connected',
       message: 'Garanti Veri Hattı Aktif!',
-      accounts: mockResponse.accounts,
+      balance: customBalance,
+      iban: "TR620006200029500006291296",
+      transactions: mockTransactions,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
