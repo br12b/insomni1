@@ -150,3 +150,6 @@ body::before {
   -webkit-mask-image: linear-gradient(to bottom, black 10%, transparent 40%);
   opacity: 0.5;
 }
+
+.btn-spin-hover:hover .spin-icon { transform: rotate(180deg); }
+.spin-icon { transition: transform 0.4s ease-in-out; display: flex; align-items: center; justify-content: center; }
