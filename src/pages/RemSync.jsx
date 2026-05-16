@@ -5,7 +5,8 @@ import {
   CheckCircle2, Wallet, BrainCircuit, Server, Cpu, Globe, Coffee, ShoppingBag,
   MessageSquare, FileText, PlusCircle, Sparkles, Terminal as TerminalIcon,
   Radio, BellRing, Activity, History, Wifi, Link, Send, CreditCard, Landmark, Shield,
-  Play, Smartphone, Fuel, Calendar as CalendarIcon, Upload, X, Search, Trash2, AlertTriangle
+  Play, Smartphone, Fuel, Calendar as CalendarIcon, Upload, X, Search, Trash2, AlertTriangle,
+  Info, ExternalLink, Key
 } from 'lucide-react';
 import { storage } from '../lib/storage';
 
@@ -151,7 +152,7 @@ export default function RemSync() {
                  padding: 32, 
                  borderRadius: 32, 
                  border: `2px solid ${activePath === p.id ? p.color : 'rgba(0,0,0,0.05)'}`, 
-                 background: activePath === p.id ? `${p.color}05` : '#fff', 
+                 background: activePath === p.id ? `${p.color}05` : 'rgba(255,255,255,0.02)', 
                  display: 'flex', 
                  alignItems: 'center', 
                  gap: 24, 
@@ -164,7 +165,7 @@ export default function RemSync() {
                   transition={{ repeat: Infinity, duration: 2 }}
                   style={{ 
                     width: 72, height: 72, borderRadius: 22, 
-                    background: activePath === p.id ? p.color : '#f8fafc', 
+                    background: activePath === p.id ? p.color : 'rgba(255,255,255,0.05)', 
                     display: 'flex', alignItems: 'center', justifyContent: 'center', 
                     color: activePath === p.id ? '#fff' : '#cbd5e1',
                     boxShadow: activePath === p.id ? `0 10px 20px ${p.color}40` : 'none'
@@ -173,36 +174,78 @@ export default function RemSync() {
                   <p.icon size={32} />
                 </motion.div>
                 <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: activePath === p.id ? p.color : '#1e293b', marginBottom: 4 }}>{p.name}</div>
-                  <div style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600 }}>{p.info}</div>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: activePath === p.id ? p.color : 'var(--text1)', marginBottom: 4 }}>{p.name}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 600 }}>{p.info}</div>
                 </div>
              </motion.button>
            ))}
         </div>
 
-        <div className="glass" style={{ padding: 48, borderRadius: 44, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(30px)', minHeight: 400 }}>
+        <div className="glass" style={{ padding: 48, borderRadius: 44, background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(30px)', minHeight: 400, border: '1px solid var(--glass-border)' }}>
           <AnimatePresence mode="wait">
             {activePath === 2 && (
-               <motion.div key="bridge" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 40 }}>
-                  <div>
-                    <div style={{ background: '#fff', borderRadius: 24, padding: 24, border: '1px solid #f1f5f9', marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}><div style={{ width: 48, height: 48, borderRadius: 14, background: '#6366f110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Shield size={22} color="#6366f1" /></div><div><div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 900 }}>OMNI ID</div><div style={{ fontSize: 18, fontWeight: 950, color: '#1e293b' }}>{omniId}</div></div></div>
-                       <button onClick={sendLocalTestSignal} style={{ fontSize: 11, color: '#f59e0b', fontWeight: 900, background: '#f59e0b10', padding: '10px 16px', borderRadius: 12, border: '1px solid #f59e0b20', cursor: 'pointer' }}>TEST SİNYALİ</button>
+               <motion.div key="bridge" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 40 }}>
+                    <div>
+                      <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: 24, padding: 24, border: '1px solid var(--glass-border)', marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}><div style={{ width: 48, height: 48, borderRadius: 14, background: '#6366f110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Shield size={22} color="#6366f1" /></div><div><div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 900 }}>OMNI ID</div><div style={{ fontSize: 18, fontWeight: 950, color: 'var(--text1)' }}>{omniId}</div></div></div>
+                         <button onClick={sendLocalTestSignal} style={{ fontSize: 11, color: '#f59e0b', fontWeight: 900, background: '#f59e0b10', padding: '10px 16px', borderRadius: 12, border: '1px solid #f59e0b20', cursor: 'pointer' }}>TEST SİNYALİ</button>
+                      </div>
+                      <div style={{ background: '#0a0f1e', borderRadius: 28, padding: 32, fontFamily: 'monospace', minHeight: 320, border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
+                         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 30, background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', paddingLeft: 16 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff5f56', marginRight: 6 }}></div><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffbd2e', marginRight: 6 }}></div><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#27c93f' }}></div></div>
+                         <div style={{ marginTop: 20 }}>{logs.map((l, i) => ( <div key={i} style={{ marginBottom: 6, fontSize: 14, display: 'flex', gap: 10 }}><span style={{ color: 'rgba(255,255,255,0.1)' }}>[{l.time}]</span><span style={{ color: l.type === 'system' ? '#6366f1' : l.type === 'success' ? '#10b981' : l.type === 'warning' ? '#f59e0b' : '#94a3b8' }}>{l.msg}</span></div> ))}</div>
+                      </div>
                     </div>
-                    <div style={{ background: '#0a0f1e', borderRadius: 28, padding: 32, fontFamily: 'monospace', minHeight: 320, border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
-                       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 30, background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', paddingLeft: 16 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff5f56', marginRight: 6 }}></div><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffbd2e', marginRight: 6 }}></div><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#27c93f' }}></div></div>
-                       <div style={{ marginTop: 20 }}>{logs.map((l, i) => ( <div key={i} style={{ marginBottom: 6, fontSize: 14, display: 'flex', gap: 10 }}><span style={{ color: 'rgba(255,255,255,0.1)' }}>[{l.time}]</span><span style={{ color: l.type === 'system' ? '#6366f1' : l.type === 'success' ? '#10b981' : l.type === 'warning' ? '#f59e0b' : '#94a3b8' }}>{l.msg}</span></div> ))}</div>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: 32, padding: 24, border: '1px solid var(--glass-border)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}><Activity size={18} color="#6366f1" /><h4 style={{ fontSize: 15, fontWeight: 900, margin: 0, color: 'var(--text1)' }}>TRAFİK</h4></div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>{trafficLog.map((t, i) => ( <div key={i} style={{ padding: 16, borderRadius: 18, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--glass-border)' }}><div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text1)' }}>{t.text}</div><div style={{ fontSize: 10, color: '#94a3b8', marginTop: 6 }}>{new Date(t.time).toLocaleTimeString()}</div></div> ))}</div>
                     </div>
                   </div>
-                  <div style={{ background: '#f8fafc', borderRadius: 32, padding: 24, border: '1px solid #f1f5f9' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}><Activity size={18} color="#6366f1" /><h4 style={{ fontSize: 15, fontWeight: 900, margin: 0 }}>TRAFİK</h4></div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>{trafficLog.map((t, i) => ( <div key={i} style={{ padding: 16, borderRadius: 18, background: '#fff', border: '1px solid #f1f5f9' }}><div style={{ fontSize: 13, fontWeight: 700, color: '#1e293b' }}>{t.text}</div><div style={{ fontSize: 10, color: '#94a3b8', marginTop: 6 }}>{new Date(t.time).toLocaleTimeString()}</div></div> ))}</div>
-                  </div>
+
+                  {/* TELEGRAM GUIDE GLASS CARD */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="glass"
+                    style={{ 
+                      padding: 32, 
+                      borderRadius: 32, 
+                      background: 'linear-gradient(135deg, rgba(99,102,241,0.05) 0%, rgba(192,132,252,0.05) 100%)',
+                      border: '1px solid rgba(99,102,241,0.2)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 20
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 12, background: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                        <Info size={20} />
+                      </div>
+                      <h3 style={{ fontSize: 20, fontWeight: 900, margin: 0 }}>Otonom Köprü Nasıl Kullanılır?</h3>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+                      {[
+                        { step: "01", title: "Botu Başlat", desc: "Telegram üzerinden Insomni Otonom Botu bulun ve /start komutunu fırlatın.", icon: <Send size={18} /> },
+                        { step: "02", title: "ID Mühürle", desc: `Bot sizden ID isteyecek. Yukarıdaki ${omniId} numarasını bota gönderin.`, icon: <Key size={18} /> },
+                        { step: "03", title: "Veri Gönder", desc: "Artık bota 'Kahve 120' gibi harcamalar yazabilirsiniz; siber hızla buraya düşecektir.", icon: <Zap size={18} /> }
+                      ].map((item, idx) => (
+                        <div key={idx} style={{ padding: 20, borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                            <span style={{ fontSize: 10, fontWeight: 900, color: '#6366f1', letterSpacing: '0.2em' }}>ADIM {item.step}</span>
+                            <div style={{ color: '#6366f1' }}>{item.icon}</div>
+                          </div>
+                          <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>{item.title}</div>
+                          <div style={{ fontSize: 13, color: 'var(--text2)', lineHeight: 1.5 }}>{item.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
                </motion.div>
             )}
             {activePath === 1 && (
                <motion.div key="api" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 40 }}><div style={{ width: 80, height: 80, borderRadius: 24, background: '#10b98110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={40} color="#10b981" /></div><h3 style={{ fontSize: 28, fontWeight: 950, margin: 0, color: '#1e293b' }}>API Gateway</h3></div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 40 }}><div style={{ width: 80, height: 80, borderRadius: 24, background: '#10b98110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={40} color="#10b981" /></div><h3 style={{ fontSize: 28, fontWeight: 950, margin: 0, color: 'var(--text1)' }}>API Gateway</h3></div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 40 }}><div style={{ background: '#0a0f1e', borderRadius: 32, padding: 40, fontFamily: 'monospace', minHeight: 280, border: '1px solid rgba(255,255,255,0.05)' }}>{logs.map((l, i) => <div key={i} style={{ color: l.type === 'success' ? '#10b981' : '#34d399', fontSize: 15, marginBottom: 8 }}>{l.msg}</div>)}</div><div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 32 }}><button onClick={handleApiSync} disabled={isSyncing} style={{ width: '100%', padding: 28, borderRadius: 24, fontSize: 18, fontWeight: 950, background: '#111', color: '#fff', cursor: 'pointer', border: 'none' }}>{isSyncing ? 'İŞLENİYOR...' : 'SENKRONİZASYONU BAŞLAT'}</button></div></div>
                </motion.div>
             )}
@@ -225,12 +268,12 @@ export default function RemSync() {
                    </motion.div>
                  )}
                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}><History size={24} color="#64748b" /><h4 style={{ fontSize: 22, fontWeight: 950, color: '#1e293b', margin: 0 }}>Harcama Analizi</h4></div>
-                    <button onClick={handleCalendarSync} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 24px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, fontSize: 13, fontWeight: 900, cursor: 'pointer', color: '#1e293b' }}><CalendarIcon size={18} color="#6366f1" /> TAKVİME SENKRONİZE ET</button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}><History size={24} color="#64748b" /><h4 style={{ fontSize: 22, fontWeight: 950, color: 'var(--text1)', margin: 0 }}>Harcama Analizi</h4></div>
+                    <button onClick={handleCalendarSync} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 24px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--glass-border)', borderRadius: 16, fontSize: 13, fontWeight: 900, cursor: 'pointer', color: 'var(--text1)' }}><CalendarIcon size={18} color="#6366f1" /> TAKVİME SENKRONİZE ET</button>
                  </div>
                  {filteredData.filter(d => d.type === 'TRANSACTION').map((tx, idx) => ( 
-                   <div key={tx.id || idx} style={{ padding: 32, display: 'grid', gridTemplateColumns: '1.2fr auto 1.5fr auto', alignItems: 'center', gap: 40, border: '1px solid #f1f5f9', background: '#fff', borderRadius: 32, marginBottom: 20 }}>
-                     <div style={{ fontSize: 13, color: '#94a3b8' }}>{tx.raw}</div><ArrowRight size={18} color="#e2e8f0" /><div style={{ display: 'flex', alignItems: 'center', gap: 24 }}><div style={{ width: 56, height: 56, borderRadius: 18, background: `${tx.color || '#6366f1'}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconMap name={tx.icon} color={tx.color || '#6366f1'} /></div><div><div style={{ fontSize: 18, fontWeight: 950, color: '#1e293b' }}>{tx.clean}</div><div style={{ fontSize: 10, color: tx.color || '#6366f1', fontWeight: 900, display: 'flex', gap: 8 }}><span>{tx.category}</span><span style={{ opacity: 0.5 }}>•</span><span style={{ fontSize: 9, textTransform: 'uppercase' }}>{tx.source}</span></div></div></div><div style={{ textAlign: 'right' }}><div style={{ fontSize: 24, fontWeight: 950, color: tx.color || '#ef4444' }}>{tx.amount}</div></div>
+                   <div key={tx.id || idx} style={{ padding: 32, display: 'grid', gridTemplateColumns: '1.2fr auto 1.5fr auto', alignItems: 'center', gap: 40, border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.02)', borderRadius: 32, marginBottom: 20 }}>
+                     <div style={{ fontSize: 13, color: '#94a3b8' }}>{tx.raw}</div><ArrowRight size={18} color="#e2e8f0" /><div style={{ display: 'flex', alignItems: 'center', gap: 24 }}><div style={{ width: 56, height: 56, borderRadius: 18, background: `${tx.color || '#6366f1'}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconMap name={tx.icon} color={tx.color || '#6366f1'} /></div><div><div style={{ fontSize: 18, fontWeight: 950, color: 'var(--text1)' }}>{tx.clean}</div><div style={{ fontSize: 10, color: tx.color || '#6366f1', fontWeight: 900, display: 'flex', gap: 8 }}><span>{tx.category}</span><span style={{ opacity: 0.5 }}>•</span><span style={{ fontSize: 9, textTransform: 'uppercase' }}>{tx.source}</span></div></div></div><div style={{ textAlign: 'right' }}><div style={{ fontSize: 24, fontWeight: 950, color: tx.color || '#ef4444' }}>{tx.amount}</div></div>
                    </div>
                  ))}
               </motion.div>
