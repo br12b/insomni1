@@ -10,6 +10,15 @@ import {
 const fadeUp = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 const txEntry = { hidden: { opacity: 0, x: -30, scale: 0.95 }, show: { opacity: 1, x: 0, scale: 1 } };
 
+// Missing steps array defined here
+const steps = [
+  { name: "Bridge", icon: Server, color: "var(--accent)" },
+  { name: "Auth", icon: Lock, color: "#10b981" },
+  { name: "Sync", icon: RefreshCw, color: "#f59e0b" },
+  { name: "Parse", icon: BrainCircuit, color: "#6366f1" },
+  { name: "Final", icon: CheckCircle2, color: "var(--accent)" }
+];
+
 export default function RemSync() {
   const [activePath, setActivePath] = useState(2); 
   const [isSyncing, setIsSyncing] = useState(false);
@@ -24,7 +33,7 @@ export default function RemSync() {
     setLogs(prev => [...prev.slice(-8), `[${new Date().toLocaleTimeString()}] ${msg}`]);
   };
 
-  // WEBHOOK POLLING (Simulating Android Bridge / MacroDroid)
+  // WEBHOOK POLLING
   useEffect(() => {
     let interval;
     if (activePath === 2) {
@@ -36,9 +45,9 @@ export default function RemSync() {
           if (data.history && data.history.length > 0) {
             setTrafficLog(data.history);
             
-            // Yeni bir ID gelmiş mi kontrol et
             const latest = data.history[0];
-            if (!processedIds.has(latest.id)) {
+            // ID init değilse ve daha önce işlenmediyse
+            if (latest.id !== 'init' && !processedIds.has(latest.id)) {
               setProcessedIds(prev => new Set(prev).add(latest.id));
               processAutomatedMessage(latest.text);
             }
@@ -171,8 +180,6 @@ export default function RemSync() {
           {activePath === 2 && (
             <motion.div key="path2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20 }}>
-                 
-                 {/* LEFT: MONITOR */}
                  <div className="glass" style={{ padding: 48, borderRadius: 32, border: '1px solid rgba(99,102,241,0.2)', background: 'rgba(255,255,255,0.85)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
                        <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
@@ -187,15 +194,12 @@ export default function RemSync() {
                           <span style={{ fontSize: 11, fontWeight: 900 }}>LIVE LISTENING</span>
                        </div>
                     </div>
-                    
                     <div style={{ background: '#000', borderRadius: 20, padding: 24, fontFamily: 'monospace', minHeight: 250, border: '1px solid rgba(255,255,255,0.1)' }}>
                        <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, marginBottom: 16, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 8 }}>R.E.M CORE LOGS</div>
                        {logs.map((l, i) => <div key={i} style={{ color: '#6366f1', fontSize: 13, marginBottom: 6 }}>{l}</div>)}
                        {logs.length === 0 && <div style={{ color: '#444', fontSize: 13 }}>Gelen sinyal yok...</div>}
                     </div>
                  </div>
-
-                 {/* RIGHT: TRAFFIC LOG */}
                  <div className="glass" style={{ padding: 24, borderRadius: 32, border: '1px solid rgba(0,0,0,0.05)', background: 'rgba(255,255,255,0.85)', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20, color: '#111' }}>
                        <Wifi size={18} color="#6366f1" />
@@ -213,7 +217,6 @@ export default function RemSync() {
                        ))}
                     </div>
                  </div>
-
                </div>
             </motion.div>
           )}
