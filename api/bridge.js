@@ -1,4 +1,4 @@
-﻿// Insomni Universal Cloud Bridge - V8 (ID-Based Multi-User Support)
+﻿// Insomni Secured Universal Bridge - V9 (Strict ID-Based Routing)
 let trafficLog = [];
 
 export default async function handler(req, res) {
@@ -11,54 +11,46 @@ export default async function handler(req, res) {
   let rawText = "";
   let source = "Unknown";
 
-  // 1. TELEGRAM WEBHOOK
   if (req.body && req.body.message && req.body.message.text) {
     rawText = req.body.message.text;
     source = "Telegram Bot";
-  } 
-  // 2. MACRODROID / POST
-  else if (req.method === 'POST') {
-    if (req.body && typeof req.body === 'object') {
-      rawText = req.body.text || JSON.stringify(req.body);
-    } else if (req.body) {
-      rawText = req.body;
-    }
+  } else if (req.method === 'POST') {
+    rawText = req.body.text || (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
     source = "Otonom Bridge";
-  } 
-  // 3. GET
-  else if (req.query.text) {
+  } else if (req.query.text) {
     rawText = req.query.text;
     source = "URL Bridge";
   }
 
   if (rawText) {
-    // ID Ayıklama Mantığı: "842 Mesaj..." -> ID: 842, Mesaj: Mesaj...
+    // ID Ayiklama: Mesajin basinda 3-6 haneli sayi var mi?
     const match = String(rawText).match(/^(\d{3,6})\s+(.*)/);
-    let targetId = "GUEST";
-    let processedText = rawText;
-
-    if (match) {
-      targetId = match[1];
-      processedText = match[2];
-    }
-
-    const newEntry = {
-      text: String(processedText).trim(),
-      targetId: targetId,
-      source: source,
-      timestamp: new Date().toISOString(),
-      id: Math.random().toString(36).substr(2, 9)
-    };
     
-    trafficLog = [newEntry, ...trafficLog].slice(0, 50); // Daha geniş hafıza
+    if (match) {
+      const targetId = match[1];
+      const processedText = match[2];
+
+      const newEntry = {
+        text: String(processedText).trim(),
+        targetId: targetId,
+        source: source,
+        timestamp: new Date().toISOString(),
+        id: Math.random().toString(36).substr(2, 9)
+      };
+      
+      trafficLog = [newEntry, ...trafficLog].slice(0, 50);
+    }
+    // Eger ID yoksa, bu mesaj sistem tarafindan reddedilir (Loga eklenmez).
   }
 
-  // Frontend Polling (ID Filtreli)
+  // Frontend Polling (Sadece eslesen ID'leri getir)
   if (req.method === 'GET' && !req.query.text) {
-    const filterId = req.query.id || "GUEST";
-    const history = trafficLog.filter(entry => entry.targetId === filterId || entry.targetId === "GUEST");
+    const filterId = req.query.id;
+    if (!filterId) return res.status(200).json({ history: [] }); // ID yoksa veri de yok
+    
+    const history = trafficLog.filter(entry => entry.targetId === filterId);
     return res.status(200).json({ history });
   }
 
-  return res.status(200).json({ status: 'Transmitted' });
+  return res.status(200).json({ status: 'Processed' });
 }
