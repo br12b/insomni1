@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Camera, Fingerprint, LogOut, Check, Edit3, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';

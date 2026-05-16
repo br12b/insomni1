@@ -30,33 +30,33 @@ export default function ExpenseInput({ onComplete }) {
 
   const INFO_CARDS = lang === 'tr' ? [
     {
-      emoji: 'ğŸ“…',
-      title: 'Ã–deme GÃ¼nÃ¼ Neden Ã–nemli?',
-      desc: 'MaaÅŸ gÃ¼nÃ¼n ile harcama gÃ¼nlerin arasÄ±ndaki fark, nakdinin ne kadar sÃ¼re boÅŸta beklediÄŸini belirler. Bu sÃ¼reyi optimize ederek PPF getirisini artÄ±rabilirsin.'
+      emoji: '📅',
+      title: 'Ödeme Günü Neden Önemli?',
+      desc: 'Maaş günün ile harcama günlerin arasındaki fark, nakdinin ne kadar süre boşta beklediğini belirler. Bu süreyi optimize ederek PPF getirisini artırabilirsin.'
     },
     {
-      emoji: 'ğŸ”„',
-      title: 'Abonelikler KÃ¼Ã§Ã¼k Ama Etkili',
-      desc: 'AylÄ±k 200-300 TL gibi gÃ¶rÃ¼nen abonelikler, yÄ±llÄ±k bazda 3.600 TL anlamÄ±na gelir. Insomni bunlarÄ± iÅŸaretleyerek sana tam gÃ¶rÃ¼nÃ¼rlÃ¼k saÄŸlar.'
+      emoji: '🔄',
+      title: 'Abonelikler Küçük Ama Etkili',
+      desc: 'Aylık 200-300 TL gibi görünen abonelikler, yıllık bazda 3.600 TL anlamına gelir. Insomni bunları işaretleyerek sana tam görünürlük sağlar.'
     },
     {
-      emoji: 'âš¡',
-      title: 'AtÄ±l Nakit TuzaÄŸÄ±',
-      desc: "TÃ¼rkiye'de ortalama bir Ã§alÄ±ÅŸan maaÅŸÄ±nÄ±n %40'Ä±nÄ± faizsiz hesapta tutuyor. Bu paranÄ±n PPF'te deÄŸerlendirilmesi yÄ±lda binlerce TL fark yaratÄ±r."
+      emoji: '⚡',
+      title: 'Atıl Nakit Tuzağı',
+      desc: "Türkiye'de ortalama bir çalışan maaşının %40'ını faizsiz hesapta tutuyor. Bu paranın PPF'te değerlendirilmesi yılda binlerce TL fark yaratır."
     },
   ] : [
     {
-      emoji: 'ğŸ“…',
+      emoji: '📅',
       title: 'Why Payment Date Matters',
       desc: 'The gap between your salary day and expense dates determines how long your cash sits idle. Optimizing this timing maximizes your money market returns.'
     },
     {
-      emoji: 'ğŸ”„',
+      emoji: '🔄',
       title: 'Subscriptions Add Up Fast',
       desc: 'Subscriptions that seem small ($15-30/mo) add up to $360+ per year. Insomni flags them so you always have full visibility over recurring costs.'
     },
     {
-      emoji: 'âš¡',
+      emoji: '⚡',
       title: 'The Idle Cash Trap',
       desc: 'The average person keeps 40% of their salary in a zero-yield account. Putting this money in a money market fund can create thousands in extra returns annually.'
     },
@@ -95,13 +95,13 @@ export default function ExpenseInput({ onComplete }) {
         <div>
           <div className="glass" style={{ padding: '40px 44px', marginBottom: 20 }}>
             <span className="badge badge-accent" style={{ marginBottom: 8, display: 'inline-flex' }}>
-              {lang === 'tr' ? 'AdÄ±m 2 / 2' : 'Step 2 / 2'}
+              {lang === 'tr' ? 'Adım 2 / 2' : 'Step 2 / 2'}
             </span>
             <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 6 }}>
               {t.onboarding.expenseTitle}
             </h2>
             <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 28 }}>
-              {lang === 'tr' ? 'Manuel girin ya da banka ekstrenizi yÃ¼kleyin.' : 'Enter manually or upload your bank statement.'}
+              {lang === 'tr' ? 'Manuel girin ya da banka ekstrenizi yükleyin.' : 'Enter manually or upload your bank statement.'}
             </p>
 
             {/* PDF Drop Zone */}
@@ -126,7 +126,7 @@ export default function ExpenseInput({ onComplete }) {
                 <div>
                   <Upload size={24} color="var(--text2)" style={{ marginBottom: 8 }} />
                   <div style={{ fontSize: 13, color: 'var(--text2)' }}>
-                    {lang === 'tr' ? 'PDF banka ekstreni bÄ±rak veya tÄ±kla' : 'Drop your bank statement PDF or click'}
+                    {lang === 'tr' ? 'PDF banka ekstreni bırak veya tıkla' : 'Drop your bank statement PDF or click'}
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 4 }}>
                     {lang === 'tr' ? 'Yapay Zeka ile otomatik tarama' : 'Automated scan with AI'}
@@ -137,14 +137,14 @@ export default function ExpenseInput({ onComplete }) {
 
             {/* Quick Presets */}
             <div style={{ marginBottom: 20 }}>
-              <div className="label" style={{ marginBottom: 10 }}>{lang === 'tr' ? 'HÄ±zlÄ± Ekle' : 'Quick Add'}</div>
+              <div className="label" style={{ marginBottom: 10 }}>{lang === 'tr' ? 'Hızlı Ekle' : 'Quick Add'}</div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {PRESETS.map((p, i) => (
                   <button key={i} onClick={() => addExpense(p)} className="chip">
                     {p.isSubscription ? <RefreshCw size={11} /> : null} {p.name}
                   </button>
                 ))}
-                <button onClick={() => addExpense()} className="chip"><Plus size={11} /> {lang === 'tr' ? 'BoÅŸ Ekle' : 'Empty'}</button>
+                <button onClick={() => addExpense()} className="chip"><Plus size={11} /> {lang === 'tr' ? 'Boş Ekle' : 'Empty'}</button>
               </div>
             </div>
 
@@ -158,7 +158,7 @@ export default function ExpenseInput({ onComplete }) {
                     <input className="input" type="number" placeholder={t.onboarding.amountLabel} value={exp.amount} onChange={e => update(exp.id, 'amount', e.target.value)} style={{ fontSize: 13, padding: '10px 12px' }} />
                     <div style={{ position: 'relative' }}>
                       <Calendar size={13} color="var(--text2)" style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-                      <input className="input" type="number" min="1" max="31" placeholder={lang === 'tr' ? 'GÃ¼n' : 'Day'} value={exp.date} onChange={e => update(exp.id, 'date', e.target.value)} style={{ fontSize: 13, padding: '10px 8px 10px 26px' }} />
+                      <input className="input" type="number" min="1" max="31" placeholder={lang === 'tr' ? 'Gün' : 'Day'} value={exp.date} onChange={e => update(exp.id, 'date', e.target.value)} style={{ fontSize: 13, padding: '10px 8px 10px 26px' }} />
                     </div>
                     <button onClick={() => update(exp.id, 'isSubscription', !exp.isSubscription)}
                       className={'btn btn-sm ' + (exp.isSubscription ? 'btn-accent' : 'btn-ghost')} title={lang === 'tr' ? 'Abonelik' : 'Subscription'}>
@@ -207,8 +207,8 @@ export default function ExpenseInput({ onComplete }) {
             </div>
             <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.55 }}>
               <b style={{ color: 'var(--accent)' }}>ARIA:</b> &ldquo;{lang === 'tr'
-                ? 'TÃ¼m harcamalarÄ±nÄ± girmene gerek yok. Sadece en dÃ¼zenli olanlar yeter, gerisini ben analiz ederim.'
-                : "You don't need to enter every expense. Just the recurring ones â€” I'll handle the analysis."}
+                ? 'Tüm harcamalarını girmene gerek yok. Sadece en düzenli olanlar yeter, gerisini ben analiz ederim.'
+                : "You don't need to enter every expense. Just the recurring ones — I'll handle the analysis."}
               &rdquo;
             </div>
           </motion.div>

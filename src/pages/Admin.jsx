@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Settings, RefreshCw, Save, Terminal, Sparkles, MousePointer2, Undo2, ChevronDown, Check, X, ImagePlus } from 'lucide-react';
 import { useAdminUI } from '../hooks/useAdminUI';

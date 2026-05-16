@@ -4,9 +4,9 @@ const LanguageContext = createContext();
 
 const translations = {
   tr: {
-    currency: 'â‚º',
+    currency: '₺',
     landing: {
-      badge: 'PPF OdaklÄ± â€” Gunluk %0.150 Faiz',
+      badge: 'PPF Odaklı — Gunluk %0.150 Faiz',
       title1: 'Atil nakdin',
       titleAccent: 'gercek maliyeti',
       title2: 'nedir?',
@@ -27,67 +27,67 @@ const translations = {
       ariaIntro: 'Nakit akisinizi beraber optimize edelim.'
     },
     opportunities: {
-      title: 'FÄ±rsat Merkezi',
-      desc: 'HarcamalarÄ±nÄ±za gÃ¶re en iyi cashback ve kampanya eÅŸleÅŸmeleri.',
-      smartMatch: 'R.E.M AkÄ±llÄ± EÅŸleÅŸme',
-      allCampaigns: 'TÃ¼m Kampanyalar',
-      matchFound: 'EÅŸleÅŸme Bulundu!',
-      noMatch: 'HenÃ¼z harcama analizi yapÄ±lmadÄ±.',
+      title: 'Fırsat Merkezi',
+      desc: 'Harcamalarınıza göre en iyi cashback ve kampanya eşleşmeleri.',
+      smartMatch: 'R.E.M Akıllı Eşleşme',
+      allCampaigns: 'Tüm Kampanyalar',
+      matchFound: 'Eşleşme Bulundu!',
+      noMatch: 'Henüz harcama analizi yapılmadı.',
       platform: 'Platform',
-      potentialGain: 'Potansiyel KazanÃ§',
+      potentialGain: 'Potansiyel Kazanç',
       categories: {
         all: 'Hepsi',
-        shopping: 'AlÄ±ÅŸveriÅŸ',
+        shopping: 'Alışveriş',
         food: 'Yemek',
         subscription: 'Abonelik',
         travel: 'Seyahat'
       }
     },
     onboarding: {
-      profileTitle: 'Komuta Merkezine HoÅŸ Geldin',
-      profileDesc: 'Analize baÅŸlamadan Ã¶nce sana nasÄ±l hitap etmemi istersin?',
-      profilePlaceholder: 'Ä°sminizi yazÄ±n...',
+      profileTitle: 'Komuta Merkezine Hoş Geldin',
+      profileDesc: 'Analize başlamadan önce sana nasıl hitap etmemi istersin?',
+      profilePlaceholder: 'İsminizi yazın...',
       salaryTitle: 'Gelir Bilgileri',
-      salaryDesc: 'AylÄ±k net maaÅŸÄ±nÄ±zÄ± ve yattÄ±ÄŸÄ± gÃ¼nÃ¼ belirtin.',
-      salaryLabel: 'Net MaaÅŸ (AylÄ±k)',
-      dateLabel: 'MaaÅŸ GÃ¼nÃ¼ (1-31)',
+      salaryDesc: 'Aylık net maaşınızı ve yattığı günü belirtin.',
+      salaryLabel: 'Net Maaş (Aylık)',
+      dateLabel: 'Maaş Günü (1-31)',
       expenseTitle: 'Harcama Listesi',
-      expenseDesc: 'DÃ¼zenli harcamalarÄ±nÄ±zÄ± ekleyin.',
-      expenseLabel: 'Harcama AdÄ±',
+      expenseDesc: 'Düzenli harcamalarınızı ekleyin.',
+      expenseLabel: 'Harcama Adı',
       amountLabel: 'Tutar',
       dateExpLabel: 'Tarih',
       addBtn: 'Ekle',
-      popular: 'PopÃ¼ler:',
+      popular: 'Popüler:',
       suggestKira: 'Kira',
-      suggestKredi: 'Kredi KartÄ±',
+      suggestKredi: 'Kredi Kartı',
       suggestAbonelik: 'Abonelik',
     },
     dashboard: {
-      welcome: 'HoÅŸ Geldin',
-      healthScore: 'Finansal SaÄŸlÄ±k',
-      healthDesc: 'Skorun geÃ§en aya gÃ¶re %5 arttÄ±.',
-      totalBalance: 'Toplam VarlÄ±k',
-      monthlyExpenses: 'AylÄ±k Gider',
-      opportunityCost: 'FÄ±rsat Maliyeti',
-      opportunityDesc: 'PPF (Para PiyasasÄ± Fonu) ile kazanÄ±labilecek tutar.',
+      welcome: 'Hoş Geldin',
+      healthScore: 'Finansal Sağlık',
+      healthDesc: 'Skorun geçen aya göre %5 arttı.',
+      totalBalance: 'Toplam Varlık',
+      monthlyExpenses: 'Aylık Gider',
+      opportunityCost: 'Fırsat Maliyeti',
+      opportunityDesc: 'PPF (Para Piyasası Fonu) ile kazanılabilecek tutar.',
       subscriptions: 'Aktif Abonelikler',
-      manage: 'YÃ¶net',
-      aiAdvisor: 'R.E.M AI DanÄ±ÅŸman',
-      aiPlaceholder: 'Ä°stediÄŸiniz soruyu yazÄ±n...',
-      send: 'GÃ¶nder'
+      manage: 'Yönet',
+      aiAdvisor: 'R.E.M AI Danışman',
+      aiPlaceholder: 'İstediğiniz soruyu yazın...',
+      send: 'Gönder'
     },
     common: {
       back: 'Geri',
-      next: 'Ä°leri',
+      next: 'İleri',
       finish: 'Tamamla',
-      loading: 'YÃ¼kleniyor...',
+      loading: 'Yükleniyor...',
       save: 'Kaydet'
     }
   },
   en: {
     currency: '$',
     landing: {
-      badge: 'PPF Focused â€” Daily 0.150% Interest',
+      badge: 'PPF Focused — Daily 0.150% Interest',
       title1: 'What is the',
       titleAccent: 'real cost',
       title2: 'of idle cash?',
@@ -105,7 +105,7 @@ const translations = {
       feature3Desc: 'Your personal AI advisor analyzing financial data',
       feature4: 'Subscription Tracking',
       feature4Desc: 'The real annual cost of Netflix, Spotify, and more',
-      ariaIntro: 'Letâ€™s optimize your cash flow together.'
+      ariaIntro: 'Let’s optimize your cash flow together.'
     },
     opportunities: {
       title: 'Opportunity Hub',
