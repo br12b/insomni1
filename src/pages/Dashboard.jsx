@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Wallet, TrendingDown, LayoutDashboard, Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Wallet, TrendingDown, LayoutDashboard, Plus, X, Tag, Calendar, DollarSign } from 'lucide-react';
 import AnimatedCounter from '../components/ui/AnimatedCounter';
 import AIChat from '../components/dashboard/AIChat';
 import MonthlyCalendar from '../components/dashboard/MonthlyCalendar';
@@ -12,9 +12,11 @@ import { useLanguage } from '../context/LanguageContext';
 const fadeUp = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 
-export default function Dashboard({ salaryData, expensesData = [], profileName }) {
+export default function Dashboard({ salaryData, expensesData = [], setExpensesData, profileName }) {
   const { lang, t } = useLanguage();
   const [syncedTxs, setSyncedTxs] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newExpense, setNewExpense] = useState({ name: '', amount: '', date: new Date().getDate(), category: 'Diğer' });
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem('insomni_synced_txs') || '[]');
@@ -45,10 +47,27 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
     }))
   ];
 
-  // REM'İN BEKLEDİĞİ FORMATI SARSILMAZ BİR NİZAMLA OLUŞTURUYORUZ
+  const handleAddExpense = (e) => {
+    e.preventDefault();
+    if (!newExpense.name || !newExpense.amount) return;
+    
+    const expenseToAdd = {
+      id: Date.now(),
+      ...newExpense,
+      amount: parseFloat(newExpense.amount)
+    };
+
+    const updatedExpenses = [...expensesData, expenseToAdd];
+    setExpensesData(updatedExpenses);
+    localStorage.setItem('insomni_expenses', JSON.stringify(updatedExpenses));
+    
+    setNewExpense({ name: '', amount: '', date: new Date().getDate(), category: 'Diğer' });
+    setIsModalOpen(false);
+  };
+
   const financialDataForAI = {
-    salary: { income, currency }, // "salaryData" DEĞİL, "salary" OLMALI
-    expenses: combinedExpenses,   // "expensesData" DEĞİL, "expenses" OLMALI
+    salary: { income, currency },
+    expenses: combinedExpenses,
     totalExpense,
     remaining
   };
@@ -62,12 +81,53 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
 
   return (
     <motion.div initial="hidden" animate="show" variants={stagger} style={{ paddingTop: '4vh', paddingBottom: 80, paddingLeft: 'max(20px, 5vw)', paddingRight: 'max(20px, 5vw)', display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 1600, margin: '0 auto', width: '100%', overflowX: 'hidden' }}>
+      
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }} className="glass" style={{ width: '100%', maxWidth: 450, padding: 32, border: '1px solid var(--glass-border)', position: 'relative' }}>
+              <button onClick={() => setIsModalOpen(false)} style={{ position: 'absolute', top: 20, right: 20, background: 'none', border: 'none', color: 'var(--text2)', cursor: 'pointer' }}><X size={20} /></button>
+              
+              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 12 }}><Plus size={24} className="text-primary" /> {lang === 'tr' ? 'Harcama Ekle' : 'Add Expense'}</h2>
+              
+              <form onSubmit={handleAddExpense} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <label style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 600 }}>{lang === 'tr' ? 'HARCAMA İSMİ' : 'EXPENSE NAME'}</label>
+                  <div style={{ position: 'relative' }}>
+                    <Tag size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text3)' }} />
+                    <input type="text" value={newExpense.name} onChange={e => setNewExpense({...newExpense, name: e.target.value})} placeholder="Örn: Starbucks" style={{ width: '100%', padding: '12px 12px 12px 40px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 12, color: 'white' }} required />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <label style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 600 }}>{lang === 'tr' ? 'MİKTAR' : 'AMOUNT'}</label>
+                  <div style={{ position: 'relative' }}>
+                    <DollarSign size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text3)' }} />
+                    <input type="number" value={newExpense.amount} onChange={e => setNewExpense({...newExpense, amount: e.target.value})} placeholder="0.00" style={{ width: '100%', padding: '12px 12px 12px 40px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 12, color: 'white' }} required />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <label style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 600 }}>{lang === 'tr' ? 'TARİH (GÜN)' : 'DATE (DAY)'}</label>
+                  <div style={{ position: 'relative' }}>
+                    <Calendar size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text3)' }} />
+                    <input type="number" min="1" max="31" value={newExpense.date} onChange={e => setNewExpense({...newExpense, date: e.target.value})} style={{ width: '100%', padding: '12px 12px 12px 40px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 12, color: 'white' }} required />
+                  </div>
+                </div>
+
+                <button type="submit" className="btn btn-primary" style={{ marginTop: 12, padding: 16 }}>{lang === 'tr' ? 'Sisteme İşle' : 'Register Expense'}</button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.div variants={fadeUp} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20 }}>
         <div>
           <h1 style={{ fontSize: 'clamp(28px, 4vw, 36px)', fontWeight: 900, marginBottom: 8, letterSpacing: '-0.03em' }}>Hoş Geldin, {profileName || 'Kullanıcı'}</h1>
           <p style={{ color: 'var(--text2)', fontSize: 15 }}>Finansal durumunun güncel özeti ve AI içgörüleri.</p>
         </div>
-        <button className="btn btn-primary btn-sm"><Plus size={18} /> {lang === 'tr' ? 'Harcama Ekle' : 'Add Expense'}</button>
+        <button onClick={() => setIsModalOpen(true)} className="btn btn-primary btn-sm"><Plus size={18} /> {lang === 'tr' ? 'Harcama Ekle' : 'Add Expense'}</button>
       </motion.div>
 
       <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 20 }}>
