@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { List, CreditCard, ShoppingCart, Video, Coffee, ChevronDown, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';

@@ -5,10 +5,10 @@ import { useGemini } from '../../hooks/useGemini';
 import { useLanguage } from '../../context/LanguageContext';
 
 const QUICK_QUESTIONS_TR = [
-  'Atıl nakit fırsatım nedir?',
+  'AtÄ±l nakit fÄ±rsatÄ±m nedir?',
   'Aboneliklerimi analiz et',
   'Harcama zamanlamam optimal mi?',
-  'En büyük maliyet nerede?',
+  'En bÃ¼yÃ¼k maliyet nerede?',
 ];
 
 const QUICK_QUESTIONS_EN = [
@@ -18,7 +18,7 @@ const QUICK_QUESTIONS_EN = [
   'Where is my biggest cost?',
 ];
 
-// Thinking step — tek bir ReAct adımı
+// Thinking step â€” tek bir ReAct adÄ±mÄ±
 function ThinkingStep({ step, index }) {
   return (
     <motion.div
@@ -46,7 +46,7 @@ function MessageBubble({ msg }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       style={{ display: 'flex', flexDirection: 'column', alignItems: isUser ? 'flex-end' : 'flex-start', gap: 6 }}>
-      {/* ReAct Thinking Steps (sadece model mesajlarında) */}
+      {/* ReAct Thinking Steps (sadece model mesajlarÄ±nda) */}
       {!isUser && msg.thinkingSteps && msg.thinkingSteps.length > 0 && (
         <div style={{ padding: '10px 14px', borderRadius: 12, background: 'var(--bg2)', border: '1px solid var(--glass-border)', maxWidth: '90%' }}>
           <div style={{ fontSize: 10, color: 'var(--text2)', marginBottom: 6, fontWeight: 600, letterSpacing: '0.08em' }}>
@@ -154,7 +154,7 @@ export default function AIChat({ financialData }) {
           <div style={{ fontWeight: 700, fontSize: 14 }}>R.E.M</div>
           <div style={{ fontSize: 10, color: 'var(--green)', display: 'flex', alignItems: 'center', gap: 4 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)', animation: 'blink 2s ease infinite' }} />
-            {isAvailable ? (lang === 'tr' ? 'Araçlarla Aktif' : 'Active with Tools') : (lang === 'tr' ? 'Çevrimdışı' : 'Offline')}
+            {isAvailable ? (lang === 'tr' ? 'AraÃ§larla Aktif' : 'Active with Tools') : (lang === 'tr' ? 'Ã‡evrimdÄ±ÅŸÄ±' : 'Offline')}
           </div>
         </div>
       </div>
@@ -164,8 +164,8 @@ export default function AIChat({ financialData }) {
         {messages.length === 0 && (
           <div style={{ textAlign: 'center', color: 'var(--text2)', fontSize: 12, marginTop: 20, lineHeight: 1.6 }}>
             {lang === 'tr'
-              ? '👋 Merhaba! Finansal verilerini analiz etmek, harcamalarını simüle etmek veya hedef planlamak için sorularını sor.'
-              : '👋 Hi! Ask me anything to analyze your finances, simulate expenses, or plan your goals.'}
+              ? 'ğŸ‘‹ Merhaba! Finansal verilerini analiz etmek, harcamalarÄ±nÄ± simÃ¼le etmek veya hedef planlamak iÃ§in sorularÄ±nÄ± sor.'
+              : 'ğŸ‘‹ Hi! Ask me anything to analyze your finances, simulate expenses, or plan your goals.'}
           </div>
         )}
 
@@ -173,18 +173,18 @@ export default function AIChat({ financialData }) {
           {messages.map((msg, i) => <MessageBubble key={i} msg={msg} />)}
         </AnimatePresence>
 
-        {/* Live Thinking Steps (aktif araç çağrıları) */}
+        {/* Live Thinking Steps (aktif araÃ§ Ã§aÄŸrÄ±larÄ±) */}
         {isTyping && thinkingSteps.length > 0 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             style={{ padding: '10px 14px', borderRadius: 12, background: 'var(--bg2)', border: '1px solid var(--accent)', maxWidth: '90%' }}>
             <div style={{ fontSize: 10, color: 'var(--accent)', marginBottom: 6, fontWeight: 700, letterSpacing: '0.08em' }}>
-              R.E.M DÜŞÜNÜYOR
+              R.E.M DÃœÅÃœNÃœYOR
             </div>
             {thinkingSteps.map((step, i) => <ThinkingStep key={i} step={step} index={i} />)}
           </motion.div>
         )}
 
-        {/* Typing indicator (araç yokken) */}
+        {/* Typing indicator (araÃ§ yokken) */}
         {isTyping && thinkingSteps.length === 0 && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <Loader2 size={14} color="var(--accent)" style={{ animation: 'spin 1s linear infinite' }} />
@@ -208,7 +208,7 @@ export default function AIChat({ financialData }) {
         <input
           className="input"
           style={{ flex: 1, fontSize: 13, padding: '10px 14px' }}
-          placeholder={lang === 'tr' ? 'İstediğini sor...' : 'Ask anything...'}
+          placeholder={lang === 'tr' ? 'Ä°stediÄŸini sor...' : 'Ask anything...'}
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}

@@ -1,4 +1,4 @@
-﻿import { BBVA_DAILY_RATE } from './calculations';
+import { BBVA_DAILY_RATE } from './calculations';
 
 /**
  * ARIA Tool Kit â€” Her fonksiyon Gemini'nin Ã§aÄŸÄ±rabileceÄŸi bir araÃ§tÄ±r.

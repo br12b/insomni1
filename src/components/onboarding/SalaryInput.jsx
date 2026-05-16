@@ -13,12 +13,12 @@ export default function SalaryInput({ onComplete }) {
     e.preventDefault();
     const s = parseFloat(salary.replace(/[^0-9.]/g, ''));
     if (!s || s < 1) { 
-      setErr(lang === 'tr' ? 'Geçerli bir maaş giriniz.' : 'Please enter a valid salary.'); 
+      setErr(lang === 'tr' ? 'GeÃ§erli bir maaÅŸ giriniz.' : 'Please enter a valid salary.'); 
       return; 
     }
     const d = parseInt(date);
     if (!d || d < 1 || d > 31) { 
-      setErr(lang === 'tr' ? 'Gün 1-31 arasında olmalı.' : 'Day must be between 1 and 31.'); 
+      setErr(lang === 'tr' ? 'GÃ¼n 1-31 arasÄ±nda olmalÄ±.' : 'Day must be between 1 and 31.'); 
       return; 
     }
     onComplete({ salary: s, date: d });
@@ -30,7 +30,7 @@ export default function SalaryInput({ onComplete }) {
       <div className="glass" style={{ width: '100%', maxWidth: 520, padding: '48px' }}>
         <div style={{ marginBottom: 8 }}>
           <span className="badge badge-accent">
-            {lang === 'tr' ? 'Adım 1 / 2' : 'Step 1 / 2'}
+            {lang === 'tr' ? 'AdÄ±m 1 / 2' : 'Step 1 / 2'}
           </span>
         </div>
         <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 8 }}>
@@ -63,13 +63,13 @@ export default function SalaryInput({ onComplete }) {
                 value={date} onChange={e => setDate(e.target.value)} style={{ paddingLeft: 40 }} />
             </div>
             <div style={{ fontSize: 12, color: 'var(--text2)', marginTop: 6 }}>
-              {lang === 'tr' ? "Örnek: Ayın 15'inde maaş yatıyorsa 15 girin." : "Example: If salary is paid on the 15th, enter 15."}
+              {lang === 'tr' ? "Ã–rnek: AyÄ±n 15'inde maaÅŸ yatÄ±yorsa 15 girin." : "Example: If salary is paid on the 15th, enter 15."}
             </div>
           </div>
           {err && <div style={{ fontSize: 13, color: 'var(--red)', padding: '10px 14px', borderRadius: 10, background: 'var(--red-dim)' }}>{err}</div>}
           <motion.button type="submit" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
             className="btn btn-primary" style={{ marginTop: 8, justifyContent: 'center' }}>
-            {lang === 'tr' ? 'Harcamaları Gir' : 'Enter Expenses'} <ArrowRight size={17} />
+            {lang === 'tr' ? 'HarcamalarÄ± Gir' : 'Enter Expenses'} <ArrowRight size={17} />
           </motion.button>
         </form>
       </div>
