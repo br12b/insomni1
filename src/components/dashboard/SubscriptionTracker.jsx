@@ -26,13 +26,13 @@ export default function SubscriptionTracker({ expenses = [], salary = 0 }) {
             </div>
           </div>
         </div>
-        <span className="badge badge-accent">%{pct} {lang === 'tr' ? 'maaÅŸ' : 'salary'}</span>
+        <span className="badge badge-accent">%{pct} {lang === 'tr' ? 'maaş' : 'salary'}</span>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {subs.length === 0 && (
           <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text2)', fontSize: 13 }}>
-            {lang === 'tr' ? 'HenÃ¼z abonelik eklenmedi' : 'No subscriptions added yet'}
+            {lang === 'tr' ? 'Henüz abonelik eklenmedi' : 'No subscriptions added yet'}
           </div>
         )}
         {subs.map((sub, i) => {
@@ -58,13 +58,13 @@ export default function SubscriptionTracker({ expenses = [], salary = 0 }) {
 
       <div style={{ paddingTop: 12, borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <div className="label">{lang === 'tr' ? 'AylÄ±k Toplam' : 'Monthly Total'}</div>
+          <div className="label">{lang === 'tr' ? 'Aylık Toplam' : 'Monthly Total'}</div>
           <div style={{ fontFamily: 'var(--mono)', fontSize: 22, fontWeight: 700 }}>
             {t.currency}{total.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div className="label">{lang === 'tr' ? 'YÄ±llÄ±k Maliyet' : 'Annual Cost'}</div>
+          <div className="label">{lang === 'tr' ? 'Yıllık Maliyet' : 'Annual Cost'}</div>
           <div style={{ fontFamily: 'var(--mono)', fontSize: 18, fontWeight: 700, color: 'var(--red)' }}>
             {t.currency}{(total*12).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}
           </div>

@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { Settings, Save, X, Plus, Trash2 } from 'lucide-react';
 
 const DEFAULT_CARDS = [
-  { emoji: 'ğŸ“…', title: 'Ã–deme GÃ¼nÃ¼ Neden Ã–nemli?', desc: 'MaaÅŸ gÃ¼nÃ¼n ile harcama gÃ¼nlerin arasÄ±ndaki farkÄ± optimize et.' },
-  { emoji: 'ğŸ”„', title: 'Abonelikler KÃ¼Ã§Ã¼k Ama Etkili', desc: 'AylÄ±k abonelikler yÄ±llÄ±k bazda ciddi rakamlara ulaÅŸÄ±r.' },
-  { emoji: 'âš¡', title: 'AtÄ±l Nakit TuzaÄŸÄ±', desc: 'ParanÄ± faizsiz hesapta tutmak yerine deÄŸerlendir.' }
+  { emoji: '📅', title: 'Ödeme Günü Neden Önemli?', desc: 'Maaş günün ile harcama günlerin arasındaki farkı optimize et.' },
+  { emoji: '🔄', title: 'Abonelikler Küçük Ama Etkili', desc: 'Aylık abonelikler yıllık bazda ciddi rakamlara ulaşır.' },
+  { emoji: '⚡', title: 'Atıl Nakit Tuzağı', desc: 'Paranı faizsiz hesapta tutmak yerine değerlendir.' }
 ];
 
 export default function Admin({ onClose }) {
@@ -23,7 +23,7 @@ export default function Admin({ onClose }) {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const addCard = () => setCards([...cards, { emoji: 'ğŸ’¡', title: 'Yeni Bilgi', desc: 'AÃ§Ä±klama yazÄ±sÄ±...' }]);
+  const addCard = () => setCards([...cards, { emoji: '💡', title: 'Yeni Bilgi', desc: 'Açıklama yazısı...' }]);
   const removeCard = (index) => setCards(cards.filter((_, i) => i !== index));
   const updateCard = (index, field, val) => {
     const next = [...cards];
@@ -37,14 +37,14 @@ export default function Admin({ onClose }) {
         <div style={{ padding: 24, borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Settings className="text-primary" size={20} />
-            <h2 style={{ fontSize: 18, fontWeight: 800 }}>Onboarding YÃ¶netimi</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 800 }}>Onboarding Yönetimi</h2>
           </div>
           <button onClick={onClose} className="btn btn-ghost btn-sm"><X size={20} /></button>
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: 24, display: 'flex', flexDirection: 'column', gap: 24 }}>
           <div>
-            <h3 style={{ fontSize: 13, fontWeight: 800, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16 }}>Bilgi KartlarÄ±</h3>
+            <h3 style={{ fontSize: 13, fontWeight: 800, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16 }}>Bilgi Kartları</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {cards.map((card, i) => (
                 <div key={i} className="glass" style={{ padding: 16, background: 'rgba(255,255,255,0.03)' }}>
@@ -73,7 +73,7 @@ export default function Admin({ onClose }) {
 
         <div style={{ padding: 24, borderTop: '1px solid var(--glass-border)' }}>
           <button onClick={handleSave} className="btn btn-primary" style={{ width: '100%', height: 48, justifyContent: 'center' }}>
-            {saved ? 'DeÄŸiÅŸiklikler Kaydedildi!' : <><Save size={18} /> AyarlarÄ± MÃ¼hÃ¼rle</>}
+            {saved ? 'Değişiklikler Kaydedildi!' : <><Save size={18} /> Ayarları Mühürle</>}
           </button>
         </div>
       </motion.div>
