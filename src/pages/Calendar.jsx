@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, MessageSquare, 
   Clock, Wallet, ShoppingBag, Coffee, Play, Smartphone, BellRing, Activity, 
-  Landmark, Radio, FileText, ArrowUpCircle, ArrowDownCircle 
+  Landmark, Radio, FileText, ArrowUpCircle, ArrowDownCircle, TrendingUp, TrendingDown, Target
 } from 'lucide-react';
 
 const IconMap = ({ name, color, type }) => {
@@ -32,6 +32,12 @@ export default function Calendar() {
     setSyncedData(data);
   }, []);
 
+  const parseCurrency = (str) => {
+    if (!str) return 0;
+    // Remove dots (thousand separator) and replace comma with dot (decimal)
+    return parseFloat(str.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '')) || 0;
+  };
+
   const daysInMonth = 31;
   const startDay = new Date(2026, 4, 1).getDay();
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
@@ -42,11 +48,16 @@ export default function Calendar() {
     const txs = dailyItems.filter(d => d.type === 'TRANSACTION');
     const balanceItem = dailyItems.find(d => d.type === 'BALANCE');
     
-    const expense = txs.reduce((acc, tx) => acc + parseFloat(tx.amount.replace(/[^\d.,]/g, '').replace(',', '.')), 0);
-    const income = balanceItem ? parseFloat(balanceItem.amount.replace(/[^\d.,]/g, '').replace(',', '.')) : (day === 1 ? 45000 : 0);
+    const expense = txs.reduce((acc, tx) => acc + parseCurrency(tx.amount), 0);
+    const income = balanceItem ? parseCurrency(balanceItem.amount) : (day === 1 ? 45000 : 0);
     
     return { expense, income, items: dailyItems };
   };
+
+  const monthlyStats = days.reduce((acc, d) => {
+    const data = getDailyData(d);
+    return { income: acc.income + data.income, expense: acc.expense + data.expense };
+  }, { income: 0, expense: 0 });
 
   const selectedData = getDailyData(selectedDay);
 
@@ -57,7 +68,7 @@ export default function Calendar() {
         <div className="glass" style={{ padding: '12px 28px', borderRadius: 100, display: 'flex', alignItems: 'center', gap: 20 }}><ChevronLeft size={20} /><span style={{ fontWeight: 950 }}>MAYIS 2026</span><ChevronRight size={20} /></div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 40, flex: 1 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 40, flex: 1, marginBottom: 40 }}>
         <div className="glass" style={{ padding: 40, borderRadius: 44, background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(20px)' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 16, textAlign: 'center', marginBottom: 32 }}>{['PZT', 'SAL', 'ÇAR', 'PER', 'CUM', 'CMT', 'PAZ'].map(d => <div key={d} style={{ fontSize: 11, fontWeight: 900, color: '#94a3b8' }}>{d}</div>)}</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 16 }}>
@@ -80,18 +91,15 @@ export default function Calendar() {
           <motion.div key={selectedDay} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass" style={{ padding: 40, borderRadius: 44, background: 'rgba(255,255,255,0.9)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 40 }}><div style={{ fontSize: 26, fontWeight: 950 }}>{selectedDay} Mayıs 2026</div><Activity size={24} color="#6366f1" /></div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 40 }}>
-               <div style={{ padding: 24, borderRadius: 28, background: '#10b98108', border: '1px solid #10b98120' }}><div style={{ fontSize: 11, fontWeight: 900, color: '#10b981', marginBottom: 8 }}>GELİR / BAKİYE</div><div style={{ fontSize: 24, fontWeight: 950, color: '#064e3b' }}>{selectedData.income.toLocaleString()} ₺</div></div>
-               <div style={{ padding: 24, borderRadius: 28, background: '#ef444408', border: '1px solid #ef444420' }}><div style={{ fontSize: 11, fontWeight: 900, color: '#ef4444', marginBottom: 8 }}>TOPLAM GİDER</div><div style={{ fontSize: 24, fontWeight: 950, color: '#7f1d1d' }}>-{selectedData.expense.toLocaleString()} ₺</div></div>
+               <div style={{ padding: 24, borderRadius: 28, background: '#10b98108', border: '1px solid #10b98120' }}><div style={{ fontSize: 11, fontWeight: 900, color: '#10b981', marginBottom: 8 }}>GELİR / BAKİYE</div><div style={{ fontSize: 24, fontWeight: 950, color: '#064e3b' }}>{selectedData.income.toLocaleString('tr-TR')} ₺</div></div>
+               <div style={{ padding: 24, borderRadius: 28, background: '#ef444408', border: '1px solid #ef444420' }}><div style={{ fontSize: 11, fontWeight: 900, color: '#ef4444', marginBottom: 8 }}>TOPLAM GİDER</div><div style={{ fontSize: 24, fontWeight: 950, color: '#7f1d1d' }}>-{selectedData.expense.toLocaleString('tr-TR')} ₺</div></div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                {selectedData.items.map((item, i) => (
                  <div key={i} style={{ padding: 20, borderRadius: 24, background: item.type === 'BALANCE' ? '#10b98105' : '#f8fafc', border: item.type === 'BALANCE' ? '1px solid #10b98115' : '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                        <div style={{ width: 44, height: 44, borderRadius: 12, background: item.type === 'BALANCE' ? '#10b98115' : `${item.color}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconMap name={item.icon} color={item.type === 'BALANCE' ? '#10b981' : item.color} type={item.type} /></div>
-                       <div>
-                          <div style={{ fontSize: 15, fontWeight: 900, color: item.type === 'BALANCE' ? '#064e3b' : '#1e293b' }}>{item.clean}</div>
-                          <div style={{ fontSize: 9, fontWeight: 800, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 5, marginTop: 2 }}>{item.type === 'BALANCE' ? <ArrowUpCircle size={10} color="#10b981"/> : <SourceIcon source={item.source} />} {item.type === 'BALANCE' ? 'AKTİF VARLIK' : item.source}</div>
-                       </div>
+                       <div><div style={{ fontSize: 15, fontWeight: 900, color: item.type === 'BALANCE' ? '#064e3b' : '#1e293b' }}>{item.clean}</div><div style={{ fontSize: 9, fontWeight: 800, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 5, marginTop: 2 }}>{item.type === 'BALANCE' ? <ArrowUpCircle size={10} color="#10b981"/> : <SourceIcon source={item.source} />} {item.type === 'BALANCE' ? 'AKTİF VARLIK' : item.source}</div></div>
                     </div>
                     <div style={{ fontSize: 16, fontWeight: 950, color: item.type === 'BALANCE' ? '#10b981' : '#ef4444' }}>{item.amount}</div>
                  </div>
@@ -100,6 +108,15 @@ export default function Calendar() {
           </motion.div>
         </div>
       </div>
+
+      {/* MONTHLY SUMMARY PANEL */}
+      <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="glass" style={{ padding: 32, borderRadius: 40, background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#fff', display: 'flex', justifyContent: 'space-around', alignItems: 'center', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <div style={{ textAlign: 'center' }}><div style={{ fontSize: 12, fontWeight: 900, color: '#94a3b8', marginBottom: 10 }}>AYLIK TOPLAM GELİR</div><div style={{ fontSize: 32, fontWeight: 950, color: '#10b981' }}>{monthlyStats.income.toLocaleString('tr-TR')} ₺</div></div>
+          <div style={{ width: 1, height: 60, background: 'rgba(255,255,255,0.1)' }} />
+          <div style={{ textAlign: 'center' }}><div style={{ fontSize: 12, fontWeight: 900, color: '#94a3b8', marginBottom: 10 }}>AYLIK TOPLAM GİDER</div><div style={{ fontSize: 32, fontWeight: 950, color: '#ef4444' }}>-{monthlyStats.expense.toLocaleString('tr-TR')} ₺</div></div>
+          <div style={{ width: 1, height: 60, background: 'rgba(255,255,255,0.1)' }} />
+          <div style={{ textAlign: 'center' }}><div style={{ fontSize: 12, fontWeight: 900, color: '#94a3b8', marginBottom: 10 }}>NET SİBER DURUM</div><div style={{ fontSize: 32, fontWeight: 950, color: '#6366f1' }}>{(monthlyStats.income - monthlyStats.expense).toLocaleString('tr-TR')} ₺</div></div>
+      </motion.div>
     </motion.div>
   );
 }
