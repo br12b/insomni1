@@ -1,19 +1,21 @@
-﻿// Insomni Cyber Bridge - V2 (Smart Parsing Support)
+﻿// Insomni Cyber Bridge - V3 (Ultra Raw Capture)
 let trafficLog = [];
 
 export default async function handler(req, res) {
   let text = "SİNYAL BOŞ";
-  
+
   if (req.method === 'POST') {
-    // Text/plain veya JSON her türlü veriyi metne çevir
-    text = req.body;
-    if (typeof text === 'object') {
-      text = text.text || JSON.stringify(text);
+    // Ham veriyi yakala
+    if (typeof req.body === 'string') {
+      text = req.body;
+    } else if (typeof req.body === 'object') {
+      text = req.body.text || JSON.stringify(req.body);
     }
   } else if (req.query.text) {
     text = req.query.text;
   }
 
+  // Veriyi kaydet
   if (text && text !== "SİNYAL BOŞ") {
     const newEntry = {
       text: String(text).trim(),
@@ -24,9 +26,14 @@ export default async function handler(req, res) {
     trafficLog = [newEntry, ...trafficLog].slice(0, 10);
   }
 
+  // GET isteği ile logları dön
   if (req.method === 'GET' && !req.query.text) {
-    return res.status(200).json({ history: trafficLog });
+    return res.status(200).json({ 
+      history: trafficLog,
+      serverInfo: "V3_ACTIVE",
+      now: new Date().toISOString()
+    });
   }
 
-  return res.status(200).json({ status: 'Captured', msg: 'Siber sinyal alındı' });
+  return res.status(200).json({ status: 'Captured', received: text.substring(0, 10) });
 }
