@@ -92,3 +92,4 @@ export function useGemini() {
 
   return { messages, sendMessage, isTyping, thinkingSteps, isAvailable: true };
 }
+// Vercel Final Sync: 05/16/2026 22:21:05
