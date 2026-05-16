@@ -6,7 +6,7 @@ import {
   MessageSquare, FileText, PlusCircle, Sparkles, Terminal as TerminalIcon,
   Radio, BellRing, Activity, History, Wifi, Link, Send, CreditCard, Landmark, Shield,
   Play, Smartphone, Fuel, Calendar as CalendarIcon, Upload, X, Search, Trash2, AlertTriangle,
-  Info, ExternalLink, Key, AtSign
+  Info, ExternalLink, Key, AtSign, Power
 } from 'lucide-react';
 import { storage } from '../lib/storage';
 
@@ -132,12 +132,29 @@ export default function RemSync() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 40px 60px 40px', overflowY: 'auto' }}>
-      <div style={{ marginBottom: 40, marginTop: 40, display: 'flex', justifyContent: 'center', position: 'relative' }}>
-        <h1 style={{ fontSize: 48, fontWeight: 950, margin: 0, letterSpacing: '-0.04em' }}>R.E.M <span style={{ color: '#6366f1' }}>SYNC</span></h1>
-        <button onClick={handleReset} style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', background: '#fee2e2', color: '#ef4444', border: 'none', padding: '12px 24px', borderRadius: 16, fontSize: 12, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}><Trash2 size={16} /> SİSTEMİ SIFIRLA</button>
-      </div>
+      
+      {/* SİBER HERO BÖLÜMÜ - POWER OF SYNC */}
+      <motion.div 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        style={{ textAlign: 'center', marginTop: 60, marginBottom: 40 }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 16 }}>
+          <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1, #c084fc)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}>
+            <Power size={20} />
+          </div>
+          <h1 style={{ fontSize: 'clamp(32px, 5vw, 64px)', fontWeight: 950, margin: 0, letterSpacing: '-0.05em', background: 'linear-gradient(to right, var(--text1), #6366f1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            TEST THE <span style={{ color: '#6366f1', WebkitTextFillColor: '#6366f1' }}>POWER</span> OF SYNC
+          </h1>
+        </div>
+        <p style={{ fontSize: 18, color: 'var(--text2)', maxWidth: 600, margin: '0 auto', fontWeight: 600, lineHeight: 1.6 }}>
+          Banka API'leri ve Otonom Köprüler arasındaki siber senkronizasyonun gücünü keşfedin. Finansal verileriniz artık siber bir hızla merkeze akıyor.
+        </p>
+      </motion.div>
 
-      <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', position: 'relative' }}>
+        <button onClick={handleReset} style={{ position: 'absolute', right: 0, top: -20, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '10px 20px', borderRadius: 12, fontSize: 11, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, zIndex: 10 }}><Trash2 size={14} /> SIFIRLA</button>
+        
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 40 }}>
            {[ 
              { id: 1, name: "BANKA API", info: "Garanti BBVA", icon: Landmark, color: "#10b981" }, 
@@ -202,7 +219,7 @@ export default function RemSync() {
                     </div>
                   </div>
 
-                  {/* TELEGRAM GUIDE GLASS CARD - UPDATED PROTOCOL */}
+                  {/* TELEGRAM GUIDE GLASS CARD - UPDATED WITH TL MÜHÜRÜ */}
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -228,7 +245,7 @@ export default function RemSync() {
                       {[
                         { step: "01", title: "Botu Aç", desc: "Telegram üzerinden @insomni_test_bot adresine sızın.", icon: <ExternalLink size={18} /> },
                         { step: "02", title: "Sinyal Formatı", desc: "Veri göndermek için önce ID, sonra boşluk ve harcama yazın.", icon: <MessageSquare size={18} /> },
-                        { step: "03", title: "Örnek Veri", desc: `${omniId} Kahve 120`, icon: <Zap size={18} />, highlight: true }
+                        { step: "03", title: "Örnek Veri", desc: `${omniId} Kahve 120tl`, icon: <Zap size={18} />, highlight: true }
                       ].map((item, idx) => (
                         <div key={idx} style={{ padding: 20, borderRadius: 20, background: item.highlight ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${item.highlight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.05)'}` }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
