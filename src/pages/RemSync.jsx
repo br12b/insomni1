@@ -33,7 +33,7 @@ export default function RemSync() {
     setBridgeId(savedId);
   }, []);
 
-  // BRIDGE POLLING (ID Filtreli)
+  // Method 2: BRIDGE POLLING
   useEffect(() => {
     let interval;
     if (activePath === 2 && bridgeId) {
@@ -56,48 +56,45 @@ export default function RemSync() {
   }, [activePath, processedIds, bridgeId]);
 
   const processAutomatedMessage = async (text) => {
-    if (!text || text === "SINYAL BOS") return;
+    if (!text) return;
     setIsSyncing(true);
-    addLog(`BRIDGE: Veri girisi saptandi!`);
-    await new Promise(r => setTimeout(r, 1000));
+    addLog(`BRIDGE: Sinyal yakalandi!`);
     
     const amountMatch = text.match(/(\d+([.,]\d+)?)\s*(TL|tl|₺)/i);
     const amount = amountMatch ? amountMatch[1] : null;
     
     if (amount) {
-      addLog(`R.E.M: Analiz basarili. Tutar: ${amount} ₺`);
+      addLog(`R.E.M: Analiz basarili. Tutar: ${amount} TL`);
       const newTx = {
         id: Date.now(),
         type: 'TRANSACTION',
-        clean: text.length > 30 ? "Otonom Harcama" : text,
-        amount: `-${amount} ₺`,
-        raw: "SIBER_KÖPRÜ_v3",
-        category: "OTONOM ANALIZ",
+        clean: text.length > 25 ? "Telegram Harcamasi" : text,
+        amount: `-${amount} TL`,
+        raw: "OMNI_BRIDGE_v3",
+        category: "OTONOM",
         icon: BellRing,
         color: "#6366f1"
       };
       setSyncedData(prev => [newTx, ...prev]);
-    } else {
-      addLog(`UYARI: Tutar bulunamadi. Veri: "${text.substring(0, 15)}..."`);
     }
     setIsSyncing(false);
   };
 
   const sendTestSignal = async () => {
-    addLog("SISTEM: Manuel test sinyali firlatiliyor...");
     try {
       await fetch('/api/bridge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: `${bridgeId} Starbucks 150 TL Test Mesaji` })
+        body: JSON.stringify({ text: `${bridgeId} Test 150 TL` })
       });
-      addLog("SISTEM: Sinyal arka kapiya (API) birakildi.");
-    } catch (err) { addLog("HATA: Sinyal firlatilamadi."); }
+      addLog("SISTEM: Test sinyali gonderildi.");
+    } catch (err) { addLog("HATA: Sinyal hatasi."); }
   };
 
+  // Method 1: API HUB Senkronizasyonu
   const handleApiSync = async () => {
     setIsSyncing(true); setSyncedData([]); setLogs([]);
-    const sequence = ["Baglanti kuruluyor...", "Gateway dogrulandi.", "Veriler cekiliyor...", "Analiz ediliyor...", "Tamamlandi."];
+    const sequence = ["Sistem baglantisi kuruluyor...", "Banka gateway dogrulandi.", "Bakiye verileri cekiliyor...", "Harcama gecmisi analiz ediliyor...", "REM Motoru verileri isledi.", "Senkronizasyon TAMAMLANDI."];
     for(let i=0; i<sequence.length; i++) {
       addLog(sequence[i]); await new Promise(r => setTimeout(r, 800));
     }
@@ -105,11 +102,11 @@ export default function RemSync() {
       const response = await fetch('/api/sync');
       const data = await response.json();
       if (data.status === 'Connected') {
-        const balanceCard = { id: 'bal', type: 'BALANCE', clean: "Garanti Hesabi", amount: data.balance + " ₺", raw: data.iban, category: "BAKIYE", icon: Wallet, color: "#10b981" };
-        const transactions = data.transactions.map(tx => ({ ...tx, icon: tx.clean.includes('Starbucks') ? Coffee : ShoppingBag, color: "#6366f1" }));
+        const balanceCard = { id: 'bal', type: 'BALANCE', clean: "Ana Hesap Bakiyesi", amount: data.balance + " TL", raw: "TR-- ---- ---- ----", category: "VARLIK", icon: Wallet, color: "#10b981" };
+        const transactions = data.transactions.map(tx => ({ ...tx, icon: ShoppingBag, color: "#6366f1" }));
         setSyncedData([balanceCard, ...transactions]);
       }
-    } catch (err) { addLog("HATA: Link koptu."); }
+    } catch (err) { addLog("HATA: API Baglantisi koptu."); }
     setIsSyncing(false);
   };
 
@@ -123,7 +120,7 @@ export default function RemSync() {
 
       <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 20, marginBottom: 40 }}>
-           {[{ id: 1, name: "API HUB", icon: Zap, color: "#10b981" }, { id: 2, name: "BRIDGE v2", icon: Radio, color: "#6366f1" }, { id: 3, name: "DOCU-SCAN", icon: FileText, color: "#f59e0b" }].map(p => (
+           {[{ id: 1, name: "API HUB", icon: Zap, color: "#10b981" }, { id: 2, name: "METHOD 2", icon: Radio, color: "#6366f1" }, { id: 3, name: "DOCU-SCAN", icon: FileText, color: "#f59e0b" }].map(p => (
              <button key={p.id} onClick={() => {setActivePath(p.id); setSyncedData([]); setLogs([]);}}
                style={{ padding: 24, borderRadius: 24, border: `2px solid ${activePath === p.id ? p.color : 'rgba(0,0,0,0.05)'}`, background: activePath === p.id ? `${p.color}05` : '#fff', display: 'flex', alignItems: 'center', gap: 16, transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, background: activePath === p.id ? p.color : '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', color: activePath === p.id ? '#fff' : '#999' }}><p.icon size={22} /></div>
@@ -140,7 +137,6 @@ export default function RemSync() {
             {activePath === 2 && (
               <motion.div key="bridge" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 340px', gap: 30 }}>
                  <div>
-                    {/* OMNI ID Karti */}
                     <div className="glass" style={{ marginBottom: 24, padding: 24, borderLeft: '4px solid #6366f1', background: '#fff' }}>
                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -154,49 +150,56 @@ export default function RemSync() {
                           <div style={{ fontSize: 32, fontWeight: 950, color: '#6366f1', letterSpacing: '4px' }}>{bridgeId}</div>
                        </div>
                        <p style={{ fontSize: 10, color: '#64748b', marginTop: 12, fontStyle: 'italic' }}>
-                         * Bot mesajinin basina bu ID'yi ekleyin. Örn: <b>{bridgeId} Starbucks 150 TL</b>
+                         * Telegram mesajinin basina ID ekleyin. Örn: <b>{bridgeId} Kahve 100 TL</b>
                        </p>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                           <div style={{ width: 56, height: 56, borderRadius: 18, background: '#6366f110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Radio size={28} color="#6366f1" className="animate-pulse" /></div>
-                          <h3 style={{ fontSize: 20, fontWeight: 950, margin: 0 }}>Siber Köprü v3.0</h3>
+                          <h3 style={{ fontSize: 20, fontWeight: 950, margin: 0 }}>Method 2: Autonomous</h3>
                        </div>
-                       <button onClick={sendTestSignal} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 12, background: '#000', color: '#fff', fontSize: 12, fontWeight: 900, cursor: 'pointer' }}>
-                          <Send size={14} /> TEST SINYALI GÖNDER
+                       <button onClick={sendTestSignal} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 12, background: '#000', color: '#fff', fontSize: 12, fontWeight: 900 }}>
+                          <Send size={14} /> TEST SINYALI
                        </button>
                     </div>
-                    <div style={{ background: '#0a0a0a', borderRadius: 20, padding: 24, fontFamily: 'monospace', minHeight: 280, border: '1px solid rgba(255,255,255,0.05)' }}>
-                       <div style={{ color: '#6366f130', fontSize: 10, marginBottom: 12, borderBottom: '1px solid #6366f110', paddingBottom: 8 }}>REM CORE v3.0 // OTONOM LOGS</div>
+                    <div style={{ background: '#0a0a0a', borderRadius: 20, padding: 24, fontFamily: 'monospace', minHeight: 180, border: '1px solid rgba(255,255,255,0.05)' }}>
                        {logs.map((l, i) => <div key={i} style={{ color: '#6366f1', fontSize: 13, marginBottom: 4 }}>{l}</div>)}
-                       {logs.length === 0 && <div style={{ color: '#333', fontSize: 13 }}>Dinleme moduna gecildi...</div>}
+                       {logs.length === 0 && <div style={{ color: '#333', fontSize: 13 }}>Sinyal bekleniyor...</div>}
                     </div>
                  </div>
                  <div style={{ background: 'rgba(0,0,0,0.02)', borderRadius: 24, padding: 20, border: '1px solid rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                        <Activity size={16} color="#6366f1" />
-                       <h4 style={{ fontSize: 13, fontWeight: 900, margin: 0 }}>CANLI TRAFIK</h4>
+                       <h4 style={{ fontSize: 13, fontWeight: 900, margin: 0 }}>TRAFIK</h4>
                     </div>
                     <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
                        {trafficLog.map((t, i) => (
-                         <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} key={t.id}
-                           style={{ padding: 12, borderRadius: 14, background: i === 0 ? '#6366f105' : '#fff', border: `1px solid ${i === 0 ? '#6366f120' : 'transparent'}` }}>
-                            <div style={{ fontSize: 9, fontWeight: 900, color: '#6366f1', marginBottom: 2 }}>INPUT_DETECTED</div>
-                            <div style={{ fontSize: 11, fontWeight: 600, color: '#111', wordBreak: 'break-all' }}>{t.text}</div>
+                         <div key={t.id} style={{ padding: 12, borderRadius: 14, background: i === 0 ? '#6366f105' : '#fff', border: `1px solid ${i === 0 ? '#6366f120' : 'transparent'}` }}>
+                            <div style={{ fontSize: 11, fontWeight: 600, color: '#111' }}>{t.text}</div>
                             <div style={{ fontSize: 8, color: '#999', marginTop: 4 }}>{new Date(t.timestamp).toLocaleTimeString()}</div>
-                         </motion.div>
+                         </div>
                        ))}
                     </div>
                  </div>
               </motion.div>
             )}
             {activePath === 1 && (
-               <motion.div key="api" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ position: 'relative', zIndex: 1 }}>
-                  <div style={{ background: '#0a0a0a', borderRadius: 20, padding: 24, fontFamily: 'monospace', minHeight: 180, border: '1px solid rgba(255,255,255,0.05)', marginBottom: 24 }}>
-                     {logs.map((l, i) => <div key={i} style={{ color: '#10b981', fontSize: 13, marginBottom: 4 }}>{l}</div>)}
+               <motion.div key="api" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 30 }}>
+                      <div style={{ width: 56, height: 56, borderRadius: 18, background: '#10b98110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={28} color="#10b981" /></div>
+                      <div>
+                        <h3 style={{ fontSize: 20, fontWeight: 950, margin: 0 }}>Method 1: API Gateway</h3>
+                        <p style={{ fontSize: 12, color: '#666', margin: 0 }}>Banka altyapisiyla dogrudan senkronizasyon</p>
+                      </div>
                   </div>
-                  <button onClick={handleApiSync} disabled={isSyncing} className="btn-primary" style={{ width: '100%', padding: 20, borderRadius: 16, fontSize: 16, fontWeight: 900, background: '#000', color: '#fff' }}>GATEWAY BAGLANTISINI KUR</button>
+                  <div style={{ background: '#0a0a0a', borderRadius: 20, padding: 24, fontFamily: 'monospace', minHeight: 200, border: '1px solid rgba(255,255,255,0.05)', marginBottom: 24 }}>
+                     {logs.map((l, i) => <div key={i} style={{ color: '#10b981', fontSize: 13, marginBottom: 4 }}>{l}</div>)}
+                     {logs.length === 0 && <div style={{ color: '#333', fontSize: 13 }}>Sistem hazir. Baglanti bekleniyor...</div>}
+                  </div>
+                  <button onClick={handleApiSync} disabled={isSyncing} className="btn-primary" style={{ width: '100%', padding: 20, borderRadius: 16, fontSize: 16, fontWeight: 900, background: '#000', color: '#fff', cursor: 'pointer' }}>
+                    {isSyncing ? 'SENKRONIZE EDILIYOR...' : 'GATEWAY BAGLANTISINI BASLAT'}
+                  </button>
                </motion.div>
             )}
           </AnimatePresence>
