@@ -113,7 +113,7 @@ export default function RemSync() {
     await fetch('/api/bridge', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: `${omniId} Yemek 340tl` })
+      body: JSON.stringify({ text: `${omniId} Yemek 340 tl` })
     });
   };
 
@@ -133,7 +133,6 @@ export default function RemSync() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 40px 60px 40px', overflowY: 'auto' }}>
       
-      {/* HERO BÖLÜMÜ - POWER OF SYNC */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -157,7 +156,6 @@ export default function RemSync() {
 
       <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', position: 'relative' }}>
         
-        {/* FIXED RESET BUTTON POSITION */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
           <button onClick={handleReset} style={{ background: 'rgba(239,68,68,0.08)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.15)', padding: '10px 20px', borderRadius: 12, fontSize: 11, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}><Trash2 size={14} /> SİSTEMİ SIFIRLA</button>
         </div>
@@ -249,9 +247,9 @@ export default function RemSync() {
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
                       {[
-                        { step: "01", title: "Botu Aç", desc: "Telegram üzerinden @insomni_test_bot adresine sızın.", icon: <ExternalLink size={18} /> },
+                        { step: "01", title: "Botu Aç", desc: "Telegram üzerinden @insomni_test_bot adresinden botu başlatın.", icon: <ExternalLink size={18} /> },
                         { step: "02", title: "Sinyal Formatı", desc: "Veri göndermek için önce ID, sonra boşluk ve harcama yazın.", icon: <MessageSquare size={18} /> },
-                        { step: "03", title: "Örnek Veri", desc: `${omniId} Kahve 120tl`, icon: <Zap size={18} />, highlight: true }
+                        { step: "03", title: "Örnek Veri", desc: `${omniId} Kahve 120 tl`, icon: <Zap size={18} />, highlight: true }
                       ].map((item, idx) => (
                         <div key={idx} style={{ padding: 20, borderRadius: 20, background: item.highlight ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${item.highlight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.05)'}` }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
@@ -275,10 +273,10 @@ export default function RemSync() {
           </AnimatePresence>
         </div>
 
-        <div>
+        <div style={{ marginTop: 60 }}>
           <AnimatePresence>
             {filteredData && filteredData.length > 0 && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ marginTop: 60 }}>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                  {activePath === 1 && filteredData.some(d => d.type === 'BALANCE') && (
                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} 
                      style={{ padding: 40, borderRadius: 40, background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#fff', marginBottom: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 30px 60px rgba(0,0,0,0.2)' }}>
