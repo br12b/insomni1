@@ -70,10 +70,32 @@ export default function Landing({ onStart, editMode = false }) {
       </motion.div>
 
       {/* Main Content Overlay */}
-      {/* REM INFO CARDS - LEFT SIDE */}
+            {/* REM INFO CARDS - LEFT SIDE */}
       <div style={{ position: 'absolute', left: '4vw', top: '22vh', zIndex: 15, display: 'flex', flexDirection: 'column', gap: 16, width: 280 }}>
+        
+        {/* MOR GLASSMORPHISM BAŞLIK */}
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+          style={{
+            padding: '8px 16px',
+            borderRadius: '100px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'rgba(129, 140, 248, 0.1)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(129, 140, 248, 0.3)',
+            boxShadow: '0 0 20px rgba(129, 140, 248, 0.2)',
+            marginBottom: '4px',
+            width: 'fit-content'
+          }}>
+          <span style={{ fontSize: '16px' }}>👋</span>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--accent)', letterSpacing: '0.5px' }}>
+            {lang === 'tr' ? 'Merhaba, ben R.E.M.' : 'Hello, I am R.E.M.'}
+          </span>
+        </motion.div>
+
         {[
-          { icon: 'Search', text: lang === 'tr' ? 'Merhaba, ben R.E.M. Harcamalarınızı milisaniyeler içinde tararım.' : 'Hello, I am R.E.M. Scanning expenses in milliseconds.' },
+          { icon: 'Search', text: lang === 'tr' ? 'Harcamalarınızı milisaniyeler içinde tararım.' : 'Scanning expenses in milliseconds.' },
           { icon: 'RefreshCw', text: lang === 'tr' ? 'Gizli abonelikleri saniyeler içinde bulurum.' : 'Finding hidden subscriptions in seconds.' },
           { icon: 'Zap', text: lang === 'tr' ? 'Boşta duran her kuruşu anında yakalarım.' : 'Catching every idle cent instantly.' }
         ].map((card, i) => (
