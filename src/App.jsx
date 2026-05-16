@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, RefreshCw, Calendar as CalendarIcon, Brain, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
@@ -153,9 +153,6 @@ function AppContent() {
               <button onClick={() => goTo('profile')} className={`btn btn-icon btn-sm ${view === 'profile' ? 'btn-accent' : 'btn-ghost'}`} title={profile}>
                 <User size={16} />
               </button>
-              <button onClick={() => goTo('admin')} className={`btn btn-icon btn-sm ${view === 'admin' ? 'btn-accent' : 'btn-ghost'}`} title="Admin Panel">
-                <Settings size={16} />
-              </button>
             </>
           )}
           <ThemeToggle />
@@ -180,7 +177,6 @@ function AppContent() {
           {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
           {view === 'remsync' && <RemSync />}
           {view === 'calendar' && <Calendar financialData={{ salaryData, expensesData }} />}
-          {view === 'admin' && <Admin onClose={() => goTo('landing')} />}
         </motion.div>
       </AnimatePresence>
     </div>
