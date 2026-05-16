@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+ï»¿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   RefreshCw, ShieldCheck, Shield, Zap, Loader2, Lock, ArrowRight, Database, 
@@ -23,7 +23,7 @@ export default function RemSync() {
     setLogs(prev => [...prev.slice(-10), `> ${msg}`]);
   };
 
-  // Siber Kimlik Olusturma
+  // OMNI ID Olusturma
   useEffect(() => {
     let savedId = localStorage.getItem('insomni_bridge_id');
     if (!savedId) {
@@ -61,17 +61,17 @@ export default function RemSync() {
     addLog(`BRIDGE: Veri girisi saptandi!`);
     await new Promise(r => setTimeout(r, 1000));
     
-    const amountMatch = text.match(/(\d+([.,]\d+)?)\s*(TL|tl|?)/i);
+    const amountMatch = text.match(/(\d+([.,]\d+)?)\s*(TL|tl|â‚º)/i);
     const amount = amountMatch ? amountMatch[1] : null;
     
     if (amount) {
-      addLog(`R.E.M: Analiz basarili. Tutar: ${amount} ?`);
+      addLog(`R.E.M: Analiz basarili. Tutar: ${amount} â‚º`);
       const newTx = {
         id: Date.now(),
         type: 'TRANSACTION',
         clean: text.length > 30 ? "Otonom Harcama" : text,
-        amount: `-${amount} ?`,
-        raw: "SIBER_KÖPRÜ_v3",
+        amount: `-${amount} â‚º`,
+        raw: "SIBER_KÃ–PRÃœ_v3",
         category: "OTONOM ANALIZ",
         icon: BellRing,
         color: "#6366f1"
@@ -105,7 +105,7 @@ export default function RemSync() {
       const response = await fetch('/api/sync');
       const data = await response.json();
       if (data.status === 'Connected') {
-        const balanceCard = { id: 'bal', type: 'BALANCE', clean: "Garanti Hesabi", amount: data.balance + " ?", raw: data.iban, category: "BAKIYE", icon: Wallet, color: "#10b981" };
+        const balanceCard = { id: 'bal', type: 'BALANCE', clean: "Garanti Hesabi", amount: data.balance + " â‚º", raw: data.iban, category: "BAKIYE", icon: Wallet, color: "#10b981" };
         const transactions = data.transactions.map(tx => ({ ...tx, icon: tx.clean.includes('Starbucks') ? Coffee : ShoppingBag, color: "#6366f1" }));
         setSyncedData([balanceCard, ...transactions]);
       }
@@ -140,7 +140,7 @@ export default function RemSync() {
             {activePath === 2 && (
               <motion.div key="bridge" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 340px', gap: 30 }}>
                  <div>
-                    {/* Siber Kimlik Kartý */}
+                    {/* OMNI ID Karti */}
                     <div className="glass" style={{ marginBottom: 24, padding: 24, borderLeft: '4px solid #6366f1', background: '#fff' }}>
                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -154,17 +154,17 @@ export default function RemSync() {
                           <div style={{ fontSize: 32, fontWeight: 950, color: '#6366f1', letterSpacing: '4px' }}>{bridgeId}</div>
                        </div>
                        <p style={{ fontSize: 10, color: '#64748b', marginTop: 12, fontStyle: 'italic' }}>
-                         * Bot mesajinin basina bu ID'yi ekleyin. Örn: <b>{bridgeId} Starbucks 150 TL</b>
+                         * Bot mesajinin basina bu ID'yi ekleyin. Ã–rn: <b>{bridgeId} Starbucks 150 TL</b>
                        </p>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                           <div style={{ width: 56, height: 56, borderRadius: 18, background: '#6366f110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Radio size={28} color="#6366f1" className="animate-pulse" /></div>
-                          <h3 style={{ fontSize: 20, fontWeight: 950, margin: 0 }}>Siber Köprü v3.0</h3>
+                          <h3 style={{ fontSize: 20, fontWeight: 950, margin: 0 }}>Siber KÃ¶prÃ¼ v3.0</h3>
                        </div>
                        <button onClick={sendTestSignal} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 12, background: '#000', color: '#fff', fontSize: 12, fontWeight: 900, cursor: 'pointer' }}>
-                          <Send size={14} /> TEST SINYALI GÖNDER
+                          <Send size={14} /> TEST SINYALI GÃ–NDER
                        </button>
                     </div>
                     <div style={{ background: '#0a0a0a', borderRadius: 20, padding: 24, fontFamily: 'monospace', minHeight: 280, border: '1px solid rgba(255,255,255,0.05)' }}>
