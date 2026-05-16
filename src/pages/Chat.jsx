@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import { MessageSquare, Sparkles, Shield, Zap } from 'lucide-react';
 import AIChat from '../components/dashboard/AIChat';
@@ -46,7 +46,7 @@ export default function Chat({ salaryData, expensesData }) {
             </div>
             <div>
               <h1 style={{ fontSize: 24, fontWeight: 900, margin: 0 }}>R.E.M AI</h1>
-              <p style={{ fontSize: 12, color: 'var(--text2)', margin: 0 }}>Personal Financial Intelligence</p>
+              <p style={{ fontSize: 12, color: 'var(--text2)', margin: 0 }}>Powered by <span style={{ color: 'var(--accent)', fontWeight: 800 }}>Gemini Flash 3.1</span></p>
             </div>
           </div>
 
@@ -72,7 +72,7 @@ export default function Chat({ salaryData, expensesData }) {
               </div>
             ) : (
               <div style={{ fontSize: 12, color: 'var(--text2)', textAlign: 'center', padding: '10px 0' }}>
-                {lang === 'tr' ? 'Henüz bir finansal analiz yapılmadı.' : 'No financial analysis performed yet.'}
+                {lang === 'tr' ? 'HenÃ¼z bir finansal analiz yapÄ±lmadÄ±.' : 'No financial analysis performed yet.'}
               </div>
             )}
           </div>
@@ -81,7 +81,7 @@ export default function Chat({ salaryData, expensesData }) {
                       <div className="glass" style={{ padding: 20, border: '1px solid var(--accent-dim)', background: 'linear-gradient(to bottom right, rgba(129,140,248,0.1), transparent)' }}>
             <h3 style={{ fontSize: 14, fontWeight: 900, color: 'var(--accent)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 }}>Our Vision</h3>
             <p style={{ fontSize: 12, color: 'var(--text1)', lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
-              "Insomni, atıl nakdin sadece bir rakam değil, kaçırılmış bir gelecek olduğu inancıyla doğdu. R.E.M ile amacımız, finansal verilerinizdeki her bir saniyeyi değere dönüştürmek ve size paranın gerçek zamanlı maliyetini göstererek finansal özgürlüğünüzü optimize etmektir."
+              "Insomni, atÄ±l nakdin sadece bir rakam deÄŸil, kaÃ§Ä±rÄ±lmÄ±ÅŸ bir gelecek olduÄŸu inancÄ±yla doÄŸdu. R.E.M ile amacÄ±mÄ±z, finansal verilerinizdeki her bir saniyeyi deÄŸere dÃ¶nÃ¼ÅŸtÃ¼rmek ve size paranÄ±n gerÃ§ek zamanlÄ± maliyetini gÃ¶stererek finansal Ã¶zgÃ¼rlÃ¼ÄŸÃ¼nÃ¼zÃ¼ optimize etmektir."
             </p>
           </div>
 
