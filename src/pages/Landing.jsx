@@ -73,7 +73,7 @@ export default function Landing({ onStart, editMode = false }) {
       {/* REM INFO CARDS - LEFT SIDE */}
       <div style={{ position: 'absolute', left: '4vw', top: '22vh', zIndex: 15, display: 'flex', flexDirection: 'column', gap: 16, width: 280 }}>
         {[
-          { icon: 'Search', text: lang === 'tr' ? 'Harcamalarınızı milisaniyeler içinde tararım.' : 'Scanning expenses in milliseconds.' },
+          { icon: 'Search', text: lang === 'tr' ? 'Merhaba, ben R.E.M. Harcamalarınızı milisaniyeler içinde tararım.' : 'Hello, I am R.E.M. Scanning expenses in milliseconds.' },
           { icon: 'RefreshCw', text: lang === 'tr' ? 'Gizli abonelikleri saniyeler içinde bulurum.' : 'Finding hidden subscriptions in seconds.' },
           { icon: 'Zap', text: lang === 'tr' ? 'Boşta duran her kuruşu anında yakalarım.' : 'Catching every idle cent instantly.' }
         ].map((card, i) => (
