@@ -21,7 +21,14 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
     setSyncedTxs(data);
   }, []);
 
-  const syncedTotal = syncedTxs.reduce((acc, tx) => acc + parseFloat(tx.amount.replace(/[^\d.,]/g, '').replace(',', '.')), 0);
+  // SİBER RAKAM AYIKLAMA MOTORU (TR FORMATI İÇİN)
+  const parseRemAmount = (val) => {
+    if (!val) return 0;
+    const cleaned = val.toString().replace(/[^\d,]/g, '').replace(',', '.');
+    return parseFloat(cleaned) || 0;
+  };
+
+  const syncedTotal = syncedTxs.reduce((acc, tx) => acc + parseRemAmount(tx.amount), 0);
   const totalExpense = (expensesData?.reduce((sum, exp) => sum + parseFloat(exp.amount || 0), 0) || 0) + syncedTotal;
   const income = salaryData?.salary || 0;
   const currency = salaryData?.currency || '₺';
@@ -32,7 +39,7 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
     ...syncedTxs.map(tx => ({
       id: tx.id,
       name: tx.clean,
-      amount: parseFloat(tx.amount.replace(/[^\d.,]/g, '').replace(',', '.')),
+      amount: parseRemAmount(tx.amount),
       date: tx.day || 15,
       category: tx.category,
       isSynced: true
