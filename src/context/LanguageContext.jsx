@@ -1,16 +1,16 @@
-import React, { createContext, useContext, useState } from 'react';
+﻿import React, { createContext, useContext, useState } from 'react';
 
 const LanguageContext = createContext();
 
 const translations = {
   tr: {
-    currency: '₺',
+    currency: 'â‚º',
     landing: {
-      badge: 'PPF Odaklı — Gunluk %0.150 Faiz',
+      badge: 'PPF OdaklÄ± â€” Gunluk %0.150 Faiz',
       title1: 'Atil nakdin',
       titleAccent: 'gercek maliyeti',
       title2: 'nedir?',
-      desc: "Maasin hesapta oturdugu her gun Para Piyasasi Fonlarinda (PPF) degerlendirilmis olabilirdi. Insomni bu kaybi kurus kurus hesaplar.",
+      desc: "Finansal kaygıların uykunuzu kaçırmasına izin vermeyin. R.E.M. ile atıl nakdinizi saniyeler içinde optimize edin ve huzurla uyuyun.",
       cta: 'R.E.M ile Analize Basla',
       stat1: 'Ort. Firsat Maliyeti',
       stat2: 'Piyasa PPF Orani',
@@ -27,71 +27,71 @@ const translations = {
       ariaIntro: 'Nakit akisinizi beraber optimize edelim.'
     },
     opportunities: {
-      title: 'Fırsat Merkezi',
-      desc: 'Harcamalarınıza göre en iyi cashback ve kampanya eşleşmeleri.',
-      smartMatch: 'R.E.M Akıllı Eşleşme',
-      allCampaigns: 'Tüm Kampanyalar',
-      matchFound: 'Eşleşme Bulundu!',
-      noMatch: 'Henüz harcama analizi yapılmadı.',
+      title: 'FÄ±rsat Merkezi',
+      desc: 'HarcamalarÄ±nÄ±za gÃ¶re en iyi cashback ve kampanya eÅŸleÅŸmeleri.',
+      smartMatch: 'R.E.M AkÄ±llÄ± EÅŸleÅŸme',
+      allCampaigns: 'TÃ¼m Kampanyalar',
+      matchFound: 'EÅŸleÅŸme Bulundu!',
+      noMatch: 'HenÃ¼z harcama analizi yapÄ±lmadÄ±.',
       platform: 'Platform',
-      potentialGain: 'Potansiyel Kazanç',
+      potentialGain: 'Potansiyel KazanÃ§',
       categories: {
         all: 'Hepsi',
-        shopping: 'Alışveriş',
+        shopping: 'AlÄ±ÅŸveriÅŸ',
         food: 'Yemek',
         subscription: 'Abonelik',
         travel: 'Seyahat'
       }
     },
     onboarding: {
-      profileTitle: 'Komuta Merkezine Hoş Geldin',
-      profileDesc: 'Analize başlamadan önce sana nasıl hitap etmemi istersin?',
-      profilePlaceholder: 'İsminizi yazın...',
+      profileTitle: 'Komuta Merkezine HoÅŸ Geldin',
+      profileDesc: 'Analize baÅŸlamadan Ã¶nce sana nasÄ±l hitap etmemi istersin?',
+      profilePlaceholder: 'Ä°sminizi yazÄ±n...',
       salaryTitle: 'Gelir Bilgileri',
-      salaryDesc: 'Aylık net maaşınızı ve yattığı günü belirtin.',
-      salaryLabel: 'Net Maaş (Aylık)',
-      dateLabel: 'Maaş Günü (1-31)',
+      salaryDesc: 'AylÄ±k net maaÅŸÄ±nÄ±zÄ± ve yattÄ±ÄŸÄ± gÃ¼nÃ¼ belirtin.',
+      salaryLabel: 'Net MaaÅŸ (AylÄ±k)',
+      dateLabel: 'MaaÅŸ GÃ¼nÃ¼ (1-31)',
       expenseTitle: 'Harcama Listesi',
-      expenseDesc: 'Düzenli harcamalarınızı ekleyin.',
-      expenseLabel: 'Harcama Adı',
+      expenseDesc: 'DÃ¼zenli harcamalarÄ±nÄ±zÄ± ekleyin.',
+      expenseLabel: 'Harcama AdÄ±',
       amountLabel: 'Tutar',
       dateExpLabel: 'Tarih',
       addBtn: 'Ekle',
-      popular: 'Popüler:',
+      popular: 'PopÃ¼ler:',
       suggestKira: 'Kira',
-      suggestKredi: 'Kredi Kartı',
+      suggestKredi: 'Kredi KartÄ±',
       suggestAbonelik: 'Abonelik',
     },
     dashboard: {
-      welcome: 'Hoş Geldin',
-      healthScore: 'Finansal Sağlık',
-      healthDesc: 'Skorun geçen aya göre %5 arttı.',
-      totalBalance: 'Toplam Varlık',
-      monthlyExpenses: 'Aylık Gider',
-      opportunityCost: 'Fırsat Maliyeti',
-      opportunityDesc: 'PPF (Para Piyasası Fonu) ile kazanılabilecek tutar.',
+      welcome: 'HoÅŸ Geldin',
+      healthScore: 'Finansal SaÄŸlÄ±k',
+      healthDesc: 'Skorun geÃ§en aya gÃ¶re %5 arttÄ±.',
+      totalBalance: 'Toplam VarlÄ±k',
+      monthlyExpenses: 'AylÄ±k Gider',
+      opportunityCost: 'FÄ±rsat Maliyeti',
+      opportunityDesc: 'PPF (Para PiyasasÄ± Fonu) ile kazanÄ±labilecek tutar.',
       subscriptions: 'Aktif Abonelikler',
-      manage: 'Yönet',
-      aiAdvisor: 'R.E.M AI Danışman',
-      aiPlaceholder: 'İstediğiniz soruyu yazın...',
-      send: 'Gönder'
+      manage: 'YÃ¶net',
+      aiAdvisor: 'R.E.M AI DanÄ±ÅŸman',
+      aiPlaceholder: 'Ä°stediÄŸiniz soruyu yazÄ±n...',
+      send: 'GÃ¶nder'
     },
     common: {
       back: 'Geri',
-      next: 'İleri',
+      next: 'Ä°leri',
       finish: 'Tamamla',
-      loading: 'Yükleniyor...',
+      loading: 'YÃ¼kleniyor...',
       save: 'Kaydet'
     }
   },
   en: {
     currency: '$',
     landing: {
-      badge: 'PPF Focused — Daily 0.150% Interest',
+      badge: 'PPF Focused â€” Daily 0.150% Interest',
       title1: 'What is the',
       titleAccent: 'real cost',
       title2: 'of idle cash?',
-      desc: "Every day your salary sits idle, it could have been growing with Money Market Funds (PPF). Insomni calculates this loss.",
+      desc: "Don't let financial anxiety keep you awake. Optimize your idle cash in seconds with R.E.M. and sleep peacefully.",
       cta: 'Start Analysis with R.E.M',
       stat1: 'Avg. Opportunity Cost',
       stat2: 'Market PPF Rate',
@@ -105,7 +105,7 @@ const translations = {
       feature3Desc: 'Your personal AI advisor analyzing financial data',
       feature4: 'Subscription Tracking',
       feature4Desc: 'The real annual cost of Netflix, Spotify, and more',
-      ariaIntro: 'Let’s optimize your cash flow together.'
+      ariaIntro: 'Letâ€™s optimize your cash flow together.'
     },
     opportunities: {
       title: 'Opportunity Hub',
