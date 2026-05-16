@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, MessageSquare, 
   Clock, Wallet, ShoppingBag, Coffee, Play, Smartphone, BellRing, Activity, 
-  Landmark, Radio, FileText, ArrowUpCircle, ArrowDownCircle, TrendingUp, TrendingDown, Target
+  Landmark, Radio, FileText, ArrowUpCircle, ArrowDownCircle, TrendingUp, TrendingDown, 
+  Target, Sparkles, Zap, ShieldCheck, Globe
 } from 'lucide-react';
 
 const IconMap = ({ name, color, type }) => {
@@ -19,12 +20,13 @@ const IconMap = ({ name, color, type }) => {
 const SourceIcon = ({ source }) => {
   if (source === 'BANKA GATEWAY') return <Landmark size={10} />;
   if (source === 'OTONOM KÖPRÜ') return <Radio size={10} />;
-  if (source === 'OCR ANALİZ') return <FileText size={10} />;
   return null;
 };
 
 export default function Calendar() {
-  const [selectedDay, setSelectedDay] = useState(15);
+  // BUGÜNÜN TARİHİNE MÜHÜRLEME
+  const today = new Date().getDate();
+  const [selectedDay, setSelectedDay] = useState(today);
   const [syncedData, setSyncedData] = useState([]);
 
   useEffect(() => {
@@ -44,13 +46,11 @@ export default function Calendar() {
   const blanks = Array.from({ length: startDay === 0 ? 6 : startDay - 1 }, (_, i) => i);
 
   const getDailyData = (day) => {
-    const dailyItems = syncedData.filter(d => d.day === day || (!d.day && day === 15));
+    const dailyItems = syncedData.filter(d => d.day === day);
     const txs = dailyItems.filter(d => d.type === 'TRANSACTION');
     const balanceItem = dailyItems.find(d => d.type === 'BALANCE');
-    
     const expense = txs.reduce((acc, tx) => acc + parseCurrency(tx.amount), 0);
-    const income = balanceItem ? parseCurrency(balanceItem.amount) : (day === 1 ? 45000 : 0);
-    
+    const income = balanceItem ? parseCurrency(balanceItem.amount) : 0;
     return { expense, income, items: dailyItems };
   };
 
@@ -62,60 +62,101 @@ export default function Calendar() {
   const selectedData = getDailyData(selectedDay);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 40px 40px 40px', overflowY: 'auto' }}>
-      <div style={{ marginBottom: 40, marginTop: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div><h1 style={{ fontSize: 36, fontWeight: 950, margin: 0 }}>Financial <span style={{ color: '#6366f1' }}>Journal</span></h1><p style={{ color: '#64748b', fontWeight: 600 }}>Siber Bakiye & Harcama Akışı</p></div>
-        <div className="glass" style={{ padding: '12px 28px', borderRadius: 100, display: 'flex', alignItems: 'center', gap: 20 }}><ChevronLeft size={20} /><span style={{ fontWeight: 950 }}>MAYIS 2026</span><ChevronRight size={20} /></div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 40, flex: 1, marginBottom: 40 }}>
-        <div className="glass" style={{ padding: 40, borderRadius: 44, background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(20px)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 16, textAlign: 'center', marginBottom: 32 }}>{['PZT', 'SAL', 'ÇAR', 'PER', 'CUM', 'CMT', 'PAZ'].map(d => <div key={d} style={{ fontSize: 11, fontWeight: 900, color: '#94a3b8' }}>{d}</div>)}</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 16 }}>
-            {blanks.map(b => <div key={`b-${b}`} />)}
-            {days.map(d => {
-              const data = getDailyData(d);
-              const isSelected = d === selectedDay;
-              return (
-                <motion.div key={d} onClick={() => setSelectedDay(d)} whileHover={{ scale: 1.05 }} style={{ aspectRatio: '1/1', borderRadius: 20, border: isSelected ? '2px solid #6366f1' : '1px solid #f1f5f9', background: isSelected ? '#6366f105' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', cursor: 'pointer' }}>
-                  <span style={{ fontSize: 18, fontWeight: 950, color: isSelected ? '#6366f1' : '#1e293b' }}>{d}</span>
-                  {data.expense > 0 && <div style={{ position: 'absolute', bottom: 8, width: 5, height: 5, borderRadius: '50%', background: '#ef4444' }} />}
-                  {data.income > 40000 && <div style={{ position: 'absolute', top: 8, width: 5, height: 5, borderRadius: '50%', background: '#10b981' }} />}
-                </motion.div>
-              );
-            })}
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', background: '#fcfdfe' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 40px 20px 40px' }}>
+        <div style={{ marginBottom: 40, marginTop: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 style={{ fontSize: 38, fontWeight: 950, margin: 0, letterSpacing: '-0.04em', color: '#1e293b' }}>Financial <span style={{ color: '#6366f1' }}>Journal</span></h1>
+            <p style={{ color: '#94a3b8', fontWeight: 700, fontSize: 13, letterSpacing: '0.05em' }}>VERİ ANALİTİĞİ VE MATRİS ANALİZİ</p>
+          </div>
+          <div className="glass" style={{ padding: '12px 28px', borderRadius: 100, display: 'flex', alignItems: 'center', gap: 24, border: '1px solid #f1f5f9', background: '#fff' }}>
+            <ChevronLeft size={18} color="#64748b" style={{ cursor: 'pointer' }} />
+            <span style={{ fontWeight: 950, fontSize: 14, letterSpacing: '0.05em', color: '#1e293b' }}>MAYIS 2026</span>
+            <ChevronRight size={18} color="#64748b" style={{ cursor: 'pointer' }} />
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-          <motion.div key={selectedDay} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass" style={{ padding: 40, borderRadius: 44, background: 'rgba(255,255,255,0.9)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 40 }}><div style={{ fontSize: 26, fontWeight: 950 }}>{selectedDay} Mayıs 2026</div><Activity size={24} color="#6366f1" /></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 40 }}>
-               <div style={{ padding: 24, borderRadius: 28, background: '#10b98108', border: '1px solid #10b98120' }}><div style={{ fontSize: 11, fontWeight: 900, color: '#10b981', marginBottom: 8 }}>GELİR / BAKİYE</div><div style={{ fontSize: 24, fontWeight: 950, color: '#064e3b' }}>{selectedData.income.toLocaleString('tr-TR')} ₺</div></div>
-               <div style={{ padding: 24, borderRadius: 28, background: '#ef444408', border: '1px solid #ef444420' }}><div style={{ fontSize: 11, fontWeight: 900, color: '#ef4444', marginBottom: 8 }}>TOPLAM GİDER</div><div style={{ fontSize: 24, fontWeight: 950, color: '#7f1d1d' }}>-{selectedData.expense.toLocaleString('tr-TR')} ₺</div></div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 40, marginBottom: 40 }}>
+          <div className="glass" style={{ padding: 40, borderRadius: 48, background: '#fff', border: '1px solid #f1f5f9' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 12, textAlign: 'center', marginBottom: 32 }}>
+              {['PZT', 'SAL', 'ÇAR', 'PER', 'CUM', 'CMT', 'PAZ'].map(d => <div key={d} style={{ fontSize: 11, fontWeight: 950, color: '#cbd5e1' }}>{d}</div>)}
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-               {selectedData.items.map((item, i) => (
-                 <div key={i} style={{ padding: 20, borderRadius: 24, background: item.type === 'BALANCE' ? '#10b98105' : '#f8fafc', border: item.type === 'BALANCE' ? '1px solid #10b98115' : '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                       <div style={{ width: 44, height: 44, borderRadius: 12, background: item.type === 'BALANCE' ? '#10b98115' : `${item.color}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconMap name={item.icon} color={item.type === 'BALANCE' ? '#10b981' : item.color} type={item.type} /></div>
-                       <div><div style={{ fontSize: 15, fontWeight: 900, color: item.type === 'BALANCE' ? '#064e3b' : '#1e293b' }}>{item.clean}</div><div style={{ fontSize: 9, fontWeight: 800, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 5, marginTop: 2 }}>{item.type === 'BALANCE' ? <ArrowUpCircle size={10} color="#10b981"/> : <SourceIcon source={item.source} />} {item.type === 'BALANCE' ? 'AKTİF VARLIK' : item.source}</div></div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 12 }}>
+              {blanks.map(b => <div key={`b-${b}`} />)}
+              {days.map(d => {
+                const data = getDailyData(d);
+                const isSelected = d === selectedDay;
+                return (
+                  <motion.div key={d} onClick={() => setSelectedDay(d)} whileHover={{ scale: 1.05 }}
+                    style={{ aspectRatio: '1/1', borderRadius: 20, border: isSelected ? '2px solid #6366f1' : '1px solid #f1f5f9', background: isSelected ? '#6366f108' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', cursor: 'pointer' }}>
+                    <span style={{ fontSize: 18, fontWeight: 950, color: isSelected ? '#6366f1' : '#1e293b' }}>{d}</span>
+                    <div style={{ position: 'absolute', bottom: 8, display: 'flex', gap: 3 }}>
+                      {data.expense > 0 && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#ef4444' }} />}
+                      {data.income > 0 && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#10b981' }} />}
                     </div>
-                    <div style={{ fontSize: 16, fontWeight: 950, color: item.type === 'BALANCE' ? '#10b981' : '#ef4444' }}>{item.amount}</div>
-                 </div>
-               ))}
+                  </motion.div>
+                );
+              })}
             </div>
-          </motion.div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            <AnimatePresence mode="wait">
+              <motion.div key={selectedDay} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} 
+                className="glass" style={{ padding: 40, borderRadius: 48, background: '#fff', border: '1px solid #f1f5f9' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+                  <div><div style={{ fontSize: 11, fontWeight: 900, color: '#6366f1', letterSpacing: '0.1em' }}>SEÇİLİ GÜN</div><div style={{ fontSize: 28, fontWeight: 950, color: '#1e293b' }}>{selectedDay} Mayıs 2026</div></div>
+                  <div style={{ width: 48, height: 48, borderRadius: 16, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #f1f5f9' }}><Activity size={20} color="#6366f1" /></div>
+                </div>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 32 }}>
+                   <div style={{ padding: 20, borderRadius: 24, background: '#10b98105', border: '1px solid #10b98115' }}>
+                      <div style={{ fontSize: 10, fontWeight: 900, color: '#10b981', marginBottom: 6 }}>GELİR</div>
+                      <div style={{ fontSize: 22, fontWeight: 950, color: '#064e3b' }}>{selectedData.income.toLocaleString('tr-TR')} ₺</div>
+                   </div>
+                   <div style={{ padding: 20, borderRadius: 24, background: '#ef444405', border: '1px solid #ef444415' }}>
+                      <div style={{ fontSize: 10, fontWeight: 900, color: '#ef4444', marginBottom: 6 }}>GİDER</div>
+                      <div style={{ fontSize: 22, fontWeight: 950, color: '#7f1d1d' }}>-{selectedData.expense.toLocaleString('tr-TR')} ₺</div>
+                   </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                   {selectedData.items.map((item, i) => (
+                     <div key={i} style={{ padding: 18, borderRadius: 20, background: '#f8fafc', border: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                           <div style={{ width: 44, height: 44, borderRadius: 12, background: item.type === 'BALANCE' ? '#10b98110' : `${item.color}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconMap name={item.icon} color={item.type === 'BALANCE' ? '#10b981' : item.color} type={item.type} /></div>
+                           <div><div style={{ fontSize: 16, fontWeight: 950, color: '#1e293b' }}>{item.clean}</div><div style={{ fontSize: 10, fontWeight: 800, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>{item.type === 'BALANCE' ? <ShieldCheck size={10} color="#10b981"/> : <SourceIcon source={item.source} />} {item.source}</div></div>
+                        </div>
+                        <div style={{ fontSize: 18, fontWeight: 950, color: item.type === 'BALANCE' ? '#10b981' : '#ef4444' }}>{item.amount}</div>
+                     </div>
+                   ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
-      <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="glass" style={{ padding: 32, borderRadius: 40, background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#fff', display: 'flex', justifyContent: 'space-around', alignItems: 'center', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <div style={{ textAlign: 'center' }}><div style={{ fontSize: 12, fontWeight: 900, color: '#94a3b8', marginBottom: 10 }}>AYLIK TOPLAM GELİR</div><div style={{ fontSize: 32, fontWeight: 950, color: '#10b981' }}>{monthlyStats.income.toLocaleString('tr-TR')} ₺</div></div>
-          <div style={{ width: 1, height: 60, background: 'rgba(255,255,255,0.1)' }} />
-          <div style={{ textAlign: 'center' }}><div style={{ fontSize: 12, fontWeight: 900, color: '#94a3b8', marginBottom: 10 }}>AYLIK TOPLAM GİDER</div><div style={{ fontSize: 32, fontWeight: 950, color: '#ef4444' }}>-{monthlyStats.expense.toLocaleString('tr-TR')} ₺</div></div>
-          <div style={{ width: 1, height: 60, background: 'rgba(255,255,255,0.1)' }} />
-          <div style={{ textAlign: 'center' }}><div style={{ fontSize: 12, fontWeight: 900, color: '#94a3b8', marginBottom: 10 }}>NET SİBER DURUM</div><div style={{ fontSize: 32, fontWeight: 950, color: '#6366f1' }}>{(monthlyStats.income - monthlyStats.expense).toLocaleString('tr-TR')} ₺</div></div>
-      </motion.div>
+      <div style={{ height: 100, background: '#fff', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', padding: '0 60px', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', gap: 60 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: '#10b98110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><TrendingUp size={20} color="#10b981" /></div>
+              <div><div style={{ fontSize: 10, fontWeight: 900, color: '#94a3b8', letterSpacing: '0.05em' }}>AYLIK TOPLAM GELİR</div><div style={{ fontSize: 24, fontWeight: 950, color: '#10b981' }}>{monthlyStats.income.toLocaleString('tr-TR')} ₺</div></div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: '#ef444410', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><TrendingDown size={20} color="#ef4444" /></div>
+              <div><div style={{ fontSize: 10, fontWeight: 900, color: '#94a3b8', letterSpacing: '0.05em' }}>AYLIK TOPLAM GİDER</div><div style={{ fontSize: 24, fontWeight: 950, color: '#ef4444' }}>-{monthlyStats.expense.toLocaleString('tr-TR')} ₺</div></div>
+            </div>
+          </div>
+
+          <div style={{ padding: '12px 32px', borderRadius: 20, background: '#6366f1', display: 'flex', alignItems: 'center', gap: 20, boxShadow: '0 10px 25px rgba(99, 102, 241, 0.2)' }}>
+            <div>
+              <div style={{ fontSize: 9, fontWeight: 950, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>AYLIK NET DURUM</div>
+              <div style={{ fontSize: 28, fontWeight: 950, color: '#fff' }}>{(monthlyStats.income - monthlyStats.expense).toLocaleString('tr-TR')} ₺</div>
+            </div>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={18} color="#fff" fill="#fff" /></div>
+          </div>
+      </div>
     </motion.div>
   );
 }

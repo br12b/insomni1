@@ -5,7 +5,7 @@ import {
   CheckCircle2, Wallet, BrainCircuit, Server, Cpu, Globe, Coffee, ShoppingBag,
   MessageSquare, FileText, PlusCircle, Sparkles, Terminal as TerminalIcon,
   Radio, BellRing, Activity, History, Wifi, Link, Send, CreditCard, Landmark, Shield,
-  Play, Smartphone, Fuel, Calendar as CalendarIcon, Upload, X, Search, Trash2
+  Play, Smartphone, Fuel, Calendar as CalendarIcon, Upload, X, Search, Trash2, AlertTriangle
 } from 'lucide-react';
 
 const IconMap = ({ name, color }) => {
@@ -20,6 +20,12 @@ const IconMap = ({ name, color }) => {
   return <ShoppingBag {...props} />;
 };
 
+const SourceIcon = ({ source }) => {
+  if (source === 'BANKA GATEWAY') return <Landmark size={10} />;
+  if (source === 'OTONOM KÖPRÜ') return <Radio size={10} />;
+  return null;
+};
+
 export default function RemSync() {
   const [activePath, setActivePath] = useState(1); 
   const [isSyncing, setIsSyncing] = useState(false);
@@ -27,8 +33,7 @@ export default function RemSync() {
   const [logs, setLogs] = useState([]);
   const [trafficLog, setTrafficLog] = useState([]);
   const [bridgeId, setBridgeId] = useState('');
-  const [isScanning, setIsScanning] = useState(false);
-  const txListRef = useRef(null);
+  const lastProcessedRef = useRef(new Set());
 
   const addLog = (msg, type = 'info') => {
     setLogs(prev => [...prev.slice(-12), { msg: `> ${msg}`, type, time: new Date().toLocaleTimeString() }]);
@@ -47,55 +52,88 @@ export default function RemSync() {
     } catch(e) { setSyncedData([]); }
   }, []);
 
+  useEffect(() => {
+    if (!bridgeId) return;
+    const pollBridge = async () => {
+      try {
+        const res = await fetch(`/api/bridge?id=${bridgeId}`);
+        const data = await res.json();
+        if (data.history && data.history.length > 0) {
+          data.history.forEach(entry => {
+            if (!lastProcessedRef.current.has(entry.id)) {
+              lastProcessedRef.current.add(entry.id);
+              processManual(entry.text, entry.source);
+            }
+          });
+          setTrafficLog(data.history.map(h => ({ text: h.text, time: h.timestamp })));
+        }
+      } catch (err) { console.error("Bridge polling error", err); }
+    };
+    const interval = setInterval(pollBridge, 2000);
+    return () => clearInterval(interval);
+  }, [bridgeId]);
+
+  const processManual = (text, source = "OTONOM KÖPRÜ") => {
+    addLog(`Otonom sinyal yakalandi: ${text}`, 'system');
+    
+    // MİKTAR AYIKLAMA (REGEX): Sayıyı bul ve formatla
+    const amountMatch = text.match(/(\d+)/);
+    const amountVal = amountMatch ? amountMatch[1] : "0";
+    const formattedAmount = `-${parseInt(amountVal).toLocaleString('tr-TR')},00 TL`;
+    
+    const newTx = { 
+      id: Math.random().toString(36).substr(2, 9), 
+      type: 'TRANSACTION', 
+      clean: text.split(/[0-9]/)[0].trim() || "Otonom İşlem", 
+      amount: formattedAmount, 
+      raw: "TELEGRAM_BRIDGE", 
+      category: "OTONOM", 
+      source: "OTONOM KÖPRÜ", 
+      icon: 'Radio', 
+      color: "#6366f1", 
+      day: new Date().getDate() 
+    };
+    setSyncedData(prev => [newTx, ...prev]);
+    addLog(`BAŞARI: Veri mühürlendi (${formattedAmount}).`, 'success');
+  };
+
   const handleReset = () => {
     if (window.confirm("Tum veriler sifirlansin mi?")) {
       localStorage.removeItem('insomni_synced_txs');
       setSyncedData([]);
-      window.location.reload();
+      addLog("SİSTEM SIFIRLANDI.", "warning");
     }
   };
 
   const handleCalendarSync = () => {
     try {
       addLog(`Takvim senkronizasyonu baslatildi...`, 'system');
-      // SAVE EVERYTHING including BALANCE
       localStorage.setItem('insomni_synced_txs', JSON.stringify(syncedData));
       addLog(`BAŞARI: Veriler mühürlendi.`, 'success');
     } catch(e) { addLog("HATA: Kayit sirasinda siber ariza.", "error"); }
   };
 
-  const handleOcrScan = async () => {
-    setIsScanning(true); addLog("OCR: Dosya okuma sistemi baslatildi...", "system");
-    await new Promise(r => setTimeout(r, 1000));
-    const newTx = { id: Date.now(), type: 'TRANSACTION', clean: "Apple Store Online", amount: "-45.990,00 TL", raw: "AAPL-9921", category: "LÜKS", source: "OCR ANALİZ", icon: 'Smartphone', color: "#6366f1", day: 15 };
-    setSyncedData(prev => [newTx, ...prev]);
-    setIsScanning(false); addLog("BAŞARI: Dekont ayiklandi.", "success");
-  };
-
-  const sendLocalTestSignal = () => {
+  const sendLocalTestSignal = async () => {
     addLog("LOCAL: Test sinyali firlatiliyor...", "warning");
-    processManual(`starbucks 250 tl`);
-  };
-
-  const processManual = async (text) => {
-    setIsSyncing(true); addLog(`Sinyal saptandi...`, 'system');
-    await new Promise(r => setTimeout(r, 600));
-    const newTx = { id: Date.now(), type: 'TRANSACTION', clean: "Starbucks Coffee", amount: "-250,00 TL", raw: "VTM-3910", category: "OTONOM", source: "OTONOM KÖPRÜ", icon: 'Coffee', color: "#00704A", day: 15 };
-    setSyncedData(prev => [newTx, ...prev]);
-    setIsSyncing(false); addLog(`Veri ayiklama basarili.`, 'success');
+    await fetch('/api/bridge', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: `${bridgeId} Yemek 340tl` })
+    });
   };
 
   const handleApiSync = async () => {
-    setIsSyncing(true); setSyncedData([]); setLogs([]);
-    addLog("Gateway baglantisi kuruluyor...", "system");
+    setIsSyncing(true); addLog("Gateway baglantisi kuruluyor...", "system");
     await new Promise(r => setTimeout(r, 800));
     const mock = [
       { id: 1, type: 'TRANSACTION', clean: "Starbucks Coffee", amount: "-185,00 TL", raw: "VTM-3910", category: "YEME-İÇME", source: "BANKA GATEWAY", icon: 'Coffee', color: "#00704A", day: 15 },
       { id: 2, type: 'TRANSACTION', clean: "Netflix Digital", amount: "-149,90 TL", raw: "NETFLIX", category: "EĞLENCE", source: "BANKA GATEWAY", icon: 'Play', color: "#e11d48", day: 14 }
     ];
-    setSyncedData([{ id: 'bal', type: 'BALANCE', clean: "Garanti BBVA Hesabı", amount: "42.850,20 ₺", raw: "TR92 0006 2000 0001 2345 6789 01", category: "ANA BAKİYE", icon: 'Wallet', color: "#10b981" }, ...mock]);
+    setSyncedData(prev => [{ id: 'bal', type: 'BALANCE', clean: "Garanti BBVA Hesabı", amount: "42.850,20 ₺", raw: "TR92...", category: "ANA BAKİYE", source: "BANKA GATEWAY", icon: 'Wallet', color: "#10b981" }, ...mock, ...prev]);
     setIsSyncing(false); addLog("Senkronizasyon tamamlandi.", "success");
   };
+
+  const filteredData = syncedData.filter(d => d.source === (activePath === 1 ? "BANKA GATEWAY" : "OTONOM KÖPRÜ"));
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 40px 60px 40px', overflowY: 'auto' }}>
@@ -105,8 +143,8 @@ export default function RemSync() {
       </div>
 
       <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24, marginBottom: 40 }}>
-           {[ { id: 1, name: "BANKA API", info: "Garanti BBVA", icon: Landmark, color: "#10b981" }, { id: 2, name: "OTONOM KÖPRÜ", info: "Telegram Bot", icon: Radio, color: "#6366f1" }, { id: 3, name: "DOSYA TARA", info: "OCR Analizi", icon: FileText, color: "#f59e0b" } ].map(p => (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 40 }}>
+           {[ { id: 1, name: "BANKA API", info: "Garanti BBVA", icon: Landmark, color: "#10b981" }, { id: 2, name: "OTONOM KÖPRÜ", info: "Telegram Bot", icon: Radio, color: "#6366f1" } ].map(p => (
              <button key={p.id} onClick={() => setActivePath(p.id)}
                style={{ padding: 32, borderRadius: 32, border: `2px solid ${activePath === p.id ? p.color : 'rgba(0,0,0,0.05)'}`, background: activePath === p.id ? `${p.color}05` : '#fff', display: 'flex', alignItems: 'center', gap: 20, transition: 'all 0.3s' }}>
                 <div style={{ width: 64, height: 64, borderRadius: 20, background: activePath === p.id ? p.color : '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: activePath === p.id ? '#fff' : '#cbd5e1' }}><p.icon size={28} /></div>
@@ -115,19 +153,8 @@ export default function RemSync() {
            ))}
         </div>
 
-        <div className="glass" style={{ padding: 48, borderRadius: 44, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(30px)', minHeight: 480 }}>
+        <div className="glass" style={{ padding: 48, borderRadius: 44, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(30px)', minHeight: 400 }}>
           <AnimatePresence mode="wait">
-            {activePath === 3 && (
-               <motion.div key="ocr" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center' }}>
-                  <div style={{ maxWidth: 600, margin: '0 auto' }}>
-                     <div style={{ width: 100, height: 100, borderRadius: 32, background: '#f59e0b10', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 30px auto' }}><Upload size={48} color="#f59e0b" /></div>
-                     <h3 style={{ fontSize: 28, fontWeight: 950, color: '#1e293b', marginBottom: 12 }}>OCR Dekont Analizi</h3>
-                     <div onClick={!isScanning ? handleOcrScan : null} style={{ padding: 60, border: '3px dashed #e2e8f0', borderRadius: 40, cursor: 'pointer', transition: 'all 0.3s', background: isScanning ? '#f8fafc' : '#fff' }}>
-                        {isScanning ? <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}><Loader2 size={40} className="animate-spin" color="#f59e0b" /><span style={{ fontWeight: 950 }}>DOSYA TARANIYOR...</span></div> : <div style={{ color: '#94a3b8', fontWeight: 900 }}>DOSYAYI BURAYA BIRAKIN VEYA SEÇİN</div>}
-                     </div>
-                  </div>
-               </motion.div>
-            )}
             {activePath === 2 && (
                <motion.div key="bridge" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 40 }}>
                   <div>
@@ -142,7 +169,7 @@ export default function RemSync() {
                   </div>
                   <div style={{ background: '#f8fafc', borderRadius: 32, padding: 24, border: '1px solid #f1f5f9' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}><Activity size={18} color="#6366f1" /><h4 style={{ fontSize: 15, fontWeight: 900, margin: 0 }}>TRAFİK</h4></div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>{trafficLog.map((t, i) => ( <div key={t.id} style={{ padding: 16, borderRadius: 18, background: '#fff', border: '1px solid #f1f5f9' }}><div style={{ fontSize: 13, fontWeight: 700, color: '#1e293b' }}>{t.text}</div><div style={{ fontSize: 10, color: '#94a3b8', marginTop: 6 }}>{new Date(t.timestamp).toLocaleTimeString()}</div></div> ))}</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>{trafficLog.map((t, i) => ( <div key={i} style={{ padding: 16, borderRadius: 18, background: '#fff', border: '1px solid #f1f5f9' }}><div style={{ fontSize: 13, fontWeight: 700, color: '#1e293b' }}>{t.text}</div><div style={{ fontSize: 10, color: '#94a3b8', marginTop: 6 }}>{new Date(t.time).toLocaleTimeString()}</div></div> ))}</div>
                   </div>
                </motion.div>
             )}
@@ -155,17 +182,17 @@ export default function RemSync() {
           </AnimatePresence>
         </div>
 
-        <div ref={txListRef}>
+        <div>
           <AnimatePresence>
-            {syncedData && syncedData.length > 0 && (
+            {filteredData && filteredData.length > 0 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ marginTop: 60 }}>
-                 {syncedData.some(d => d.type === 'BALANCE') && (
+                 {activePath === 1 && filteredData.some(d => d.type === 'BALANCE') && (
                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} 
                      style={{ padding: 40, borderRadius: 40, background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#fff', marginBottom: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 30px 60px rgba(0,0,0,0.2)' }}>
                       <div>
                          <div style={{ fontSize: 14, fontWeight: 800, color: '#10b981', marginBottom: 8, letterSpacing: '0.1em' }}>TOPLAM AKTİF VARLIK</div>
-                         <div style={{ fontSize: 56, fontWeight: 950 }}>{syncedData.find(d => d.type === 'BALANCE')?.amount}</div>
-                         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginTop: 12, fontWeight: 700 }}>{syncedData.find(d => d.type === 'BALANCE')?.raw}</div>
+                         <div style={{ fontSize: 56, fontWeight: 950 }}>{filteredData.find(d => d.type === 'BALANCE')?.amount}</div>
+                         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginTop: 12, fontWeight: 700 }}>{filteredData.find(d => d.type === 'BALANCE')?.raw}</div>
                       </div>
                       <Wallet size={64} color="#10b981" />
                    </motion.div>
@@ -174,7 +201,7 @@ export default function RemSync() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}><History size={24} color="#64748b" /><h4 style={{ fontSize: 22, fontWeight: 950, color: '#1e293b', margin: 0 }}>Harcama Analizi</h4></div>
                     <button onClick={handleCalendarSync} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 24px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, fontSize: 13, fontWeight: 900, cursor: 'pointer', color: '#1e293b' }}><CalendarIcon size={18} color="#6366f1" /> TAKVİME SENKRONİZE ET</button>
                  </div>
-                 {syncedData.filter(d => d.type === 'TRANSACTION').map((tx, idx) => ( 
+                 {filteredData.filter(d => d.type === 'TRANSACTION').map((tx, idx) => ( 
                    <div key={tx.id || idx} style={{ padding: 32, display: 'grid', gridTemplateColumns: '1.2fr auto 1.5fr auto', alignItems: 'center', gap: 40, border: '1px solid #f1f5f9', background: '#fff', borderRadius: 32, marginBottom: 20 }}>
                      <div style={{ fontSize: 13, color: '#94a3b8' }}>{tx.raw}</div><ArrowRight size={18} color="#e2e8f0" /><div style={{ display: 'flex', alignItems: 'center', gap: 24 }}><div style={{ width: 56, height: 56, borderRadius: 18, background: `${tx.color || '#6366f1'}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconMap name={tx.icon} color={tx.color || '#6366f1'} /></div><div><div style={{ fontSize: 18, fontWeight: 950, color: '#1e293b' }}>{tx.clean}</div><div style={{ fontSize: 10, color: tx.color || '#6366f1', fontWeight: 900, display: 'flex', gap: 8 }}><span>{tx.category}</span><span style={{ opacity: 0.5 }}>•</span><span style={{ fontSize: 9, textTransform: 'uppercase' }}>{tx.source}</span></div></div></div><div style={{ textAlign: 'right' }}><div style={{ fontSize: 24, fontWeight: 950, color: tx.color || '#ef4444' }}>{tx.amount}</div></div>
                    </div>

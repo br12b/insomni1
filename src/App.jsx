@@ -1,14 +1,13 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Settings, Sparkles, Target, RefreshCw, Calendar as CalendarIcon, Brain } from 'lucide-react';
+import { User, Settings, RefreshCw, Calendar as CalendarIcon, Brain } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
-import { AdminUIProvider } from './context/AdminUIContext';
+import { AdminUIContext, AdminUIProvider } from './context/AdminUIContext';
 import { storage } from './lib/storage';
 import ThemeToggle from './components/ui/ThemeToggle';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Opportunities from './pages/Opportunities';
-import Goals from './pages/Goals';
 import Chat from './pages/Chat';
 import RemSync from './pages/RemSync';
 import Calendar from './pages/Calendar';
@@ -64,7 +63,6 @@ function AppContent() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Nav */}
       {view !== 'admin' && (
       <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 40px', zIndex: 1000, position: 'relative', flexShrink: 0 }}>
         <div onClick={() => goTo('landing')} style={{ cursor: 'pointer', userSelect: 'none', display: 'flex', alignItems: 'center' }}>
@@ -78,7 +76,7 @@ function AppContent() {
           {profile && salaryData && (
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={() => goTo('dashboard')} className={`btn btn-sm ${view === 'dashboard' ? 'btn-accent' : 'btn-ghost'}`}>
-                {lang === 'tr' ? 'Dashboard' : 'Dashboard'}
+                Dashboard
               </button>
               <button onClick={() => goTo('opportunities')} className={`btn btn-sm ${view === 'opportunities' ? 'btn-accent' : 'btn-ghost'}`}>
                 {lang === 'tr' ? 'Fırsatlar' : 'Opportunities'}
@@ -91,9 +89,6 @@ function AppContent() {
               </button>
               <button onClick={() => goTo('calendar')} className={`btn btn-sm ${view === 'calendar' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
                 <CalendarIcon size={14} /> {lang === 'tr' ? 'Takvim' : 'Calendar'}
-              </button>
-              <button onClick={() => goTo('goals')} className={`btn btn-sm ${view === 'goals' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
-                <Target size={14} /> {lang === 'tr' ? 'Hedefler' : 'Goals'}
               </button>
             </div>
           )}
@@ -113,7 +108,6 @@ function AppContent() {
       </nav>
       )}
 
-      {/* Pages */}
       <AnimatePresence mode="wait">
         <motion.div key={view} variants={pageVariants} initial="initial" animate="animate" exit="exit"
           transition={{ duration: 0.22, ease: 'easeOut' }}
@@ -127,7 +121,6 @@ function AppContent() {
           {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
           {view === 'remsync' && <RemSync />}
           {view === 'calendar' && <Calendar financialData={{ salaryData, expensesData }} />}
-          {view === 'goals' && <Goals financialData={{ salaryData, expensesData }} />}
           {view === 'admin' && <Admin onClose={() => goTo('landing')} />}
         </motion.div>
       </AnimatePresence>
@@ -144,4 +137,3 @@ export default function App() {
     </AdminUIProvider>
   );
 }
-
