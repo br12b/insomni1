@@ -4,7 +4,7 @@ const LanguageContext = createContext();
 
 const translations = {
   tr: {
-    currency: 'â‚º',
+    currency: '₺',
     landing: {
       badge: 'PPF OdaklÄ± â€” Gunluk %0.150 Faiz',
       title1: 'Atil nakdin',
@@ -12,9 +12,9 @@ const translations = {
       title2: 'nedir?',
       desc: "Finansal kaygıların uykunuzu kaçırmasına izin vermeyin. R.E.M. ile boşta duran paranızı saniyeler içinde optimize edin ve huzurla uyuyun.",
       cta: 'R.E.M ile Analize Basla',
-      stat1: 'Kacirilan Kazanc',
-      stat2: 'Aktif Fon Getirisi',
-      stat3: 'Analiz Kapsami',
+      stat1: 'Yıllık Potansiyel Kazanç',
+      stat2: 'Optimizasyon Başarısı',
+      stat3: 'R.E.M. Analiz Hızı',
       stat3Val: ' gun',
       feature1: 'Time Gap Analizi',
       feature1Desc: 'Maas ile harcama arasindaki her atil gunu takip eder',
@@ -85,7 +85,7 @@ const translations = {
     }
   },
   en: {
-    currency: '$',
+    currency: '₺',
     landing: {
       badge: 'PPF Focused â€” Daily 0.150% Interest',
       title1: 'What is the',
@@ -93,9 +93,9 @@ const translations = {
       title2: 'of unused cash?',
       desc: "Don't let financial anxiety keep you awake. Optimize your unused cash in seconds with R.E.M. and sleep peacefully.",
       cta: 'Start Analysis with R.E.M',
-      stat1: 'Missed Earnings',
-      stat2: 'Active Fund Yield',
-      stat3: 'Analysis Scope',
+      stat1: 'Annual Potential Gain',
+      stat2: 'Optimization Success',
+      stat3: 'R.E.M. Analysis Speed',
       stat3Val: ' days',
       feature1: 'Time Gap Analysis',
       feature1Desc: 'Tracks every idle day between income and expenses',
