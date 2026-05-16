@@ -106,12 +106,10 @@ export default function Admin({ onClose }) {
           </div>
 
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={() => setActiveTab('editor')} className={`btn btn-sm ${activeTab === 'editor' ? 'btn-primary' : 'btn-ghost'}`} style={{ borderRadius: 100 }}>
+            <button onClick={() => setActiveTab('editor'); // tabs: editor, ui, onboarding} className={`btn btn-sm ${activeTab === 'editor' ? 'btn-primary' : 'btn-ghost'}`} style={{ borderRadius: 100 }}>
               <MousePointer2 size={14} /> Viewport
             </button>
-            <button onClick={() => setActiveTab('ui')} className={`btn btn-sm ${activeTab === 'ui' ? 'btn-primary' : 'btn-ghost'}`} style={{ borderRadius: 100 }}>
-              <Sparkles size={14} /> UI Config
-            </button>
+            <button onClick={() => setActiveTab("ui")} className={`btn btn-sm ${activeTab === "ui" ? "btn-primary" : "btn-ghost"}`} style={{ borderRadius: 100 }}><Sparkles size={14} /> UI</button><button onClick={() => setActiveTab("onboarding")} className={`btn btn-sm ${activeTab === "onboarding" ? "btn-primary" : "btn-ghost"}`} style={{ borderRadius: 100 }}><LayoutDashboard size={14} /> Onboarding</button>
           </div>
 
           {/* PAGE SELECTOR */}
@@ -215,7 +213,61 @@ export default function Admin({ onClose }) {
                   </div>
                 </div>
               </>
-            ) : (
+                        ) : activeTab === 'onboarding' ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <h3 style={{ fontSize: 13, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text2)', marginBottom: 8 }}>Onboarding Cards</h3>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {JSON.parse(localStorage.getItem("insomni_onboarding_cards") || '[]').map((card, i) => (
+                    <div key={i} className="glass" style={{ padding: 12, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--glass-border)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                        <input className="input" style={{ width: 40, height: 32, padding: 0, textAlign: 'center' }} value={card.emoji} onChange={e => {
+                          const cards = JSON.parse(localStorage.getItem("insomni_onboarding_cards"));
+                          cards[i].emoji = e.target.value;
+                          localStorage.setItem("insomni_onboarding_cards", JSON.stringify(cards));
+                          setLogs(prev => [...prev, { time: 'Now', level: 'INFO', msg: 'Card emoji updated.' }]);
+                        }} />
+                        <button className="btn btn-icon btn-sm" style={{ color: 'var(--red)' }} onClick={() => {
+                          const cards = JSON.parse(localStorage.getItem("insomni_onboarding_cards"));
+                          cards.splice(i, 1);
+                          localStorage.setItem("insomni_onboarding_cards", JSON.stringify(cards));
+                          setLogs(prev => [...prev, { time: 'Now', level: 'WARN', msg: 'Card deleted.' }]);
+                        }}><X size={14} /></button>
+                      </div>
+                      <input className="input" style={{ fontSize: 12, marginBottom: 8 }} value={card.title} onChange={e => {
+                        const cards = JSON.parse(localStorage.getItem("insomni_onboarding_cards"));
+                        cards[i].title = e.target.value;
+                        localStorage.setItem("insomni_onboarding_cards", JSON.stringify(cards));
+                      }} />
+                      <textarea className="input" style={{ fontSize: 11, height: 60 }} value={card.desc} onChange={e => {
+                        const cards = JSON.parse(localStorage.getItem("insomni_onboarding_cards"));
+                        cards[i].desc = e.target.value;
+                        localStorage.setItem("insomni_onboarding_cards", JSON.stringify(cards));
+                      }} />
+                    </div>
+                  ))}
+                  <button className="btn btn-secondary btn-sm" style={{ borderStyle: 'dashed' }} onClick={() => {
+                    const cards = JSON.parse(localStorage.getItem("insomni_onboarding_cards") || '[]');
+                    cards.push({ emoji: '💡', title: 'New Tip', desc: 'Add advice here...' });
+                    localStorage.setItem("insomni_onboarding_cards", JSON.stringify(cards));
+                  }}><Plus size={14} /> Add Card</button>
+                </div>
+
+                <div className="glass" style={{ padding: 16, border: '1px solid var(--accent)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                      <div style={{ width: 30, height: 30, borderRadius: '50%', overflow: 'hidden', border: '1px solid var(--accent)' }}>
+                        <img src="/aria_profile.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                      <span style={{ fontSize: 13, fontWeight: 700 }}>Show ARIA Tip</span>
+                    </div>
+                    <input type="checkbox" checked={localStorage.getItem("insomni_hide_aria") !== "true"} onChange={e => {
+                      localStorage.setItem("insomni_hide_aria", e.target.checked ? "false" : "true");
+                      setLogs(prev => [...prev, { time: 'Now', level: 'INFO', msg: 'ARIA visibility toggled.' }]);
+                    }} />
+                  </div>
+                </div>
+              </div>
               <>
                 <h3 style={{ fontSize: 13, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text2)', marginBottom: 8 }}>Theme Configuration</h3>
                 <div>
