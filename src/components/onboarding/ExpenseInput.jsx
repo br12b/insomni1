@@ -105,7 +105,19 @@ export default function ExpenseInput({ onComplete }) {
                   </motion.div>
                 ))}
               </AnimatePresence>
-              <button onClick={() => addExpense()} className="btn btn-secondary btn-sm" style={{ borderStyle: 'dashed', marginTop: 10 }}><Plus size={14} /> Harcama Ekle</button>
+              <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid var(--glass-border)' }}>
+                <div className="label" style={{ marginBottom: 12, fontSize: 11, fontWeight: 800, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: 1 }}>{lang === 'tr' ? 'Hızlı Ekle' : 'Quick Add'}</div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {PRESETS.map((p, i) => (
+                    <button key={i} onClick={() => addExpense(p)} className="chip" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', padding: '6px 12px', borderRadius: 100, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                      {p.isSubscription ? <RefreshCw size={11} /> : null} {p.name}
+                    </button>
+                  ))}
+                  <button onClick={() => addExpense()} className="chip" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', padding: '6px 12px', borderRadius: 100, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                    <Plus size={11} /> {lang === 'tr' ? 'Boş Ekle' : 'Empty'}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <motion.button onClick={submit} whileHover={{ scale: 1.02 }} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '16px' }}>{lang === 'tr' ? "Dashboard'a Git" : "Go to Dashboard"} <ArrowRight size={17} /></motion.button>
