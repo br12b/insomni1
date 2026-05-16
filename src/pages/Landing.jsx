@@ -75,10 +75,10 @@ export default function Landing({ onStart, editMode = false }) {
         {/* MAIN TITLE */}
         <motion.h1 variants={fadeUp}
           style={{ fontSize: 'clamp(44px, 8vw, 110px)', fontWeight: 900, lineHeight: 0.9, letterSpacing: '-0.06em', margin: 0, maxWidth: 1000, marginBottom: 28 }}>
-                    {lang === 'tr' ? (
-            <>Finansal uykusuzluğa son <span style={{ color: 'var(--accent)' }}>R.E.M.</span> ile tanışın</>
+                              {lang === ''tr'' ? (
+            <>Finansal huzur için uykusuz bir zeka: <span style={{ color: ''var(--accent)'' }}>R.E.M.</span> ile tanışın</>
           ) : (
-            <>End financial insomnia meet <span style={{ color: 'var(--accent)' }}>R.E.M.</span></>
+            <>A sleepless intelligence for financial peace: meet <span style={{ color: ''var(--accent)'' }}>R.E.M.</span></>
           )}
         </motion.h1>
 
