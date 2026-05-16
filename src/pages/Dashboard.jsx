@@ -28,11 +28,8 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
   };
 
   const syncedTotal = syncedTxs.reduce((acc, tx) => acc + parseRemAmount(tx.amount), 0);
-  
-  // DUZELTME: Hem salary hem income anahtarina bakiyoruz
   const income = salaryData?.income || salaryData?.salary || 0;
   const currency = salaryData?.currency || '₺';
-  
   const totalExpense = (expensesData?.reduce((sum, exp) => sum + parseFloat(exp.amount || 0), 0) || 0) + syncedTotal;
   const remaining = income - totalExpense;
 
@@ -47,6 +44,14 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
       isSynced: true
     }))
   ];
+
+  // REM'İN BEKLEDİĞİ FORMATI SARSILMAZ BİR NİZAMLA OLUŞTURUYORUZ
+  const financialDataForAI = {
+    salary: { income, currency }, // "salaryData" DEĞİL, "salary" OLMALI
+    expenses: combinedExpenses,   // "expensesData" DEĞİL, "expenses" OLMALI
+    totalExpense,
+    remaining
+  };
 
   const dailyBalances = Array.from({ length: 30 }, (_, i) => {
     const day = i + 1;
@@ -88,7 +93,7 @@ export default function Dashboard({ salaryData, expensesData = [], profileName }
         </div>
         <div style={{ position: 'sticky', top: 24, minWidth: 0 }}>
           <motion.div variants={fadeUp} className="glass" style={{ padding: '32px 24px', height: 'calc(100vh - 200px)', maxHeight: 800, display: 'flex', flexDirection: 'column', border: '1px solid rgba(129,140,248,0.2)', boxShadow: '0 0 40px rgba(129,140,248,0.05)', overflow: 'hidden' }}>
-            <AIChat financialData={{ salaryData, expensesData: combinedExpenses, totalExpense, remaining }} />
+            <AIChat financialData={financialDataForAI} />
           </motion.div>
         </div>
       </div>
