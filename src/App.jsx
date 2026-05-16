@@ -63,7 +63,7 @@ function AppContent() {
     setView(v);
   };
 
-  const handleResetProfile = () => {
+  const handleResetProfile = () => { localStorage.removeItem(`insomni_synced_txs`);
     storage.setCurrentProfile('');
     setProfile('');
     setSalaryData(null);
