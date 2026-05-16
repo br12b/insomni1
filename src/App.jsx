@@ -15,7 +15,7 @@ import ProfilePage from './pages/ProfilePage';
 import SalaryInput from './components/onboarding/SalaryInput';
 import ExpenseInput from './components/onboarding/ExpenseInput';
 import ProfileModal from './components/ProfileModal';
-import Admin from './pages/Admin';
+
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 
 const pageVariants = {
