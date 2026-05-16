@@ -70,44 +70,6 @@ export default function Landing({ onStart, editMode = false }) {
       </motion.div>
 
       {/* Main Content Overlay */}
-            {/* REM INFO CARDS - LEFT SIDE */}
-      <div style={{ position: 'absolute', left: '4vw', top: '22vh', zIndex: 15, display: 'flex', flexDirection: 'column', gap: 16, width: 280 }}>
-        
-        {/* MOR GLASSMORPHISM BAŞLIK */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '100px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'rgba(129, 140, 248, 0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(129, 140, 248, 0.3)',
-            boxShadow: '0 0 20px rgba(129, 140, 248, 0.2)',
-            marginBottom: '4px',
-            width: 'fit-content'
-          }}>
-          <span style={{ fontSize: '16px' }}>👋</span>
-          <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--accent)', letterSpacing: '0.5px' }}>
-            {lang === 'tr' ? 'Merhaba, ben R.E.M.' : 'Hello, I am R.E.M.'}
-          </span>
-        </motion.div>
-
-        {[
-          { icon: 'Search', text: lang === 'tr' ? 'Harcamalarınızı milisaniyeler içinde tararım.' : 'Scanning expenses in milliseconds.' },
-          { icon: 'RefreshCw', text: lang === 'tr' ? 'Gizli abonelikleri saniyeler içinde bulurum.' : 'Finding hidden subscriptions in seconds.' },
-          { icon: 'Zap', text: lang === 'tr' ? 'Boşta duran her kuruşu anında yakalarım.' : 'Catching every idle cent instantly.' }
-        ].map((card, i) => (
-          <motion.div key={i} initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 + (i * 0.2) }}
-            className="glass" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14, border: '1px solid var(--glass-border)', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              {React.createElement(LucideIcons[card.icon] || LucideIcons.Info, { size: 18, color: 'var(--accent)' })}
-            </div>
-            <div style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.4, opacity: 0.9, textAlign: 'left' }}>{card.text}</div>
-          </motion.div>
-        ))}
-      </div>
       <div className="container" style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', paddingTop: '4vh', paddingBottom: 60, width: '100%' }}>
         
         {/* MAIN TITLE */}
