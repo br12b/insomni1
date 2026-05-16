@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useRef } from 'react';
+﻿import React, { createContext, useState, useEffect, useRef } from 'react';
 
 export const AdminUIContext = createContext(null);
 
@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS = {
   borderRadius: '16px',
   layout: {
     landing_aria: { x: 0, y: 0, scale: 1 },
-    landing_remSmall: { x: 0, y: 0, scale: 1 }
+    landing_remSmall: { x: 17, y: -19, scale: 1 }
   },
   landingFeatures: [
     { id: 1, icon: 'Clock', title: 'Time Gap Analizi', desc: 'Maaş ile harcama arasındaki her atıl günü takip eder' },

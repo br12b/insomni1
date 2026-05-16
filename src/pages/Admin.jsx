@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Settings, RefreshCw, Save, Terminal, Sparkles, MousePointer2, Undo2, ChevronDown, Check, X, ImagePlus } from 'lucide-react';
 import { useAdminUI } from '../hooks/useAdminUI';
@@ -174,12 +174,12 @@ export default function Admin({ onClose }) {
                            <div style={{ flex: 1 }}>
                              <label style={{ fontSize: 9, color: 'var(--text2)', display: 'block', marginBottom: 2 }}>Başlık</label>
                              <input className="input" style={{ padding: '4px 8px', fontSize: 11, height: 'auto' }} 
-                               value={feature.title} onChange={e => updateLandingFeature(feature.id, { title: e.target.value })} />
+                                value={feature.title} onChange={e => updateLandingFeature(feature.id, { title: e.target.value })} />
                            </div>
                            <div style={{ width: 80 }}>
                              <label style={{ fontSize: 9, color: 'var(--text2)', display: 'block', marginBottom: 2 }}>İkon</label>
                              <select className="input" style={{ padding: '4px 8px', fontSize: 10, height: 'auto', appearance: 'auto' }}
-                               value={feature.icon} onChange={e => updateLandingFeature(feature.id, { icon: e.target.value })}>
+                                value={feature.icon} onChange={e => updateLandingFeature(feature.id, { icon: e.target.value })}>
                                <option value="Clock">Saat</option>
                                <option value="TrendingUp">Grafik</option>
                                <option value="Sparkles">Yıldız</option>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
@@ -25,7 +25,7 @@ export default function ProfileModal({ initialName, onComplete }) {
                 {/* LEFT SIDE - R.E.M VISUAL (FLOATING & TEXT) */}
         <div style={{ 
           flex: 1.3, // Slightly more space for the bigger R.E.M
-          background: '#fff', 
+          background: 'var(--bg1)', 
           position: 'relative', 
           display: 'flex', 
           flexDirection: 'column', // Stack image and text
@@ -77,7 +77,7 @@ export default function ProfileModal({ initialName, onComplete }) {
                </div>
                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 4 }}>
                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }} />
-                 <span style={{ fontSize: 11, fontWeight: 700, color: '#666', letterSpacing: 1 }}>ZONAL AI ACTIVATED</span>
+                 <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text2)', letterSpacing: 1 }}>ZONAL AI ACTIVATED</span>
                </div>
              </motion.div>
            </motion.div>
@@ -106,8 +106,8 @@ export default function ProfileModal({ initialName, onComplete }) {
           
           <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             <div>
-              <div className="label" style={{ marginBottom: 8 }}>{lang === 'tr' ? 'İSİM SOYİSİM' : 'FULL NAME'}</div>
-              <input className="input" placeholder={t.onboarding.profilePlaceholder} value={name} onChange={function(e) { setName(e.target.value); }} autoFocus 
+               <div className="label" style={{ marginBottom: 8 }}>{lang === 'tr' ? 'İSİM SOYİSİM' : 'FULL NAME'}</div>
+               <input className="input" placeholder={t.onboarding.profilePlaceholder} value={name} onChange={function(e) { setName(e.target.value); }} autoFocus 
                 style={{ fontSize: 18, padding: '16px 20px' }}
               />
             </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 const { ArrowLeft } = LucideIcons;
@@ -88,7 +88,7 @@ export default function Landing({ onStart, editMode = false }) {
         </motion.p>
 
         {/* BUTTON AREA WITH ATTACHED LITTLE R.E.M */}
-        <motion.div variants={fadeUp} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', marginBottom: 64 }}>
+        <motion.div variants={fadeUp} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', marginBottom: 64, marginTop: -20 }}>
           <motion.img 
             drag={editMode}
             dragMomentum={false}
@@ -119,7 +119,7 @@ export default function Landing({ onStart, editMode = false }) {
               position: 'absolute', 
               right: '100%', 
               marginRight: -20,
-              top: '35%',
+              top: '15%',
               zIndex: 20,
               border: editMode ? '2px dashed var(--accent)' : 'none',
               padding: editMode ? '8px' : '0',

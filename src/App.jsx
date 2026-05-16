@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Settings, RefreshCw, Calendar as CalendarIcon, Brain } from 'lucide-react';
+import { User, Settings, RefreshCw, Calendar as CalendarIcon, Brain, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
 import { AdminUIContext, AdminUIProvider } from './context/AdminUIContext';
 import { storage } from './lib/storage';
@@ -11,6 +11,7 @@ import Opportunities from './pages/Opportunities';
 import Chat from './pages/Chat';
 import RemSync from './pages/RemSync';
 import Calendar from './pages/Calendar';
+import ProfilePage from './pages/ProfilePage';
 import SalaryInput from './components/onboarding/SalaryInput';
 import ExpenseInput from './components/onboarding/ExpenseInput';
 import ProfileModal from './components/ProfileModal';
@@ -27,6 +28,7 @@ function AppContent() {
   const { isDark } = useTheme();
   const { lang, t, toggleLang } = useLanguage();
   const [profile, setProfile] = useState(() => storage.getCurrentProfile());
+  const [showFullNav, setShowFullNav] = useState(false);
   
   const initialView = window.location.pathname === '/admin' ? 'admin' : (storage.getCurrentProfile() ? 'landing' : 'profile');
   const [view, setView] = useState(initialView);
@@ -61,41 +63,94 @@ function AppContent() {
     setView(v);
   };
 
+  const handleResetProfile = () => {
+    storage.setCurrentProfile('');
+    setProfile('');
+    setSalaryData(null);
+    setExpensesData([]);
+    goTo('profile');
+  };
+
+  const handleUpdateName = (newName) => {
+    storage.setCurrentProfile(newName);
+    setProfile(newName);
+  };
+
+  const isUnlocked = (profile && salaryData) || showFullNav;
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {view !== 'admin' && (
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 40px', zIndex: 1000, position: 'relative', flexShrink: 0 }}>
-        <div onClick={() => goTo('landing')} style={{ cursor: 'pointer', userSelect: 'none', display: 'flex', alignItems: 'center' }}>
-          <img src="/insomni.png" alt="Insomni" style={{ height: 220, width: 'auto' }} />
+      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 40px', zIndex: 1000, position: 'relative', flexShrink: 0 }}>
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', height: 180 }}>
+          <div onClick={() => goTo('landing')} style={{ cursor: 'pointer', userSelect: 'none' }}>
+            <img src="/insomni.png" alt="Insomni" style={{ height: 180, width: 'auto' }} />
+          </div>
+          <div style={{ position: 'absolute', bottom: 20, left: 100, pointerEvents: 'none' }}>
+            <img src="/build-with-gemini.png" alt="Build with Gemini" 
+                 style={{ 
+                   height: 110, 
+                   width: 'auto', 
+                   userSelect: 'none',
+                   filter: 'brightness(0) contrast(100)'
+                 }} />
+          </div>
         </div>
+
         <div className="glass" style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 20px', borderRadius: 100 }}>
           <button onClick={toggleLang} className="btn btn-ghost btn-sm" style={{ fontWeight: 800, minWidth: 44 }}>
             {lang.toUpperCase()}
           </button>
 
-          {profile && salaryData && (
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => goTo('dashboard')} className={`btn btn-sm ${view === 'dashboard' ? 'btn-accent' : 'btn-ghost'}`}>
-                Dashboard
-              </button>
-              <button onClick={() => goTo('opportunities')} className={`btn btn-sm ${view === 'opportunities' ? 'btn-accent' : 'btn-ghost'}`}>
-                {lang === 'tr' ? 'Fırsatlar' : 'Opportunities'}
-              </button>
-              <button onClick={() => goTo('remsync')} className={`btn btn-sm ${view === 'remsync' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
-                <RefreshCw size={14} /> REM Sync
-              </button>
-              <button onClick={() => goTo('chat')} className={`btn btn-sm ${view === 'chat' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
-                <Brain size={14} /> R.E.M AI
-              </button>
-              <button onClick={() => goTo('calendar')} className={`btn btn-sm ${view === 'calendar' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
-                <CalendarIcon size={14} /> {lang === 'tr' ? 'Takvim' : 'Calendar'}
-              </button>
-            </div>
+          {/* PURPLE EXTEND TRIGGER (Only show if not already fully unlocked by data) */}
+          {!(profile && salaryData) && (
+            <motion.button 
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setShowFullNav(!showFullNav)}
+              className="btn btn-icon btn-sm"
+              style={{ 
+                background: 'linear-gradient(135deg, #818cf8, #c084fc)', 
+                color: '#fff', 
+                borderRadius: '50%',
+                boxShadow: '0 0 15px rgba(192,132,252,0.5)',
+                border: 'none'
+              }}
+            >
+              {showFullNav ? <ChevronLeft size={16} /> : <Zap size={16} fill="currentColor" />}
+            </motion.button>
           )}
+
+          <AnimatePresence>
+            {isUnlocked && (
+              <motion.div 
+                initial={{ opacity: 0, x: 20, width: 0 }}
+                animate={{ opacity: 1, x: 0, width: 'auto' }}
+                exit={{ opacity: 0, x: 20, width: 0 }}
+                style={{ display: 'flex', gap: 8, overflow: 'hidden' }}
+              >
+                <button onClick={() => goTo('dashboard')} className={`btn btn-sm ${view === 'dashboard' ? 'btn-accent' : 'btn-ghost'}`}>
+                  Dashboard
+                </button>
+                <button onClick={() => goTo('opportunities')} className={`btn btn-sm ${view === 'opportunities' ? 'btn-accent' : 'btn-ghost'}`}>
+                  {lang === 'tr' ? 'Fırsatlar' : 'Opportunities'}
+                </button>
+                <button onClick={() => goTo('remsync')} className={`btn btn-sm ${view === 'remsync' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                  <RefreshCw size={14} /> REM Sync
+                </button>
+                <button onClick={() => goTo('chat')} className={`btn btn-sm ${view === 'chat' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                  <Brain size={14} /> R.E.M AI
+                </button>
+                <button onClick={() => goTo('calendar')} className={`btn btn-sm ${view === 'calendar' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                  <CalendarIcon size={14} /> {lang === 'tr' ? 'Takvim' : 'Calendar'}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {profile && (
             <>
-              <button onClick={() => goTo('profile')} className="btn btn-ghost btn-icon btn-sm" title={profile}>
+              <button onClick={() => goTo('profile')} className={`btn btn-icon btn-sm ${view === 'profile' ? 'btn-accent' : 'btn-ghost'}`} title={profile}>
                 <User size={16} />
               </button>
               <button onClick={() => goTo('admin')} className={`btn btn-icon btn-sm ${view === 'admin' ? 'btn-accent' : 'btn-ghost'}`} title="Admin Panel">
@@ -113,11 +168,15 @@ function AppContent() {
           transition={{ duration: 0.22, ease: 'easeOut' }}
           style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           {view === 'landing' && <Landing onStart={() => goTo('salary')} />}
-          {view === 'profile' && <ProfileModal initialName={profile} onComplete={name => { setProfile(name); goTo('landing'); }} />}
+          {view === 'profile' && (
+            profile ? 
+              <ProfilePage name={profile} onReset={handleResetProfile} onUpdateName={handleUpdateName} /> : 
+              <ProfileModal initialName={profile} onComplete={name => { setProfile(name); goTo('landing'); }} />
+          )}
           {view === 'salary' && <SalaryInput onComplete={d => { setSalaryData(d); goTo('expenses'); }} />}
           {view === 'expenses' && <ExpenseInput onComplete={d => { setExpensesData(d); goTo('dashboard'); }} />}
-          {view === 'dashboard' && <Dashboard salaryData={salaryData} expensesData={expensesData} profileName={profile} />}
-          {view === 'opportunities' && <Opportunities expenses={expensesData} salaryData={salaryData} />}
+          {view === 'dashboard' && <Dashboard salaryData={salaryData || {income:0, currency:'₺', day:1}} expensesData={expensesData} profileName={profile} />}
+          {view === 'opportunities' && <Opportunities expenses={expensesData} salaryData={salaryData || {income:0, currency:'₺', day:1}} />}
           {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
           {view === 'remsync' && <RemSync />}
           {view === 'calendar' && <Calendar financialData={{ salaryData, expensesData }} />}

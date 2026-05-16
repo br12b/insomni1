@@ -7,6 +7,7 @@ import {
   Radio, BellRing, Activity, History, Wifi, Link, Send, CreditCard, Landmark, Shield,
   Play, Smartphone, Fuel, Calendar as CalendarIcon, Upload, X, Search, Trash2, AlertTriangle
 } from 'lucide-react';
+import { storage } from '../lib/storage';
 
 const IconMap = ({ name, color }) => {
   const props = { color, size: 24 };
@@ -20,19 +21,13 @@ const IconMap = ({ name, color }) => {
   return <ShoppingBag {...props} />;
 };
 
-const SourceIcon = ({ source }) => {
-  if (source === 'BANKA GATEWAY') return <Landmark size={10} />;
-  if (source === 'OTONOM KÖPRÜ') return <Radio size={10} />;
-  return null;
-};
-
 export default function RemSync() {
   const [activePath, setActivePath] = useState(1); 
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncedData, setSyncedData] = useState([]);
   const [logs, setLogs] = useState([]);
   const [trafficLog, setTrafficLog] = useState([]);
-  const [bridgeId, setBridgeId] = useState('');
+  const [omniId, setOmniId] = useState(''); // This will be our persistent Telegram-compatible ID
   const lastProcessedRef = useRef(new Set());
 
   const addLog = (msg, type = 'info') => {
@@ -40,12 +35,15 @@ export default function RemSync() {
   };
 
   useEffect(() => {
+    // PROTECT TELEGRAM BOT CONNECTION: Load the ACTUAL bridge ID
     let savedId = localStorage.getItem('insomni_bridge_id');
     if (!savedId) {
+      // If no ID exists, create a permanent numeric one that bot expects
       savedId = Math.floor(100000 + Math.random() * 900000).toString();
       localStorage.setItem('insomni_bridge_id', savedId);
     }
-    setBridgeId(savedId);
+    setOmniId(savedId);
+
     try {
       const existing = JSON.parse(localStorage.getItem('insomni_synced_txs') || '[]');
       setSyncedData(Array.isArray(existing) ? existing : []);
@@ -53,10 +51,10 @@ export default function RemSync() {
   }, []);
 
   useEffect(() => {
-    if (!bridgeId) return;
+    if (!omniId) return;
     const pollBridge = async () => {
       try {
-        const res = await fetch(`/api/bridge?id=${bridgeId}`);
+        const res = await fetch(`/api/bridge?id=${omniId}`);
         const data = await res.json();
         if (data.history && data.history.length > 0) {
           data.history.forEach(entry => {
@@ -71,12 +69,10 @@ export default function RemSync() {
     };
     const interval = setInterval(pollBridge, 2000);
     return () => clearInterval(interval);
-  }, [bridgeId]);
+  }, [omniId]);
 
   const processManual = (text, source = "OTONOM KÖPRÜ") => {
     addLog(`Otonom sinyal yakalandi: ${text}`, 'system');
-    
-    // MİKTAR AYIKLAMA (REGEX): Sayıyı bul ve formatla
     const amountMatch = text.match(/(\d+)/);
     const amountVal = amountMatch ? amountMatch[1] : "0";
     const formattedAmount = `-${parseInt(amountVal).toLocaleString('tr-TR')},00 TL`;
@@ -86,7 +82,7 @@ export default function RemSync() {
       type: 'TRANSACTION', 
       clean: text.split(/[0-9]/)[0].trim() || "Otonom İşlem", 
       amount: formattedAmount, 
-      raw: "TELEGRAM_BRIDGE", 
+      raw: "OMNI_BRIDGE", 
       category: "OTONOM", 
       source: "OTONOM KÖPRÜ", 
       icon: 'Radio', 
@@ -118,7 +114,7 @@ export default function RemSync() {
     await fetch('/api/bridge', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: `${bridgeId} Yemek 340tl` })
+      body: JSON.stringify({ text: `${omniId} Yemek 340tl` })
     });
   };
 
@@ -159,7 +155,7 @@ export default function RemSync() {
                <motion.div key="bridge" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 40 }}>
                   <div>
                     <div style={{ background: '#fff', borderRadius: 24, padding: 24, border: '1px solid #f1f5f9', marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}><div style={{ width: 48, height: 48, borderRadius: 14, background: '#6366f110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Shield size={22} color="#6366f1" /></div><div><div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 900 }}>ID SİSTEMİ</div><div style={{ fontSize: 18, fontWeight: 950, color: '#1e293b' }}>ID: {bridgeId}</div></div></div>
+                       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}><div style={{ width: 48, height: 48, borderRadius: 14, background: '#6366f110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Shield size={22} color="#6366f1" /></div><div><div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 900 }}>OMNI ID</div><div style={{ fontSize: 18, fontWeight: 950, color: '#1e293b' }}>{omniId}</div></div></div>
                        <button onClick={sendLocalTestSignal} style={{ fontSize: 11, color: '#f59e0b', fontWeight: 900, background: '#f59e0b10', padding: '10px 16px', borderRadius: 12, border: '1px solid #f59e0b20', cursor: 'pointer' }}>TEST SİNYALİ</button>
                     </div>
                     <div style={{ background: '#0a0f1e', borderRadius: 28, padding: 32, fontFamily: 'monospace', minHeight: 320, border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
