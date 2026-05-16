@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Settings, Save, X, Plus, Trash2, LayoutDashboard } from 'lucide-react';
+import { Settings, Save, X, Plus, Trash2 } from 'lucide-react';
+
+const DEFAULT_CARDS = [
+  { emoji: '📅', title: 'Ödeme Günü Neden Önemli?', desc: 'Maaş günün ile harcama günlerin arasındaki farkı optimize et.' },
+  { emoji: '🔄', title: 'Abonelikler Küçük Ama Etkili', desc: 'Aylık abonelikler yıllık bazda ciddi rakamlara ulaşır.' },
+  { emoji: '⚡', title: 'Atıl Nakit Tuzağı', desc: 'Paranı faizsiz hesapta tutmak yerine değerlendir.' }
+];
 
 export default function Admin({ onClose }) {
-  const [cards, setCards] = useState(() => JSON.parse(localStorage.getItem("insomni_onboarding_cards") || '[]'));
+  const [cards, setCards] = useState(() => {
+    const saved = localStorage.getItem("insomni_onboarding_cards");
+    return saved ? JSON.parse(saved) : DEFAULT_CARDS;
+  });
   const [showAria, setShowAria] = useState(() => localStorage.getItem("insomni_hide_aria") !== "true");
   const [saved, setSaved] = useState(false);
 
@@ -35,7 +44,7 @@ export default function Admin({ onClose }) {
 
         <div style={{ flex: 1, overflowY: 'auto', padding: 24, display: 'flex', flexDirection: 'column', gap: 24 }}>
           <div>
-            <h3 style={{ fontSize: 13, fontWeight: 800, color: 'var(--text2)', textTransform: 'uppercase', marginBottom: 16 }}>Bilgi Kartları</h3>
+            <h3 style={{ fontSize: 13, fontWeight: 800, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16 }}>Bilgi Kartları</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {cards.map((card, i) => (
                 <div key={i} className="glass" style={{ padding: 16, background: 'rgba(255,255,255,0.03)' }}>
