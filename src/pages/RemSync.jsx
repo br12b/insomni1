@@ -6,7 +6,7 @@ import {
   MessageSquare, FileText, PlusCircle, Sparkles, Terminal as TerminalIcon,
   Radio, BellRing, Activity, History, Wifi, Link, Send, CreditCard, Landmark, Shield,
   Play, Smartphone, Fuel, Calendar as CalendarIcon, Upload, X, Search, Trash2, AlertTriangle,
-  Info, ExternalLink, Key
+  Info, ExternalLink, Key, AtSign
 } from 'lucide-react';
 import { storage } from '../lib/storage';
 
@@ -202,7 +202,7 @@ export default function RemSync() {
                     </div>
                   </div>
 
-                  {/* TELEGRAM GUIDE GLASS CARD */}
+                  {/* TELEGRAM GUIDE GLASS CARD - UPDATED PROTOCOL */}
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -219,24 +219,24 @@ export default function RemSync() {
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <div style={{ width: 40, height: 40, borderRadius: 12, background: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
-                        <Info size={20} />
+                        <AtSign size={20} />
                       </div>
-                      <h3 style={{ fontSize: 20, fontWeight: 900, margin: 0 }}>Otonom Köprü Nasıl Kullanılır?</h3>
+                      <h3 style={{ fontSize: 20, fontWeight: 900, margin: 0 }}>Otonom Köprü Protokolü</h3>
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
                       {[
-                        { step: "01", title: "Botu Başlat", desc: "Telegram üzerinden Insomni Otonom Botu bulun ve /start komutunu fırlatın.", icon: <Send size={18} /> },
-                        { step: "02", title: "ID Mühürle", desc: `Bot sizden ID isteyecek. Yukarıdaki ${omniId} numarasını bota gönderin.`, icon: <Key size={18} /> },
-                        { step: "03", title: "Veri Gönder", desc: "Artık bota 'Kahve 120' gibi harcamalar yazabilirsiniz; siber hızla buraya düşecektir.", icon: <Zap size={18} /> }
+                        { step: "01", title: "Botu Aç", desc: "Telegram üzerinden @insomni_test_bot adresine sızın.", icon: <ExternalLink size={18} /> },
+                        { step: "02", title: "Sinyal Formatı", desc: "Veri göndermek için önce ID, sonra boşluk ve harcama yazın.", icon: <MessageSquare size={18} /> },
+                        { step: "03", title: "Örnek Veri", desc: `${omniId} Kahve 120`, icon: <Zap size={18} />, highlight: true }
                       ].map((item, idx) => (
-                        <div key={idx} style={{ padding: 20, borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div key={idx} style={{ padding: 20, borderRadius: 20, background: item.highlight ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${item.highlight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.05)'}` }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                             <span style={{ fontSize: 10, fontWeight: 900, color: '#6366f1', letterSpacing: '0.2em' }}>ADIM {item.step}</span>
                             <div style={{ color: '#6366f1' }}>{item.icon}</div>
                           </div>
                           <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>{item.title}</div>
-                          <div style={{ fontSize: 13, color: 'var(--text2)', lineHeight: 1.5 }}>{item.desc}</div>
+                          <div style={{ fontSize: 13, color: 'var(--text2)', lineHeight: 1.5, fontFamily: item.highlight ? 'monospace' : 'inherit', fontWeight: item.highlight ? 900 : 400 }}>{item.desc}</div>
                         </div>
                       ))}
                     </div>
