@@ -18,13 +18,13 @@ export default function ExpenseInput({ onComplete }) {
     const saved = localStorage.getItem("insomni_onboarding_cards");
     if (saved) return JSON.parse(saved);
     return lang === "tr" ? [
-      { emoji: '📅', title: 'Ödeme Günü Neden Önemli?', desc: 'Maaş günün ile harcama günlerin arasındaki farkı optimize et.' },
-      { emoji: '🔄', title: 'Abonelikler Küçük Ama Etkili', desc: 'Aylık abonelikler yıllık bazda ciddi rakamlara ulaşır.' },
-      { emoji: '⚡', title: 'Atıl Nakit Tuzağı', desc: 'Paranı faizsiz hesapta tutmak yerine değerlendir.' }
+      { emoji: 'ğŸ“…', title: 'Ã–deme GÃ¼nÃ¼ Neden Ã–nemli?', desc: 'MaaÅŸ gÃ¼nÃ¼n ile harcama gÃ¼nlerin arasÄ±ndaki farkÄ± optimize et.' },
+      { emoji: 'ğŸ”„', title: 'Abonelikler KÃ¼Ã§Ã¼k Ama Etkili', desc: 'AylÄ±k abonelikler yÄ±llÄ±k bazda ciddi rakamlara ulaÅŸÄ±r.' },
+      { emoji: 'âš¡', title: 'AtÄ±l Nakit TuzaÄŸÄ±', desc: 'ParanÄ± faizsiz hesapta tutmak yerine deÄŸerlendir.' }
     ] : [
-      { emoji: '📅', title: 'Payment Dates', desc: 'Optimize the gap between salary and expenses.' },
-      { emoji: '🔄', title: 'Subscriptions', desc: 'Small monthly costs add up annually.' },
-      { emoji: '⚡', title: 'Idle Cash', desc: 'Dont let your money sit in zero-yield accounts.' }
+      { emoji: 'ğŸ“…', title: 'Payment Dates', desc: 'Optimize the gap between salary and expenses.' },
+      { emoji: 'ğŸ”„', title: 'Subscriptions', desc: 'Small monthly costs add up annually.' },
+      { emoji: 'âš¡', title: 'Idle Cash', desc: 'Dont let your money sit in zero-yield accounts.' }
     ];
   });
 
@@ -63,12 +63,12 @@ export default function ExpenseInput({ onComplete }) {
 
   return (
     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} style={{ flex: 1, display: 'flex', justifyContent: 'center', padding: '40px 24px', overflowY: 'auto' }}>
-      <div style={{ width: '100%', maxWidth: 1100, display: 'grid', gridTemplateColumns: '1fr 320px', gap: 24, alignItems: 'start' }}>
+      <div style={{ width: '100%', maxWidth: 1100, display: 'grid', gridTemplateColumns: '1fr', gap: 24, alignItems: 'start' }}>
         <div>
           <div className="glass" style={{ padding: '40px 44px', marginBottom: 20 }}>
-            <span className="badge badge-accent" style={{ marginBottom: 8, display: 'inline-flex' }}>{lang === 'tr' ? 'Adım 2 / 2' : 'Step 2 / 2'}</span>
+            <span className="badge badge-accent" style={{ marginBottom: 8, display: 'inline-flex' }}>{lang === 'tr' ? 'AdÄ±m 2 / 2' : 'Step 2 / 2'}</span>
             <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 6 }}>{t.onboarding.expenseTitle}</h2>
-            <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 28 }}>{lang === 'tr' ? 'Manuel girin ya da banka ekstrenizi yükleyin.' : 'Enter manually or upload PDF.'}</p>
+            <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 28 }}>{lang === 'tr' ? 'Manuel girin ya da banka ekstrenizi yÃ¼kleyin.' : 'Enter manually or upload PDF.'}</p>
             <div onDragOver={e => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={e => { e.preventDefault(); setDragOver(false); handlePdfUpload(e.dataTransfer.files[0]); }} onClick={() => { if (!scanning) document.getElementById('pdfInput').click(); }} style={{ border: '2px dashed var(--glass-border)', borderRadius: 16, padding: '24px', textAlign: 'center', cursor: 'pointer', marginBottom: 24, background: dragOver ? 'rgba(129,140,248,0.1)' : 'rgba(0,0,0,0.2)' }}>
               <input id="pdfInput" type="file" accept=".pdf" style={{ display: 'none' }} onChange={e => handlePdfUpload(e.target.files[0])} />
               {scanning ? (
@@ -77,7 +77,7 @@ export default function ExpenseInput({ onComplete }) {
                   <div style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>{scanMsg}</div>
                 </div>
               ) : (
-                <div><Upload size={24} color="var(--text2)" style={{ marginBottom: 8 }} /><div style={{ fontSize: 13, color: 'var(--text2)' }}>{lang === 'tr' ? 'PDF banka ekstreni bırak veya tıkla' : 'Drop PDF or click'}</div></div>
+                <div><Upload size={24} color="var(--text2)" style={{ marginBottom: 8 }} /><div style={{ fontSize: 13, color: 'var(--text2)' }}>{lang === 'tr' ? 'PDF banka ekstreni bÄ±rak veya tÄ±kla' : 'Drop PDF or click'}</div></div>
               )}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -97,22 +97,6 @@ export default function ExpenseInput({ onComplete }) {
           </div>
           <motion.button onClick={submit} whileHover={{ scale: 1.02 }} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '16px' }}>{lang === 'tr' ? "Dashboard'a Git" : "Go to Dashboard"} <ArrowRight size={17} /></motion.button>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, position: 'sticky', top: 24 }}>
-          {dynamicCards.map((card, i) => (
-            <motion.div key={i} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} className="glass" style={{ padding: '22px 24px', border: '1px solid var(--glass-border)' }}>
-              <div style={{ fontSize: 26, marginBottom: 10 }}>{card.emoji}</div>
-              <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{card.title}</div>
-              <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.6 }}>{card.desc}</div>
-            </motion.div>
-          ))}
-          {showAria && (
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="glass" style={{ padding: '18px 20px', border: '1px solid var(--accent)', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-              <div style={{ width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--accent)', flexShrink: 0 }}><img src="/aria_profile.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></div>
-              <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.5 }}><b style={{ color: 'var(--accent)' }}>ARIA:</b> &ldquo;{lang === 'tr' ? 'Tüm harcamalarını girmene gerek yok.' : "You don't need to enter everything."}&rdquo;</div>
-            </motion.div>
-          )}
-        </div>
-      </div>
-    </motion.div>
+        </div></motion.div>
   );
 }
