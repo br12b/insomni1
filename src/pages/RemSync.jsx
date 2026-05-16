@@ -105,7 +105,7 @@ export default function RemSync() {
       addLog(`Takvim senkronizasyonu baslatildi...`, 'system');
       localStorage.setItem('insomni_synced_txs', JSON.stringify(syncedData));
       addLog(`BAŞARI: Veriler mühürlendi.`, 'success');
-    } catch(e) { addLog("HATA: Kayit sirasinda siber ariza.", "error"); }
+    } catch(e) { addLog("HATA: Kayit sirasinda ariza.", "error"); }
   };
 
   const sendLocalTestSignal = async () => {
@@ -133,28 +133,35 @@ export default function RemSync() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 40px 60px 40px', overflowY: 'auto' }}>
       
-      {/* SİBER HERO BÖLÜMÜ - POWER OF SYNC */}
+      {/* HERO BÖLÜMÜ - POWER OF SYNC */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         style={{ textAlign: 'center', marginTop: 60, marginBottom: 40 }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 16 }}>
+        <motion.div 
+          whileHover={{ scale: 1.05 }}
+          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 16, cursor: 'default' }}
+        >
           <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1, #c084fc)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}>
             <Power size={20} />
           </div>
           <h1 style={{ fontSize: 'clamp(32px, 5vw, 64px)', fontWeight: 950, margin: 0, letterSpacing: '-0.05em', background: 'linear-gradient(to right, var(--text1), #6366f1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             TEST THE <span style={{ color: '#6366f1', WebkitTextFillColor: '#6366f1' }}>POWER</span> OF SYNC
           </h1>
-        </div>
+        </motion.div>
         <p style={{ fontSize: 18, color: 'var(--text2)', maxWidth: 600, margin: '0 auto', fontWeight: 600, lineHeight: 1.6 }}>
-          Banka API'leri ve Otonom Köprüler arasındaki siber senkronizasyonun gücünü keşfedin. Finansal verileriniz artık siber bir hızla merkeze akıyor.
+          Banka API'leri ve Otonom Köprüler arasındaki gelişmiş senkronizasyonun gücünü keşfedin. Finansal verileriniz artık yüksek hızla merkeze akıyor.
         </p>
       </motion.div>
 
       <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', position: 'relative' }}>
-        <button onClick={handleReset} style={{ position: 'absolute', right: 0, top: -20, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '10px 20px', borderRadius: 12, fontSize: 11, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, zIndex: 10 }}><Trash2 size={14} /> SIFIRLA</button>
         
+        {/* FIXED RESET BUTTON POSITION */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+          <button onClick={handleReset} style={{ background: 'rgba(239,68,68,0.08)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.15)', padding: '10px 20px', borderRadius: 12, fontSize: 11, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}><Trash2 size={14} /> SİSTEMİ SIFIRLA</button>
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 40 }}>
            {[ 
              { id: 1, name: "BANKA API", info: "Garanti BBVA", icon: Landmark, color: "#10b981" }, 
@@ -219,7 +226,6 @@ export default function RemSync() {
                     </div>
                   </div>
 
-                  {/* TELEGRAM GUIDE GLASS CARD - UPDATED WITH TL MÜHÜRÜ */}
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
