@@ -167,7 +167,7 @@ export default function ExpenseInput({ onComplete }) {
                     <button onClick={() => remove(exp.id)} className="btn btn-sm btn-ghost" style={{ color: 'var(--red)' }}>
                       <Trash2 size={12} />
                     </button>
-                  </motion.div>
+                  </motion.div>)}
                 ))}
               </AnimatePresence>
             </div>
@@ -192,10 +192,10 @@ export default function ExpenseInput({ onComplete }) {
               <div style={{ fontSize: 26, marginBottom: 10 }}>{card.emoji}</div>
               <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8, letterSpacing: '-0.01em' }}>{card.title}</div>
               <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.65 }}>{card.desc}</div>
-            </motion.div>
+            </motion.div>)}
           ))}
 
-          {showAria && <motion.div
+          {showAria && ( <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
@@ -210,10 +210,10 @@ export default function ExpenseInput({ onComplete }) {
                 : "You don't need to enter every expense. Just the recurring ones â€” I'll handle the analysis."}
               &rdquo;
             </div>
-          </motion.div>
+          </motion.div>)}
         </div>
 
       </div>
-    </motion.div>
+    </motion.div>)}
   );
 }

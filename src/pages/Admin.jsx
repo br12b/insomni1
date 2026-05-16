@@ -106,7 +106,7 @@ export default function Admin({ onClose }) {
           </div>
 
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={() => setActiveTab('editor'); // tabs: editor, ui, onboarding} className={`btn btn-sm ${activeTab === 'editor' ? 'btn-primary' : 'btn-ghost'}`} style={{ borderRadius: 100 }}>
+            <button onClick={() => setActiveTab('editor')} className={`btn btn-sm ${activeTab === 'editor' ? 'btn-primary' : 'btn-ghost'}`} style={{ borderRadius: 100 }}>
               <MousePointer2 size={14} /> Viewport
             </button>
             <button onClick={() => setActiveTab("ui")} className={`btn btn-sm ${activeTab === "ui" ? "btn-primary" : "btn-ghost"}`} style={{ borderRadius: 100 }}><Sparkles size={14} /> UI</button><button onClick={() => setActiveTab("onboarding")} className={`btn btn-sm ${activeTab === "onboarding" ? "btn-primary" : "btn-ghost"}`} style={{ borderRadius: 100 }}><LayoutDashboard size={14} /> Onboarding</button>
