@@ -3,7 +3,7 @@ import { useState, useCallback, useRef } from "react";
 import { executeTool } from "../lib/financialTools";
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const MODEL_NAME = "gemini-3-flash-preview";
+const MODEL_NAME = "gemini-1.5-flash";
 
 const TOOL_DECLARATIONS = [
   { name: "getCashFlowSummary", description: "Kullanicinin nakit akisini ozetler." },
