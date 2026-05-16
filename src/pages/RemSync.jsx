@@ -4,34 +4,27 @@ import {
   RefreshCw, ShieldCheck, Zap, Loader2, Lock, ArrowRight, Database, 
   CheckCircle2, Wallet, BrainCircuit, Server, Cpu, Globe, Coffee, ShoppingBag,
   MessageSquare, FileText, PlusCircle, Sparkles, Terminal as TerminalIcon,
-  Radio, BellRing, Activity
+  Radio, BellRing, Activity, History, Wifi
 } from 'lucide-react';
 
 const fadeUp = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 const txEntry = { hidden: { opacity: 0, x: -30, scale: 0.95 }, show: { opacity: 1, x: 0, scale: 1 } };
 
 export default function RemSync() {
-  const [activePath, setActivePath] = useState(1); 
+  const [activePath, setActivePath] = useState(2); 
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncedData, setSyncedData] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
   const [logs, setLogs] = useState([]);
-  const [msgInput, setMsgInput] = useState("");
+  const [trafficLog, setTrafficLog] = useState([]);
   const [webhookStatus, setWebhookStatus] = useState("Idle");
-  const [lastProcessedId, setLastProcessedId] = useState(null);
-
-  const steps = [
-    { name: "Cihaz", icon: Globe, color: "#6366f1" },
-    { name: "Proxy", icon: Server, color: "#10b981" },
-    { name: "Banka", icon: Lock, color: "#f59e0b" },
-    { name: "R.E.M", icon: BrainCircuit, color: "#ec4899" }
-  ];
+  const [processedIds, setProcessedIds] = useState(new Set());
 
   const addLog = (msg) => {
-    setLogs(prev => [...prev.slice(-6), `[${new Date().toLocaleTimeString()}] ${msg}`]);
+    setLogs(prev => [...prev.slice(-8), `[${new Date().toLocaleTimeString()}] ${msg}`]);
   };
 
-  // WEBHOOK POLLING (Simulating Android Bridge)
+  // WEBHOOK POLLING (Simulating Android Bridge / MacroDroid)
   useEffect(() => {
     let interval;
     if (activePath === 2) {
@@ -40,9 +33,15 @@ export default function RemSync() {
         try {
           const res = await fetch('/api/webhook');
           const data = await res.json();
-          if (data.id && data.id !== lastProcessedId) {
-            setLastProcessedId(data.id);
-            processAutomatedMessage(data.text);
+          if (data.history && data.history.length > 0) {
+            setTrafficLog(data.history);
+            
+            // Yeni bir ID gelmiş mi kontrol et
+            const latest = data.history[0];
+            if (!processedIds.has(latest.id)) {
+              setProcessedIds(prev => new Set(prev).add(latest.id));
+              processAutomatedMessage(latest.text);
+            }
           }
         } catch (err) { console.error("Webhook Check Failed"); }
       }, 3000);
@@ -50,33 +49,38 @@ export default function RemSync() {
       setWebhookStatus("Idle");
     }
     return () => clearInterval(interval);
-  }, [activePath, lastProcessedId]);
+  }, [activePath, processedIds]);
 
   const processAutomatedMessage = async (text) => {
+    if (!text || text === "Sistem Hazır") return;
+    
     setIsSyncing(true);
-    setLogs([]);
-    addLog("OTONOM BİLDİRİM YAKALANDI!");
-    addLog(`KAYNAK: Android Bridge`);
+    addLog(`OTONOM SINYAL YAKALANDI: "${text.substring(0, 30)}..."`);
+    
     await new Promise(r => setTimeout(r, 1000));
-    addLog("R.E.M ANALİZ: Veri süzülüyor...");
     
+    // Regex logic
     const amountMatch = text.match(/(\d+[.,]\d+)\s*TL/i);
-    const amount = amountMatch ? amountMatch[1] : "Bilinmiyor";
+    const amount = amountMatch ? amountMatch[1] : null;
     
-    addLog(`BAŞARILI: ${amount} TL harcama Dashboard'a işlendi.`);
+    if (amount) {
+      addLog(`R.E.M ANALİZ: ${amount} TL harcama tespit edildi.`);
+      const newTx = {
+        id: Date.now(),
+        type: 'TRANSACTION',
+        clean: text.length > 25 ? "Otonom Harcama" : text,
+        amount: `-${amount} ₺`,
+        raw: "BRIDGE LOG",
+        category: "OTONOM ANALİZ",
+        icon: BellRing,
+        color: "#6366f1"
+      };
+      setSyncedData(prev => [newTx, ...prev]);
+      addLog("BAŞARILI: Dashboard güncellendi.");
+    } else {
+      addLog("UYARI: Metin içinde harcama tutarı bulunamadı.");
+    }
     
-    const newTx = {
-      id: Date.now(),
-      type: 'TRANSACTION',
-      clean: text.length > 20 ? "Bildirim İşlendi" : text,
-      amount: `-${amount} ₺`,
-      raw: "OTONOM WEBHOOK",
-      category: "ANDROID BRIDGE",
-      icon: BellRing,
-      color: "#6366f1"
-    };
-    
-    setSyncedData(prev => [newTx, ...prev]);
     setIsSyncing(false);
   };
 
@@ -110,8 +114,8 @@ export default function RemSync() {
   };
 
   const paths = [
-    { id: 1, name: "API YOLU", desc: "Bankayla Direkt Bağlantı", icon: Zap, color: "#10b981" },
-    { id: 2, name: "MESAJ YOLU", desc: "Otonom Bildirim Dinleyici", icon: MessageSquare, color: "#6366f1" },
+    { id: 1, name: "API YOLU", desc: "Banka Direkt Bağlantı", icon: Zap, color: "#10b981" },
+    { id: 2, name: "OTONOM KÖPRÜ", desc: "Android Bildirim Dinleyici", icon: MessageSquare, color: "#6366f1" },
     { id: 3, name: "MANUEL / PDF", desc: "Dosya ve El ile Giriş", icon: FileText, color: "#f59e0b" }
   ];
 
@@ -150,24 +154,12 @@ export default function RemSync() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 48, position: 'relative' }}>
                     {steps.map((s, i) => (
                       <div key={i} style={{ textAlign: 'center', flex: 1, position: 'relative', zIndex: 2 }}>
-                        <motion.div animate={activeStep >= i + 1 ? { scale: [1, 1.1, 1], boxShadow: [`0 0 10px ${s.color}20`, `0 0 30px ${s.color}60`, `0 0 10px ${s.color}20`] } : {}} transition={{ repeat: Infinity, duration: 2 }}
-                          style={{ width: 64, height: 64, borderRadius: 20, margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: activeStep >= i + 1 ? s.color : 'rgba(0,0,0,0.05)', color: activeStep >= i + 1 ? '#fff' : 'rgba(0,0,0,0.2)', border: '1px solid rgba(0,0,0,0.05)', position: 'relative', zIndex: 3 }}><s.icon size={28} /></motion.div>
+                        <motion.div animate={activeStep >= i + 1 ? { scale: [1, 1.1, 1] } : {}} style={{ width: 64, height: 64, borderRadius: 20, margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: activeStep >= i + 1 ? s.color : 'rgba(0,0,0,0.05)', color: activeStep >= i + 1 ? '#fff' : 'rgba(0,0,0,0.2)', border: '1px solid rgba(0,0,0,0.05)', position: 'relative', zIndex: 3 }}><s.icon size={28} /></motion.div>
                         <div style={{ fontSize: 12, fontWeight: 900, color: activeStep >= i + 1 ? s.color : '#333' }}>{s.name.toUpperCase()}</div>
-                        
-                        {i < 3 && (
-                          <div style={{ position: 'absolute', top: 32, left: '50%', width: '100%', height: 2, background: 'rgba(0,0,0,0.05)', zIndex: 1 }}>
-                             <motion.div initial={{ width: 0 }} animate={{ width: activeStep > i + 1 ? '100%' : 0 }} style={{ height: '100%', background: `linear-gradient(90deg, ${steps[i].color}, ${steps[i+1].color})` }} />
-                          </div>
-                        )}
                       </div>
                     ))}
                   </div>
                   <div style={{ background: '#000', borderRadius: 20, padding: 24, fontFamily: 'monospace', minHeight: 180, border: '1px solid rgba(255,255,255,0.1)', marginBottom: 32 }}>
-                     <div style={{ display: 'flex', gap: 6, marginBottom: 12, borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: 12 }}>
-                        <div style={{ width: 8, height: 8, borderRadius: 10, background: '#ff5f56' }} />
-                        <div style={{ width: 8, height: 8, borderRadius: 10, background: '#ffbd2e' }} />
-                        <div style={{ width: 8, height: 8, borderRadius: 10, background: '#27c93f' }} />
-                     </div>
                      {logs.map((l, i) => <div key={i} style={{ color: '#10b981', fontSize: 13, marginBottom: 6 }}>{l}</div>)}
                      {logs.length === 0 && <div style={{ color: '#444', fontSize: 13 }}>Siber köprü beklemede...</div>}
                   </div>
@@ -178,31 +170,50 @@ export default function RemSync() {
 
           {activePath === 2 && (
             <motion.div key="path2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-               <div className="glass" style={{ padding: 48, borderRadius: 32, border: '1px solid rgba(99,102,241,0.2)', background: 'rgba(255,255,255,0.85)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-                     <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
-                        <div style={{ width: 64, height: 64, borderRadius: 20, background: '#6366f115', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Radio size={32} color="#6366f1" className={isSyncing ? "animate-pulse" : ""} /></div>
-                        <div>
-                           <h3 style={{ fontSize: 24, fontWeight: 950 }}>R.E.M Otonom Listener</h3>
-                           <p style={{ fontSize: 13, color: '#666' }}>Android Bridge bağlantısı bekleniyor...</p>
-                        </div>
-                     </div>
-                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 100, background: webhookStatus === 'Listening' ? 'rgba(16,185,129,0.1)' : 'rgba(0,0,0,0.05)', color: webhookStatus === 'Listening' ? '#10b981' : '#666' }}>
-                        <Activity size={14} className={webhookStatus === 'Listening' ? "animate-spin" : ""} />
-                        <span style={{ fontSize: 11, fontWeight: 900 }}>{webhookStatus.toUpperCase()}</span>
-                     </div>
-                  </div>
-                  
-                  <div style={{ background: '#000', borderRadius: 24, padding: 32, textAlign: 'center', marginBottom: 32, border: '1px solid rgba(255,255,255,0.05)' }}>
-                     <div style={{ marginBottom: 20 }}><BellRing size={48} color="#6366f1" className={webhookStatus === 'Listening' ? "animate-bounce" : ""} /></div>
-                     <h4 style={{ color: '#fff', fontSize: 18, fontWeight: 800, marginBottom: 8 }}>Canlı Dinleme Aktif</h4>
-                     <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, maxWidth: 400, margin: '0 auto' }}>Telefonuna bildirim geldiği an R.E.M burada otomatik olarak analize başlayacak abi.</p>
-                  </div>
+               <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20 }}>
+                 
+                 {/* LEFT: MONITOR */}
+                 <div className="glass" style={{ padding: 48, borderRadius: 32, border: '1px solid rgba(99,102,241,0.2)', background: 'rgba(255,255,255,0.85)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+                       <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+                          <div style={{ width: 64, height: 64, borderRadius: 20, background: '#6366f115', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Radio size={32} color="#6366f1" className={isSyncing ? "animate-pulse" : ""} /></div>
+                          <div>
+                             <h3 style={{ fontSize: 24, fontWeight: 950 }}>R.E.M Otonom Monitor</h3>
+                             <p style={{ fontSize: 13, color: '#666' }}>Android Bridge sinyalleri bekleniyor...</p>
+                          </div>
+                       </div>
+                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 100, background: 'rgba(16,185,129,0.1)', color: '#10b981' }}>
+                          <Activity size={14} className="animate-spin" />
+                          <span style={{ fontSize: 11, fontWeight: 900 }}>LIVE LISTENING</span>
+                       </div>
+                    </div>
+                    
+                    <div style={{ background: '#000', borderRadius: 20, padding: 24, fontFamily: 'monospace', minHeight: 250, border: '1px solid rgba(255,255,255,0.1)' }}>
+                       <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, marginBottom: 16, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 8 }}>R.E.M CORE LOGS</div>
+                       {logs.map((l, i) => <div key={i} style={{ color: '#6366f1', fontSize: 13, marginBottom: 6 }}>{l}</div>)}
+                       {logs.length === 0 && <div style={{ color: '#444', fontSize: 13 }}>Gelen sinyal yok...</div>}
+                    </div>
+                 </div>
 
-                  <div style={{ background: '#000', borderRadius: 20, padding: 20, fontFamily: 'monospace', minHeight: 120, border: '1px solid rgba(255,255,255,0.1)' }}>
-                     {logs.map((l, i) => <div key={i} style={{ color: '#6366f1', fontSize: 13, marginBottom: 6 }}>{l}</div>)}
-                     {logs.length === 0 && <div style={{ color: '#444', fontSize: 13 }}>Sinyal bekleniyor...</div>}
-                  </div>
+                 {/* RIGHT: TRAFFIC LOG */}
+                 <div className="glass" style={{ padding: 24, borderRadius: 32, border: '1px solid rgba(0,0,0,0.05)', background: 'rgba(255,255,255,0.85)', display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20, color: '#111' }}>
+                       <Wifi size={18} color="#6366f1" />
+                       <h4 style={{ fontSize: 15, fontWeight: 900 }}>AĞ TRAFİĞİ (LIVE)</h4>
+                    </div>
+                    <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                       {trafficLog.length === 0 && <div style={{ padding: 20, textAlign: 'center', color: '#999', fontSize: 12 }}>Trafik bekleniyor...</div>}
+                       {trafficLog.map((t, i) => (
+                         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} key={t.id} 
+                           style={{ padding: 14, borderRadius: 16, background: i === 0 ? '#6366f110' : '#f9f9f9', border: `1px solid ${i === 0 ? '#6366f130' : 'transparent'}` }}>
+                            <div style={{ fontSize: 10, fontWeight: 900, color: '#6366f1', marginBottom: 4 }}>{t.source.toUpperCase()}</div>
+                            <div style={{ fontSize: 12, color: '#333', fontWeight: 600, wordBreak: 'break-all' }}>{t.text}</div>
+                            <div style={{ fontSize: 9, color: '#999', marginTop: 6 }}>{new Date(t.timestamp).toLocaleTimeString()}</div>
+                         </motion.div>
+                       ))}
+                    </div>
+                 </div>
+
                </div>
             </motion.div>
           )}
@@ -221,7 +232,7 @@ export default function RemSync() {
         <AnimatePresence>
            {syncedData.length > 0 && (
              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 48, display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <h3 style={{ fontSize: 20, fontWeight: 950, paddingLeft: 8 }}>Yakaladığım Veriler</h3>
+                <h3 style={{ fontSize: 20, fontWeight: 950, paddingLeft: 8 }}>Elde Edilen Veriler</h3>
                 {syncedData.map((tx, idx) => (
                   <motion.div key={tx.id} variants={txEntry} transition={{ delay: idx * 0.1, type: "spring" }} className="glass"
                     style={{ padding: '32px', display: 'grid', gridTemplateColumns: '1.2fr auto 1.5fr auto', alignItems: 'center', gap: 32, border: `1px solid ${tx.color}30`, background: 'rgba(255,255,255,0.9)' }}>
