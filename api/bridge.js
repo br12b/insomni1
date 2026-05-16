@@ -1,39 +1,39 @@
-﻿// Insomni Cyber Bridge - V3 (Ultra Raw Capture)
+﻿// Insomni Cyber Bridge - V4 (Bulletproof)
 let trafficLog = [];
 
 export default async function handler(req, res) {
-  let text = "SİNYAL BOŞ";
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  let text = req.query.text || "SİNYAL BOŞ";
 
   if (req.method === 'POST') {
-    // Ham veriyi yakala
-    if (typeof req.body === 'string') {
-      text = req.body;
-    } else if (typeof req.body === 'object') {
-      text = req.body.text || JSON.stringify(req.body);
-    }
-  } else if (req.query.text) {
-    text = req.query.text;
+    if (typeof req.body === 'string') text = req.body;
+    else if (req.body && req.body.text) text = req.body.text;
+    else if (req.body) text = JSON.stringify(req.body);
   }
 
-  // Veriyi kaydet
   if (text && text !== "SİNYAL BOŞ") {
     const newEntry = {
       text: String(text).trim(),
-      source: "Android Bridge",
+      source: req.method === 'GET' ? "URL Bridge" : "POST Bridge",
       timestamp: new Date().toISOString(),
       id: Math.random().toString(36).substr(2, 9)
     };
     trafficLog = [newEntry, ...trafficLog].slice(0, 10);
   }
 
-  // GET isteği ile logları dön
+  // Frontend buradan çekiyor
   if (req.method === 'GET' && !req.query.text) {
-    return res.status(200).json({ 
-      history: trafficLog,
-      serverInfo: "V3_ACTIVE",
-      now: new Date().toISOString()
-    });
+    return res.status(200).json({ history: trafficLog });
   }
 
-  return res.status(200).json({ status: 'Captured', received: text.substring(0, 10) });
+  return res.status(200).json({ 
+    status: 'Transmitted', 
+    received: text.substring(0, 20),
+    method: req.method 
+  });
 }
