@@ -3,7 +3,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Activity } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
-export default function ExpenseChart({ expenses = [], currency = '₺', salary = 0 }) {
+export default function ExpenseChart({ expenses = [], currency = 'â‚º', salary = 0 }) {
   const { lang } = useLanguage();
 
   // Generate 30-day timeline
@@ -38,7 +38,7 @@ export default function ExpenseChart({ expenses = [], currency = '₺', salary =
       return (
         <div className="glass" style={{ padding: '12px 16px', border: '1px solid rgba(129,140,248,0.3)', borderRadius: 12, boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
           <p style={{ margin: 0, color: 'var(--text2)', fontSize: 11, fontWeight: 700, marginBottom: 4 }}>
-            {lang === 'tr' ? `Gün ${label}` : `Day ${label}`}
+            {lang === 'tr' ? `GÃ¼n ${label}` : `Day ${label}`}
           </p>
           <p style={{ margin: 0, color: 'var(--accent)', fontSize: 16, fontWeight: 900 }}>
             {payload[0].value.toLocaleString()} {currency}
@@ -55,7 +55,7 @@ export default function ExpenseChart({ expenses = [], currency = '₺', salary =
         <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(129,140,248,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Activity size={18} color="var(--accent)" />
         </div>
-        <div style={{ fontSize: 16, fontWeight: 800 }}>{lang === 'tr' ? 'Aylık Nakit Akışı (Timelapse)' : 'Monthly Cash Flow Timelapse'}</div>
+        <div style={{ fontSize: 16, fontWeight: 800 }}>{lang === 'tr' ? 'AylÄ±k Nakit AkÄ±ÅŸÄ± (Timelapse)' : 'Monthly Cash Flow Timelapse'}</div>
       </div>
       
       <div style={{ flex: 1, width: '100%', minHeight: 0, marginLeft: -20, position: 'relative', zIndex: 10 }}>

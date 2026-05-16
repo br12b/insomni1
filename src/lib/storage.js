@@ -1,4 +1,4 @@
-﻿const P = 'ce_v2_';
+const P = 'ce_v2_';
 export const storage = {
   save(k, v) { try { localStorage.setItem(P+k, JSON.stringify(v)); } catch(_){} },
   load(k, fb=null) { try { const r=localStorage.getItem(P+k); return r!==null ? JSON.parse(r) : fb; } catch(_){ return fb; } },

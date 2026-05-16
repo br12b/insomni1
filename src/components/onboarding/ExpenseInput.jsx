@@ -18,13 +18,13 @@ export default function ExpenseInput({ onComplete }) {
     const saved = localStorage.getItem("insomni_onboarding_cards");
     if (saved) return JSON.parse(saved);
     return lang === "tr" ? [
-      { emoji: 'ğŸ“…', title: 'Ã–deme GÃ¼nÃ¼ Neden Ã–nemli?', desc: 'MaaÅŸ gÃ¼nÃ¼n ile harcama gÃ¼nlerin arasÄ±ndaki farkÄ± optimize et.' },
-      { emoji: 'ğŸ”„', title: 'Abonelikler KÃ¼Ã§Ã¼k Ama Etkili', desc: 'AylÄ±k abonelikler yÄ±llÄ±k bazda ciddi rakamlara ulaÅŸÄ±r.' },
-      { emoji: 'âš¡', title: 'AtÄ±l Nakit TuzaÄŸÄ±', desc: 'ParanÄ± faizsiz hesapta tutmak yerine deÄŸerlendir.' }
+      { emoji: 'Ã„Å¸Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¦', title: 'ÃƒÆ’Ã¢â‚¬â€œdeme GÃƒÆ’Ã‚Â¼nÃƒÆ’Ã‚Â¼ Neden ÃƒÆ’Ã¢â‚¬â€œnemli?', desc: 'MaaÃƒâ€¦Ã…Â¸ gÃƒÆ’Ã‚Â¼nÃƒÆ’Ã‚Â¼n ile harcama gÃƒÆ’Ã‚Â¼nlerin arasÃƒâ€Ã‚Â±ndaki farkÃƒâ€Ã‚Â± optimize et.' },
+      { emoji: 'Ã„Å¸Ã…Â¸Ã¢â‚¬ÂÃ¢â‚¬Â', title: 'Abonelikler KÃƒÆ’Ã‚Â¼ÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â¼k Ama Etkili', desc: 'AylÃƒâ€Ã‚Â±k abonelikler yÃƒâ€Ã‚Â±llÃƒâ€Ã‚Â±k bazda ciddi rakamlara ulaÃƒâ€¦Ã…Â¸Ãƒâ€Ã‚Â±r.' },
+      { emoji: 'ÃƒÂ¢Ã…Â¡Ã‚Â¡', title: 'AtÃƒâ€Ã‚Â±l Nakit TuzaÃƒâ€Ã…Â¸Ãƒâ€Ã‚Â±', desc: 'ParanÃƒâ€Ã‚Â± faizsiz hesapta tutmak yerine deÃƒâ€Ã…Â¸erlendir.' }
     ] : [
-      { emoji: 'ğŸ“…', title: 'Payment Dates', desc: 'Optimize the gap between salary and expenses.' },
-      { emoji: 'ğŸ”„', title: 'Subscriptions', desc: 'Small monthly costs add up annually.' },
-      { emoji: 'âš¡', title: 'Idle Cash', desc: 'Dont let your money sit in zero-yield accounts.' }
+      { emoji: 'Ã„Å¸Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¦', title: 'Payment Dates', desc: 'Optimize the gap between salary and expenses.' },
+      { emoji: 'Ã„Å¸Ã…Â¸Ã¢â‚¬ÂÃ¢â‚¬Â', title: 'Subscriptions', desc: 'Small monthly costs add up annually.' },
+      { emoji: 'ÃƒÂ¢Ã…Â¡Ã‚Â¡', title: 'Idle Cash', desc: 'Dont let your money sit in zero-yield accounts.' }
     ];
   });
 
@@ -66,9 +66,9 @@ export default function ExpenseInput({ onComplete }) {
       <div style={{ width: '100%', maxWidth: 1100, display: 'grid', gridTemplateColumns: '1fr', gap: 24, alignItems: 'start' }}>
         <div>
           <div className="glass" style={{ padding: '40px 44px', marginBottom: 20 }}>
-            <span className="badge badge-accent" style={{ marginBottom: 8, display: 'inline-flex' }}>{lang === 'tr' ? 'AdÄ±m 2 / 2' : 'Step 2 / 2'}</span>
+            <span className="badge badge-accent" style={{ marginBottom: 8, display: 'inline-flex' }}>{lang === 'tr' ? 'AdÃƒâ€Ã‚Â±m 2 / 2' : 'Step 2 / 2'}</span>
             <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 6 }}>{t.onboarding.expenseTitle}</h2>
-            <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 28 }}>{lang === 'tr' ? 'Manuel girin ya da banka ekstrenizi yÃ¼kleyin.' : 'Enter manually or upload PDF.'}</p>
+            <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 28 }}>{lang === 'tr' ? 'Manuel girin ya da banka ekstrenizi yÃƒÆ’Ã‚Â¼kleyin.' : 'Enter manually or upload PDF.'}</p>
             <div onDragOver={e => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={e => { e.preventDefault(); setDragOver(false); handlePdfUpload(e.dataTransfer.files[0]); }} onClick={() => { if (!scanning) document.getElementById('pdfInput').click(); }} style={{ border: '2px dashed var(--glass-border)', borderRadius: 16, padding: '24px', textAlign: 'center', cursor: 'pointer', marginBottom: 24, background: dragOver ? 'rgba(129,140,248,0.1)' : 'rgba(0,0,0,0.2)' }}>
               <input id="pdfInput" type="file" accept=".pdf" style={{ display: 'none' }} onChange={e => handlePdfUpload(e.target.files[0])} />
               {scanning ? (
@@ -77,7 +77,7 @@ export default function ExpenseInput({ onComplete }) {
                   <div style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>{scanMsg}</div>
                 </div>
               ) : (
-                <div><Upload size={24} color="var(--text2)" style={{ marginBottom: 8 }} /><div style={{ fontSize: 13, color: 'var(--text2)' }}>{lang === 'tr' ? 'PDF banka ekstreni bÄ±rak veya tÄ±kla' : 'Drop PDF or click'}</div></div>
+                <div><Upload size={24} color="var(--text2)" style={{ marginBottom: 8 }} /><div style={{ fontSize: 13, color: 'var(--text2)' }}>{lang === 'tr' ? 'PDF banka ekstreni bÃƒâ€Ã‚Â±rak veya tÃƒâ€Ã‚Â±kla' : 'Drop PDF or click'}</div></div>
               )}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

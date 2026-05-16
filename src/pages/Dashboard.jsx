@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wallet, TrendingDown, LayoutDashboard, Plus, X, Tag, Calendar, DollarSign } from 'lucide-react';
 import AnimatedCounter from '../components/ui/AnimatedCounter';

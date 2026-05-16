@@ -1,4 +1,4 @@
-﻿import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useState, useCallback, useRef } from "react";
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
