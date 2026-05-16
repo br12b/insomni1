@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  RefreshCw, ShieldCheck, Zap, Loader2, Lock, ArrowRight, Database, 
+  RefreshCw, ShieldCheck, Shield, Zap, Loader2, Lock, ArrowRight, Database, 
   CheckCircle2, Wallet, BrainCircuit, Server, Cpu, Globe, Coffee, ShoppingBag,
   MessageSquare, FileText, PlusCircle, Sparkles, Terminal as TerminalIcon,
   Radio, BellRing, Activity, History, Wifi, Link, Send
@@ -17,18 +17,29 @@ export default function RemSync() {
   const [logs, setLogs] = useState([]);
   const [trafficLog, setTrafficLog] = useState([]);
   const [processedIds, setProcessedIds] = useState(new Set());
+  const [bridgeId, setBridgeId] = useState('');
 
   const addLog = (msg) => {
     setLogs(prev => [...prev.slice(-10), `> ${msg}`]);
   };
 
-  // BRIDGE POLLING
+  // Siber Kimlik Olusturma
+  useEffect(() => {
+    let savedId = localStorage.getItem('insomni_bridge_id');
+    if (!savedId) {
+      savedId = Math.floor(100000 + Math.random() * 900000).toString();
+      localStorage.setItem('insomni_bridge_id', savedId);
+    }
+    setBridgeId(savedId);
+  }, []);
+
+  // BRIDGE POLLING (ID Filtreli)
   useEffect(() => {
     let interval;
-    if (activePath === 2) {
+    if (activePath === 2 && bridgeId) {
       interval = setInterval(async () => {
         try {
-          const res = await fetch('/api/bridge');
+          const res = await fetch(`/api/bridge?id=${bridgeId}`);
           const data = await res.json();
           if (data.history) {
             setTrafficLog(data.history);
@@ -42,50 +53,51 @@ export default function RemSync() {
       }, 3000);
     }
     return () => clearInterval(interval);
-  }, [activePath, processedIds]);
+  }, [activePath, processedIds, bridgeId]);
 
   const processAutomatedMessage = async (text) => {
-    if (!text || text === "SİNYAL BOŞ") return;
+    if (!text || text === "SINYAL BOS") return;
     setIsSyncing(true);
-    addLog(`BRIDGE: Veri girişi saptandı!`);
+    addLog(`BRIDGE: Veri girisi saptandi!`);
     await new Promise(r => setTimeout(r, 1000));
     
     const amountMatch = text.match(/(\d+([.,]\d+)?)\s*(TL|tl|₺)/i);
     const amount = amountMatch ? amountMatch[1] : null;
     
     if (amount) {
-      addLog(`R.E.M: Analiz başarılı. Tutar: ${amount} ₺`);
+      addLog(`R.E.M: Analiz basarili. Tutar: ${amount} ₺`);
       const newTx = {
         id: Date.now(),
         type: 'TRANSACTION',
         clean: text.length > 30 ? "Otonom Harcama" : text,
         amount: `-${amount} ₺`,
-        raw: "SİBER_KÖPRÜ_v3",
-        category: "OTONOM ANALİZ",
+        raw: "SIBER_KÖPRÜ_v3",
+        category: "OTONOM ANALIZ",
         icon: BellRing,
         color: "#6366f1"
       };
       setSyncedData(prev => [newTx, ...prev]);
     } else {
-      addLog(`UYARI: Tutar bulunamadı. Veri: "${text.substring(0, 15)}..."`);
+      addLog(`UYARI: Tutar bulunamadi. Veri: "${text.substring(0, 15)}..."`);
     }
     setIsSyncing(false);
   };
 
   const sendTestSignal = async () => {
-    addLog("SİSTEM: Manuel test sinyali fırlatılıyor...");
+    addLog("SISTEM: Manuel test sinyali firlatiliyor...");
     try {
       await fetch('/api/bridge', {
         method: 'POST',
-        body: 'Starbucks 150 TL Test Mesaji'
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: `${bridgeId} Starbucks 150 TL Test Mesaji` })
       });
-      addLog("SİSTEM: Sinyal arka kapıya (API) bırakıldı.");
-    } catch (err) { addLog("HATA: Sinyal fırlatılamadı."); }
+      addLog("SISTEM: Sinyal arka kapiya (API) birakildi.");
+    } catch (err) { addLog("HATA: Sinyal firlatilamadi."); }
   };
 
   const handleApiSync = async () => {
     setIsSyncing(true); setSyncedData([]); setLogs([]);
-    const sequence = ["Bağlantı kuruluyor...", "Gateway doğrulandı.", "Veriler çekiliyor...", "Analiz ediliyor...", "Tamamlandı."];
+    const sequence = ["Baglanti kuruluyor...", "Gateway dogrulandi.", "Veriler cekiliyor...", "Analiz ediliyor...", "Tamamlandi."];
     for(let i=0; i<sequence.length; i++) {
       addLog(sequence[i]); await new Promise(r => setTimeout(r, 800));
     }
@@ -93,7 +105,7 @@ export default function RemSync() {
       const response = await fetch('/api/sync');
       const data = await response.json();
       if (data.status === 'Connected') {
-        const balanceCard = { id: 'bal', type: 'BALANCE', clean: "Garanti Hesabı", amount: data.balance + " ₺", raw: data.iban, category: "BAKİYE", icon: Wallet, color: "#10b981" };
+        const balanceCard = { id: 'bal', type: 'BALANCE', clean: "Garanti Hesabi", amount: data.balance + " ₺", raw: data.iban, category: "BAKIYE", icon: Wallet, color: "#10b981" };
         const transactions = data.transactions.map(tx => ({ ...tx, icon: tx.clean.includes('Starbucks') ? Coffee : ShoppingBag, color: "#6366f1" }));
         setSyncedData([balanceCard, ...transactions]);
       }
@@ -117,7 +129,7 @@ export default function RemSync() {
                 <div style={{ width: 48, height: 48, borderRadius: 14, background: activePath === p.id ? p.color : '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', color: activePath === p.id ? '#fff' : '#999' }}><p.icon size={22} /></div>
                 <div style={{ textAlign: 'left' }}>
                    <div style={{ fontSize: 13, fontWeight: 900, color: activePath === p.id ? p.color : '#111' }}>{p.name}</div>
-                   <div style={{ fontSize: 10, color: '#666', fontWeight: 600 }}>SENKRONİZASYON HATTI</div>
+                   <div style={{ fontSize: 10, color: '#666', fontWeight: 600 }}>SENKRONIZASYON HATTI</div>
                 </div>
              </button>
            ))}
@@ -128,25 +140,43 @@ export default function RemSync() {
             {activePath === 2 && (
               <motion.div key="bridge" initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 340px', gap: 30 }}>
                  <div>
+                    {/* Siber Kimlik Kartı */}
+                    <div className="glass" style={{ marginBottom: 24, padding: 24, borderLeft: '4px solid #6366f1', background: '#fff' }}>
+                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                             <Shield size={18} color="#6366f1" />
+                             <span style={{ fontSize: 13, fontWeight: 900, letterSpacing: '0.1em' }}>SIBER KIMLIK</span>
+                          </div>
+                          <div style={{ fontSize: 9, padding: '2px 8px', background: '#6366f110', color: '#6366f1', borderRadius: 4, fontWeight: 900 }}>AKTIF</div>
+                       </div>
+                       <div style={{ textAlign: 'center', background: '#f8fafc', padding: 16, borderRadius: 12, border: '1px dashed #e2e8f0' }}>
+                          <div style={{ fontSize: 10, color: '#94a3b8', marginBottom: 4 }}>BRIDGE ID</div>
+                          <div style={{ fontSize: 32, fontWeight: 950, color: '#6366f1', letterSpacing: '4px' }}>{bridgeId}</div>
+                       </div>
+                       <p style={{ fontSize: 10, color: '#64748b', marginTop: 12, fontStyle: 'italic' }}>
+                         * Bot mesajinin basina bu ID'yi ekleyin. Örn: <b>{bridgeId} Starbucks 150 TL</b>
+                       </p>
+                    </div>
+
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                           <div style={{ width: 56, height: 56, borderRadius: 18, background: '#6366f110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Radio size={28} color="#6366f1" className="animate-pulse" /></div>
                           <h3 style={{ fontSize: 20, fontWeight: 950, margin: 0 }}>Siber Köprü v3.0</h3>
                        </div>
                        <button onClick={sendTestSignal} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 12, background: '#000', color: '#fff', fontSize: 12, fontWeight: 900, cursor: 'pointer' }}>
-                          <Send size={14} /> TEST SİNYALİ GÖNDER
+                          <Send size={14} /> TEST SINYALI GÖNDER
                        </button>
                     </div>
                     <div style={{ background: '#0a0a0a', borderRadius: 20, padding: 24, fontFamily: 'monospace', minHeight: 280, border: '1px solid rgba(255,255,255,0.05)' }}>
                        <div style={{ color: '#6366f130', fontSize: 10, marginBottom: 12, borderBottom: '1px solid #6366f110', paddingBottom: 8 }}>REM CORE v3.0 // OTONOM LOGS</div>
                        {logs.map((l, i) => <div key={i} style={{ color: '#6366f1', fontSize: 13, marginBottom: 4 }}>{l}</div>)}
-                       {logs.length === 0 && <div style={{ color: '#333', fontSize: 13 }}>Dinleme moduna geçildi...</div>}
+                       {logs.length === 0 && <div style={{ color: '#333', fontSize: 13 }}>Dinleme moduna gecildi...</div>}
                     </div>
                  </div>
                  <div style={{ background: 'rgba(0,0,0,0.02)', borderRadius: 24, padding: 20, border: '1px solid rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                        <Activity size={16} color="#6366f1" />
-                       <h4 style={{ fontSize: 13, fontWeight: 900, margin: 0 }}>CANLI TRAFİK</h4>
+                       <h4 style={{ fontSize: 13, fontWeight: 900, margin: 0 }}>CANLI TRAFIK</h4>
                     </div>
                     <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
                        {trafficLog.map((t, i) => (
@@ -166,7 +196,7 @@ export default function RemSync() {
                   <div style={{ background: '#0a0a0a', borderRadius: 20, padding: 24, fontFamily: 'monospace', minHeight: 180, border: '1px solid rgba(255,255,255,0.05)', marginBottom: 24 }}>
                      {logs.map((l, i) => <div key={i} style={{ color: '#10b981', fontSize: 13, marginBottom: 4 }}>{l}</div>)}
                   </div>
-                  <button onClick={handleApiSync} disabled={isSyncing} className="btn-primary" style={{ width: '100%', padding: 20, borderRadius: 16, fontSize: 16, fontWeight: 900, background: '#000', color: '#fff' }}>GATEWAY BAĞLANTISINI KUR</button>
+                  <button onClick={handleApiSync} disabled={isSyncing} className="btn-primary" style={{ width: '100%', padding: 20, borderRadius: 16, fontSize: 16, fontWeight: 900, background: '#000', color: '#fff' }}>GATEWAY BAGLANTISINI KUR</button>
                </motion.div>
             )}
           </AnimatePresence>
