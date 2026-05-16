@@ -29,13 +29,13 @@ export default function Calendar() {
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem('insomni_synced_txs') || '[]');
-    setSyncedData(data);
+    setSyncedData(Array.isArray(data) ? data : []);
   }, []);
 
   const parseCurrency = (str) => {
     if (!str) return 0;
-    // Remove dots (thousand separator) and replace comma with dot (decimal)
-    return parseFloat(str.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '')) || 0;
+    const cleaned = str.toString().replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
+    return Math.abs(parseFloat(cleaned)) || 0;
   };
 
   const daysInMonth = 31;
@@ -109,7 +109,6 @@ export default function Calendar() {
         </div>
       </div>
 
-      {/* MONTHLY SUMMARY PANEL */}
       <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="glass" style={{ padding: 32, borderRadius: 40, background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#fff', display: 'flex', justifyContent: 'space-around', alignItems: 'center', border: '1px solid rgba(255,255,255,0.1)' }}>
           <div style={{ textAlign: 'center' }}><div style={{ fontSize: 12, fontWeight: 900, color: '#94a3b8', marginBottom: 10 }}>AYLIK TOPLAM GELİR</div><div style={{ fontSize: 32, fontWeight: 950, color: '#10b981' }}>{monthlyStats.income.toLocaleString('tr-TR')} ₺</div></div>
           <div style={{ width: 1, height: 60, background: 'rgba(255,255,255,0.1)' }} />
