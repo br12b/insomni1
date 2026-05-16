@@ -1,23 +1,29 @@
-﻿// Insomni Otonom Webhook Kapısı - V4 (Debug Mode - Accepts Everything)
+﻿// Insomni Otonom Webhook Kapısı - V5 (Ultimate Compatibility)
 let notificationQueue = [];
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    // Ne gelirse gelsin alıyoruz (Debug için)
-    const rawData = req.body;
-    const text = rawData.text || JSON.stringify(rawData) || "TANIMSIZ VERİ";
+    let text = "VERI ALINAMADI";
     
+    // Eğer veri JSON gelmişse
+    if (req.body && typeof req.body === 'object') {
+      text = req.body.text || JSON.stringify(req.body);
+    } 
+    // Eğer veri düz metin gelmişse
+    else if (req.body) {
+      text = req.body;
+    }
+
     const newEntry = {
       text: text,
-      source: rawData.source || "Android Bridge",
+      source: "Android Bridge",
       timestamp: new Date().toISOString(),
       id: Math.random().toString(36).substr(2, 9)
     };
 
     notificationQueue = [newEntry, ...notificationQueue].slice(0, 10);
-    console.log("Inbound Webhook:", newEntry);
     
-    return res.status(200).json({ status: 'Captured', data: newEntry });
+    return res.status(200).json({ status: 'Captured', id: newEntry.id });
   } 
   
   if (req.method === 'GET') {
