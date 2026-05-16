@@ -76,7 +76,8 @@ function AppContent() {
     setProfile(newName);
   };
 
-  const isUnlocked = (profile && salaryData) || showFullNav;
+  // NAVIGATION IS NOW PURELY CONTROLLED BY THE ZAP BUTTON FOR COMPACT VIBE
+  const isNavVisible = showFullNav;
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -102,33 +103,32 @@ function AppContent() {
             {lang.toUpperCase()}
           </button>
 
-          {/* PURPLE EXTEND TRIGGER (Only show if not already fully unlocked by data) */}
-          {!(profile && salaryData) && (
-            <motion.button 
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setShowFullNav(!showFullNav)}
-              className="btn btn-icon btn-sm"
-              style={{ 
-                background: 'linear-gradient(135deg, #818cf8, #c084fc)', 
-                color: '#fff', 
-                borderRadius: '50%',
-                boxShadow: '0 0 15px rgba(192,132,252,0.5)',
-                border: 'none'
-              }}
-            >
-              {showFullNav ? <ChevronLeft size={16} /> : <Zap size={16} fill="currentColor" />}
-            </motion.button>
-          )}
+          {/* PERMANENT PURPLE ZAP BUTTON */}
+          <motion.button 
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowFullNav(!showFullNav)}
+            className="btn btn-icon btn-sm"
+            style={{ 
+              background: 'linear-gradient(135deg, #818cf8, #c084fc)', 
+              color: '#fff', 
+              borderRadius: '50%',
+              boxShadow: '0 0 15px rgba(192,132,252,0.5)',
+              border: 'none'
+            }}
+          >
+            {showFullNav ? <ChevronLeft size={16} /> : <Zap size={16} fill="currentColor" />}
+          </motion.button>
 
           <AnimatePresence>
-            {isUnlocked && (
+            {isNavVisible && (
               <motion.div 
                 initial={{ opacity: 0, x: 20, width: 0 }}
                 animate={{ opacity: 1, x: 0, width: 'auto' }}
                 exit={{ opacity: 0, x: 20, width: 0 }}
                 style={{ display: 'flex', gap: 8, overflow: 'hidden' }}
               >
+                {/* Dashboard etc. now only show if they have data OR user explicitly expanded */}
                 <button onClick={() => goTo('dashboard')} className={`btn btn-sm ${view === 'dashboard' ? 'btn-accent' : 'btn-ghost'}`}>
                   Dashboard
                 </button>
