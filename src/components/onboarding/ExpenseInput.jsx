@@ -9,6 +9,19 @@ const uid = () => Math.random().toString(36).slice(2,9);
 export default function ExpenseInput({ onComplete }) {
   const { lang, t } = useLanguage();
   const [expenses, setExpenses] = useState([]);
+  const PRESETS = lang === "tr" ? [
+    { name: "Kira", amount: "", date: "5", type: "expense" },
+    { name: "Elektrik", amount: "", date: "10", type: "expense" },
+    { name: "Doğalgaz", amount: "", date: "12", type: "expense" },
+    { name: "Netflix", amount: "189", date: "3", type: "subscription", isSubscription: true },
+    { name: "Spotify", amount: "69", date: "3", type: "subscription", isSubscription: true },
+  ] : [
+    { name: "Rent", amount: "", date: "5", type: "expense" },
+    { name: "Electricity", amount: "", date: "10", type: "expense" },
+    { name: "Gas", amount: "", date: "12", type: "expense" },
+    { name: "Netflix", amount: "14.99", date: "3", type: "subscription", isSubscription: true },
+    { name: "Spotify", amount: "9.99", date: "3", type: "subscription", isSubscription: true },
+  ];
   const [scanning, setScanning] = useState(false);
   const [scanMsg, setScanMsg] = useState('');
   const [scanPct, setScanPct] = useState(0);
