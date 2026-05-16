@@ -70,7 +70,7 @@ export default function Landing({ onStart, editMode = false }) {
       </motion.div>
 
       {/* Main Content Overlay */}
-      <div className="container" style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', paddingTop: '8vh', paddingBottom: 60, width: '100%' }}>
+      <div className="container" style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', paddingTop: '4vh', paddingBottom: 60, width: '100%' }}>
         
         {/* MAIN TITLE */}
         <motion.h1 variants={fadeUp}
