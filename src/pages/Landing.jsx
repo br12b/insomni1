@@ -159,8 +159,8 @@ export default function Landing({ onStart, editMode = false }) {
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 48, width: '100%' }}>
           {[
             { id: 'stat_1', label: t.landing.stat1, value: 18450, suffix: ' ' + t.currency },
-            { id: 'stat_2', label: t.landing.stat2, value: 98, suffix: '%' },
-            { id: 'stat_3', label: t.landing.stat3, value: 3, suffix: lang === 'tr' ? ' sn' : ' sec' },
+            { id: 'stat_2', label: t.landing.stat2, value: 4, suffix: lang === 'tr' ? ' Adet' : ' Items' },
+            { id: 'stat_3', label: t.landing.stat3, value: 14, suffix: lang === 'tr' ? ' Gün' : ' Days' },
           ].map((s, i) => (
             <motion.div key={i} variants={fadeUp} className="glass" style={{ padding: '24px 36px', minWidth: 220, backdropFilter: 'blur(20px)', border: '1px solid var(--accent-dim)' }}>
               <div className="label" style={{ marginBottom: 10, fontSize: 11, opacity: 0.8 }}>{s.label}</div>
