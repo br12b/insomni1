@@ -27,7 +27,7 @@ export default function RemSync() {
   const [syncedData, setSyncedData] = useState([]);
   const [logs, setLogs] = useState([]);
   const [trafficLog, setTrafficLog] = useState([]);
-  const [omniId, setOmniId] = useState(''); // This will be our persistent Telegram-compatible ID
+  const [omniId, setOmniId] = useState('');
   const lastProcessedRef = useRef(new Set());
 
   const addLog = (msg, type = 'info') => {
@@ -35,10 +35,8 @@ export default function RemSync() {
   };
 
   useEffect(() => {
-    // PROTECT TELEGRAM BOT CONNECTION: Load the ACTUAL bridge ID
     let savedId = localStorage.getItem('insomni_bridge_id');
     if (!savedId) {
-      // If no ID exists, create a permanent numeric one that bot expects
       savedId = Math.floor(100000 + Math.random() * 900000).toString();
       localStorage.setItem('insomni_bridge_id', savedId);
     }
@@ -140,12 +138,45 @@ export default function RemSync() {
 
       <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 40 }}>
-           {[ { id: 1, name: "BANKA API", info: "Garanti BBVA", icon: Landmark, color: "#10b981" }, { id: 2, name: "OTONOM KÖPRÜ", info: "Telegram Bot", icon: Radio, color: "#6366f1" } ].map(p => (
-             <button key={p.id} onClick={() => setActivePath(p.id)}
-               style={{ padding: 32, borderRadius: 32, border: `2px solid ${activePath === p.id ? p.color : 'rgba(0,0,0,0.05)'}`, background: activePath === p.id ? `${p.color}05` : '#fff', display: 'flex', alignItems: 'center', gap: 20, transition: 'all 0.3s' }}>
-                <div style={{ width: 64, height: 64, borderRadius: 20, background: activePath === p.id ? p.color : '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: activePath === p.id ? '#fff' : '#cbd5e1' }}><p.icon size={28} /></div>
-                <div style={{ textAlign: 'left' }}><div style={{ fontSize: 16, fontWeight: 900, color: activePath === p.id ? p.color : '#1e293b' }}>{p.name}</div><div style={{ fontSize: 12, color: '#94a3b8', fontWeight: 600 }}>{p.info}</div></div>
-             </button>
+           {[ 
+             { id: 1, name: "BANKA API", info: "Garanti BBVA", icon: Landmark, color: "#10b981" }, 
+             { id: 2, name: "OTONOM KÖPRÜ", info: "Telegram Bot", icon: Radio, color: "#6366f1" } 
+           ].map(p => (
+             <motion.button 
+               key={p.id} 
+               onClick={() => setActivePath(p.id)}
+               whileHover={{ scale: 1.02, y: -5, boxShadow: `0 20px 40px ${p.color}15` }}
+               whileTap={{ scale: 0.98 }}
+               style={{ 
+                 padding: 32, 
+                 borderRadius: 32, 
+                 border: `2px solid ${activePath === p.id ? p.color : 'rgba(0,0,0,0.05)'}`, 
+                 background: activePath === p.id ? `${p.color}05` : '#fff', 
+                 display: 'flex', 
+                 alignItems: 'center', 
+                 gap: 24, 
+                 transition: 'border 0.3s, background 0.3s',
+                 cursor: 'pointer'
+               }}
+             >
+                <motion.div 
+                  animate={activePath === p.id ? { scale: [1, 1.1, 1] } : {}}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  style={{ 
+                    width: 72, height: 72, borderRadius: 22, 
+                    background: activePath === p.id ? p.color : '#f8fafc', 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                    color: activePath === p.id ? '#fff' : '#cbd5e1',
+                    boxShadow: activePath === p.id ? `0 10px 20px ${p.color}40` : 'none'
+                  }}
+                >
+                  <p.icon size={32} />
+                </motion.div>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: activePath === p.id ? p.color : '#1e293b', marginBottom: 4 }}>{p.name}</div>
+                  <div style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600 }}>{p.info}</div>
+                </div>
+             </motion.button>
            ))}
         </div>
 
