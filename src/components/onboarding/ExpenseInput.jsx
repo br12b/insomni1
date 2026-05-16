@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, ArrowRight, Upload, RefreshCw, Loader2, Calendar } from 'lucide-react';
 import { parseBankStatement } from '../../lib/pdfParser';
@@ -18,13 +18,13 @@ export default function ExpenseInput({ onComplete }) {
     const saved = localStorage.getItem("insomni_onboarding_cards");
     if (saved) return JSON.parse(saved);
     return lang === "tr" ? [
-      { emoji: '📅', title: 'Ödeme Günü Neden Önemli?', desc: 'Maaş günün ile harcama günlerin arasındaki fark, nakdinin ne kadar süre boşta beklediğini belirler.' },
-      { emoji: '🔄', title: 'Abonelikler Küçük Ama Etkili', desc: 'Aylık 200-300 TL gibi görünen abonelikler, yıllık bazda 3.600 TL anlamına gelir.' },
-      { emoji: '⚡', title: 'Atıl Nakit Tuzağı', desc: "Türkiye'de ortalama bir çalışan maaşının %40'ını faizsiz hesapta tutuyor." }
+      { emoji: '📅', title: 'Ödeme Günü Neden Önemli?', desc: 'Maaş günün ile harcama günlerin arasındaki farkı optimize et.' },
+      { emoji: '🔄', title: 'Abonelikler Küçük Ama Etkili', desc: 'Aylık abonelikler yıllık bazda ciddi rakamlara ulaşır.' },
+      { emoji: '⚡', title: 'Atıl Nakit Tuzağı', desc: 'Paranı faizsiz hesapta tutmak yerine değerlendir.' }
     ] : [
-      { emoji: '📅', title: 'Why Payment Date Matters', desc: 'The gap between your salary day and expense dates determines returns.' },
-      { emoji: '🔄', title: 'Subscriptions Add Up Fast', desc: 'Small monthly costs add up to big annual savings.' },
-      { emoji: '⚡', title: 'The Idle Cash Trap', desc: 'Idle cash in zero-yield accounts is a missed opportunity.' }
+      { emoji: '📅', title: 'Payment Dates', desc: 'Optimize the gap between salary and expenses.' },
+      { emoji: '🔄', title: 'Subscriptions', desc: 'Small monthly costs add up annually.' },
+      { emoji: '⚡', title: 'Idle Cash', desc: 'Dont let your money sit in zero-yield accounts.' }
     ];
   });
 
@@ -37,8 +37,7 @@ export default function ExpenseInput({ onComplete }) {
       setShowAria(localStorage.getItem("insomni_hide_aria") !== "true");
     };
     const timer = setInterval(sync, 1000);
-    window.addEventListener("storage", sync);
-    return () => { clearInterval(timer); window.removeEventListener("storage", sync); };
+    return () => clearInterval(timer);
   }, []);
 
   const addExpense = (preset = null) => {
@@ -58,7 +57,7 @@ export default function ExpenseInput({ onComplete }) {
   };
 
   const submit = () => {
-    const valid = expenses.filter(e => e.name && parseFloat(e.amount) > 0 && parseInt(e.date) >= 1 && parseInt(e.date) <= 31);
+    const valid = expenses.filter(e => e.name && parseFloat(e.amount) > 0);
     onComplete(valid);
   };
 
@@ -69,49 +68,47 @@ export default function ExpenseInput({ onComplete }) {
           <div className="glass" style={{ padding: '40px 44px', marginBottom: 20 }}>
             <span className="badge badge-accent" style={{ marginBottom: 8, display: 'inline-flex' }}>{lang === 'tr' ? 'Adım 2 / 2' : 'Step 2 / 2'}</span>
             <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 6 }}>{t.onboarding.expenseTitle}</h2>
-            <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 28 }}>{lang === 'tr' ? 'Manuel girin ya da banka ekstrenizi yükleyin.' : 'Enter manually or upload your bank statement.'}</p>
-            <div onDragOver={e => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={e => { e.preventDefault(); setDragOver(false); handlePdfUpload(e.dataTransfer.files[0]); }} onClick={() => { if (!scanning) document.getElementById('pdfInput').click(); }} style={{ border: '2px dashed ' + (dragOver ? 'var(--accent)' : 'var(--glass-border)'), borderRadius: 16, padding: '24px', textAlign: 'center', cursor: 'pointer', marginBottom: 24, background: dragOver ? 'var(--accent-dim)' : 'var(--bg2)', transition: 'all 0.2s' }}>
+            <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 28 }}>{lang === 'tr' ? 'Manuel girin ya da banka ekstrenizi yükleyin.' : 'Enter manually or upload PDF.'}</p>
+            <div onDragOver={e => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={e => { e.preventDefault(); setDragOver(false); handlePdfUpload(e.dataTransfer.files[0]); }} onClick={() => { if (!scanning) document.getElementById('pdfInput').click(); }} style={{ border: '2px dashed var(--glass-border)', borderRadius: 16, padding: '24px', textAlign: 'center', cursor: 'pointer', marginBottom: 24, background: dragOver ? 'rgba(129,140,248,0.1)' : 'rgba(0,0,0,0.2)' }}>
               <input id="pdfInput" type="file" accept=".pdf" style={{ display: 'none' }} onChange={e => handlePdfUpload(e.target.files[0])} />
               {scanning ? (
                 <div>
                   <Loader2 size={24} color="var(--accent)" style={{ animation: 'spin 1s linear infinite', marginBottom: 8 }} />
-                  <div style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600, marginBottom: 6 }}>{scanMsg}</div>
-                  <div style={{ height: 4, borderRadius: 9999, background: 'var(--glass-border)', overflow: 'hidden' }}>
-                    <motion.div animate={{ width: scanPct + '%' }} transition={{ duration: 0.3 }} style={{ height: '100%', background: 'var(--accent)', borderRadius: 9999 }} />
-                  </div>
+                  <div style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>{scanMsg}</div>
                 </div>
               ) : (
-                <div><Upload size={24} color="var(--text2)" style={{ marginBottom: 8 }} /><div style={{ fontSize: 13, color: 'var(--text2)' }}>{lang === 'tr' ? 'PDF banka ekstreni bırak veya tıkla' : 'Drop your bank statement PDF or click'}</div></div>
+                <div><Upload size={24} color="var(--text2)" style={{ marginBottom: 8 }} /><div style={{ fontSize: 13, color: 'var(--text2)' }}>{lang === 'tr' ? 'PDF banka ekstreni bırak veya tıkla' : 'Drop PDF or click'}</div></div>
               )}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <AnimatePresence>
                 {expenses.map((exp) => (
-                  <motion.div key={exp.id} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} style={{ display: 'grid', gridTemplateColumns: '1fr 110px 70px auto auto', gap: 8, alignItems: 'center' }}>
-                    <input className="input" placeholder={t.onboarding.expenseLabel} value={exp.name} onChange={e => update(exp.id, 'name', e.target.value)} style={{ fontSize: 13, padding: '10px 12px' }} />
-                    <input className="input" type="number" placeholder={t.onboarding.amountLabel} value={exp.amount} onChange={e => update(exp.id, 'amount', e.target.value)} style={{ fontSize: 13, padding: '10px 12px' }} />
-                    <div style={{ position: 'relative' }}><Calendar size={13} color="var(--text2)" style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} /><input className="input" type="number" min="1" max="31" placeholder={lang === 'tr' ? 'Gün' : 'Day'} value={exp.date} onChange={e => update(exp.id, 'date', e.target.value)} style={{ fontSize: 13, padding: '10px 8px 10px 26px' }} /></div>
+                  <motion.div key={exp.id} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} style={{ display: 'grid', gridTemplateColumns: '1fr 100px 70px auto auto', gap: 8, alignItems: 'center' }}>
+                    <input className="input" placeholder="Harcama" value={exp.name} onChange={e => update(exp.id, 'name', e.target.value)} style={{ fontSize: 13 }} />
+                    <input className="input" type="number" placeholder="0" value={exp.amount} onChange={e => update(exp.id, 'amount', e.target.value)} style={{ fontSize: 13 }} />
+                    <input className="input" type="number" value={exp.date} onChange={e => update(exp.id, 'date', e.target.value)} style={{ fontSize: 13, textAlign: 'center' }} />
                     <button onClick={() => update(exp.id, 'isSubscription', !exp.isSubscription)} className={'btn btn-sm ' + (exp.isSubscription ? 'btn-accent' : 'btn-ghost')}><RefreshCw size={12} /></button>
                     <button onClick={() => remove(exp.id)} className="btn btn-sm btn-ghost" style={{ color: 'var(--red)' }}><Trash2 size={12} /></button>
                   </motion.div>
                 ))}
               </AnimatePresence>
+              <button onClick={() => addExpense()} className="btn btn-secondary btn-sm" style={{ borderStyle: 'dashed', marginTop: 10 }}><Plus size={14} /> Harcama Ekle</button>
             </div>
           </div>
-          <motion.button onClick={submit} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '16px' }}>{lang === 'tr' ? "Dashboard'a Git" : "Go to Dashboard"} ({expenses.length} {lang === 'tr' ? 'kalem' : 'items'}) <ArrowRight size={17} /></motion.button>
+          <motion.button onClick={submit} whileHover={{ scale: 1.02 }} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '16px' }}>{lang === 'tr' ? "Dashboard'a Git" : "Go to Dashboard"} <ArrowRight size={17} /></motion.button>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, position: 'sticky', top: 24 }}>
           {dynamicCards.map((card, i) => (
-            <motion.div key={i} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.12 + 0.2 }} className="glass" style={{ padding: '22px 24px', border: '1px solid var(--glass-border)' }}>
+            <motion.div key={i} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} className="glass" style={{ padding: '22px 24px', border: '1px solid var(--glass-border)' }}>
               <div style={{ fontSize: 26, marginBottom: 10 }}>{card.emoji}</div>
               <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{card.title}</div>
-              <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.65 }}>{card.desc}</div>
+              <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.6 }}>{card.desc}</div>
             </motion.div>
           ))}
           {showAria && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="glass" style={{ padding: '18px 20px', border: '1px solid var(--accent)', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
               <div style={{ width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--accent)', flexShrink: 0 }}><img src="/aria_profile.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></div>
-              <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.55 }}><b style={{ color: 'var(--accent)' }}>ARIA:</b> &ldquo;{lang === 'tr' ? 'Tüm harcamalarını girmene gerek yok. Sadece en düzenli olanlar yeter.' : 'You don''t need to enter every expense.'}&rdquo;</div>
+              <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.5 }}><b style={{ color: 'var(--accent)' }}>ARIA:</b> &ldquo;{lang === 'tr' ? 'Tüm harcamalarını girmene gerek yok.' : "You don't need to enter everything."}&rdquo;</div>
             </motion.div>
           )}
         </div>
