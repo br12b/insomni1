@@ -177,7 +177,7 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <TrendingUp size={18} color="var(--accent)" />
-                <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'white', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'var(--text1)', display: 'flex', alignItems: 'center', gap: 8 }}>
                   {lang === 'tr' ? 'Atıl Para Optimizasyon Analizi' : 'Idle Cash Optimization Analysis'}
                   {remaining > 0 && (
                     <span className="badge badge-warning" style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
