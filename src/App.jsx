@@ -50,7 +50,8 @@ const IntroSequence = ({ onComplete }) => {
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: '#000',
+        backgroundColor: 'rgba(0, 0, 0, 0.75)', // Cam gibi saydam arka plan
+        backdropFilter: 'blur(12px)', // Arkadaki siber kuleyi bulanıklaştır
         zIndex: 9999,
         display: 'flex',
         flexDirection: 'column',
@@ -60,14 +61,17 @@ const IntroSequence = ({ onComplete }) => {
       }}
     >
       <div style={{
-        width: '100%',
-        maxWidth: '1920px',
+        width: '90%',
+        maxWidth: '1000px', // Videoyu tam ekran olmaktan çıkarıp dev bir pencere yaptık
         aspectRatio: '16/9',
         overflow: 'hidden',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderRadius: '24px', // Yumuşak köşeler
+        boxShadow: '0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(129, 140, 248, 0.3)', // Siber mor parlama ve derin gölge
+        border: '1px solid rgba(255,255,255,0.1)' // Cam çerçeve
       }}>
         <video 
           autoPlay 
@@ -87,8 +91,7 @@ const IntroSequence = ({ onComplete }) => {
       </div>
 
       <div style={{
-        position: 'absolute',
-        bottom: '10%',
+        marginTop: '40px', // Videonun altına aldık
         fontFamily: 'var(--mono)',
         fontSize: '2rem',
         fontWeight: 600,
