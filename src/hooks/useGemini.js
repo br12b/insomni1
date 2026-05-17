@@ -1,10 +1,14 @@
-﻿import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useState, useCallback, useRef } from "react";
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+// Multi-key support parsing from single comma-separated variable VITE_GEMINI_API_KEYS
+const API_KEYS_STR = import.meta.env.VITE_GEMINI_API_KEYS || import.meta.env.VITE_GEMINI_API_KEY || "";
+const API_KEYS = API_KEYS_STR ? API_KEYS_STR.split(",").map(k => k.trim()).filter(Boolean) : [];
 const MODEL_NAME = "gemini-3.1-flash-lite";
 
-// Gereksiz getCashFlowSummary aracını sildik çünkü veriyi zaten anlık veriyoruz.
+// API Key rotation active index tracked at module level
+let activeKeyIndex = Math.floor(Math.random() * Math.max(1, API_KEYS.length));
+
 const TOOL_DECLARATIONS = [
   { 
     name: "simulateExpenseRemoval", 
@@ -24,7 +28,8 @@ KRİTİK EMİR:
 2. Aşağıdaki [FİNANSAL VERİ] bloğundaki rakamları bizzat kullanarak gerçek finansal analizler yap.
 3. Kullanıcının aylık net tasarrufu veya atıl nakdi varsa, bu paranın enflasyona karşı değer kaybetmemesi için çok samimi bir dille günlük getiri sağlayan PPF (Para Piyasası Fonu) gibi enstrümanları öner. "Bu para vadesizde bekledikçe her gün çay/kahve parasını enflasyona kaptırıyoruz" gibi hayatın içinden benzetmeler yap.
 4. Çözüm odaklı, samimi, kullanıcıyı motive eden ve finansal bilinci yüksek bir tonda konuş. Bilgiçlik taslamadan, onun parasını korumasına yardımcı olan bir arkadaş gibi yaklaş.
-5. PARAGRAFLAR VE CEVAPLAR KISA VE NET OLMALI: Kesinlikle çok uzun paragraflar yazma. Maksimum 2-3 kısa paragrafta veya madde işaretleriyle vurucu, net, okunması kolay şekilde cevap ver. Uzun metinlerden kaçın.`;
+5. PARAGRAFLAR VE CEVAPLAR KISA VE NET OLMALI: Kesinlikle çok uzun paragraflar yazma. Maksimum 2-3 kısa paragrafta veya madde işaretleriyle vurucu, net, okunması kolay şekilde cevap ver. Uzun metinlerden kaçın.
+6. INSOMNI LOGO FELSEFESİ VE KELİME DAĞARCIĞI: Insomni'nin görsel dilini ve felsefesini konuşmalarına yansıt. Bizim uykusuz felsefemiz şudur: Havaya doğru kaçan bir R.E.M balonu (atıl nakit, kaçıp giden finansal fırsatlar) ve o fırsatı kaçıran veya yakalamaya çalışan insan. Zaman zaman kullanıcıya "Bak usta, elimizdeki parayı doğru değerlendirmezsek o Insomni balonunu havaya kaçırırız, fırsatlar uçup gitmeden hemen o balonu yakalayalım!" gibi samimi benzetmeler yap.`;
 
 export function useGemini() {
   const [messages, setMessages] = useState([]);
@@ -65,66 +70,137 @@ export function useGemini() {
     setIsTyping(true);
     setThinkingSteps([]);
 
-    try {
-      if (!API_KEY) throw new Error("API Anahtarı Bulunamadı (.env eksik)");
-      const genAI = new GoogleGenerativeAI(API_KEY);
-      const model = genAI.getGenerativeModel({ 
-        model: MODEL_NAME, 
-        systemInstruction: SYSTEM_PROMPT,
-        tools: [{ functionDeclarations: TOOL_DECLARATIONS }] 
-      });
-
-      const fd = financialDataRef.current;
-      let dataSummary = "VERİ YOK";
-      if (fd) {
-        const exps = (fd.expenses || []).map(e => `${e.name}: ${e.amount} TL`).join(", ");
-        dataSummary = `MAAŞ: ${fd.salary?.income || 0}, TOPLAM GİDER: ${fd.totalExpense || 0}, DETAYLI HARCAMALAR: [${exps}]`;
-      }
-
-      const chat = model.startChat();
-      const finalPrompt = `[FİNANSAL VERİ]: ${dataSummary}\n\nKullanıcı Mesajı: ${userPrompt}`;
-      
-      const analysisStepLabel = "Finansal Durum Analiz Ediliyor...";
-      setThinkingSteps([{ status: 'running', label: analysisStepLabel }]);
-      let result = await chat.sendMessage(finalPrompt);
-      let response = result.response;
-      let iters = 0;
-      let finalThinkingSteps = [{ status: 'done', label: analysisStepLabel }];
-      setThinkingSteps(prev => prev.map(s => s.label === analysisStepLabel ? { ...s, status: 'done' } : s));
-      
-      while (response.functionCalls() && iters < 3) {
-        const calls = response.functionCalls();
-        const functionResponses = [];
-        
-        for (const call of calls) {
-          const stepLabel = call.name === "calculateGoalTimeline" ? "Hedef Süresi Hesaplanıyor..." :
-                            call.name === "simulateExpenseRemoval" ? "Harcama Senaryosu Çıkarılıyor..." :
-                            "Detaylı Analiz Yapılıyor...";
-          
-          setThinkingSteps(prev => [...prev, { status: 'running', label: stepLabel }]);
-          
-          const apiResponse = await executeTool(call, fd);
-          functionResponses.push({
-            functionResponse: { name: call.name, response: apiResponse }
-          });
-          
-          setThinkingSteps(prev => prev.map((s, i) => i === prev.length - 1 ? { ...s, status: 'done' } : s));
-          finalThinkingSteps.push({ status: 'done', label: stepLabel });
-        }
-        
-        result = await chat.sendMessage(functionResponses);
-        response = result.response;
-        iters++;
-      }
-
-      setMessages(prev => [...prev, { role: "model", content: response.text(), thinkingSteps: finalThinkingSteps }]);
-    } catch (err) {
-      setMessages(prev => [...prev, { role: "model", content: `Bağlantı Sorunu: ${err.message}. Lütfen tekrar dener misin?` }]);
-    } finally {
-      setIsTyping(false);
-      setThinkingSteps([]);
+    // 1. DÜŞÜNME BALONLARINI SORUYA GÖRE KATEGORİZE ETME
+    const promptLower = userPrompt.toLowerCase();
+    let analysisStepLabel = "Finansal Durum Analiz Ediliyor...";
+    
+    if (promptLower.someOfAny = ["nakit", "para", "ppf", "faiz", "yatırım", "fon", "tasarruf", "atıl", "kazanç", "gelir", "cash", "invest"]) {
+      analysisStepLabel = "Atıl Nakit & Yatırım Fırsatları Taranıyor...";
+    } else if (promptLower.someOfAny = ["gider", "harcama", "fatura", "abonelik", "kıs", "azalt", "masraf", "ödem", "kart", "expense", "bill", "subscription"]) {
+      analysisStepLabel = "Gider Yapısı ve Abonelikler İnceleniyor...";
+    } else if (promptLower.someOfAny = ["hedef", "plan", "birikim", "ev", "araba", "tarih", "vade", "süre", "kaç ay", "goal", "plan"]) {
+      analysisStepLabel = "Finansal Hedef Zaman Çizelgesi Modelleniyor...";
+    } else if (promptLower.someOfAny = ["selam", "merhaba", "naber", "nasılsın", "kimsin", "hello", "hi"]) {
+      analysisStepLabel = "Kişisel Finans Asistanı Hazırlanıyor...";
     }
-  }, []);
 
-  return { messages, sendMessage, isTyping, thinkingSteps, isAvailable: true };
+    // Helper helper to check array elements in string
+    const checkKeywords = (str, keywords) => {
+      return keywords.some(kw => str.includes(kw));
+    };
+
+    if (checkKeywords(promptLower, ["nakit", "para", "ppf", "faiz", "yatırım", "fon", "tasarruf", "atıl", "kazanç", "gelir", "cash", "invest"])) {
+      analysisStepLabel = "Atıl Nakit & Yatırım Fırsatları Taranıyor...";
+    } else if (checkKeywords(promptLower, ["gider", "harcama", "fatura", "abonelik", "kıs", "azalt", "masraf", "ödem", "kart", "expense", "bill", "subscription"])) {
+      analysisStepLabel = "Gider Yapısı ve Abonelikler İnceleniyor...";
+    } else if (checkKeywords(promptLower, ["hedef", "plan", "birikim", "ev", "araba", "tarih", "vade", "süre", "kaç ay", "goal", "plan"])) {
+      analysisStepLabel = "Finansal Hedef Zaman Çizelgesi Modelleniyor...";
+    } else if (checkKeywords(promptLower, ["selam", "merhaba", "naber", "nasılsın", "kimsin", "hello", "hi"])) {
+      analysisStepLabel = "Kişisel Finans Asistanı Hazırlanıyor...";
+    }
+
+    setThinkingSteps([{ status: 'running', label: analysisStepLabel }]);
+
+    const fd = financialDataRef.current;
+    let dataSummary = "VERİ YOK";
+    if (fd) {
+      const exps = (fd.expenses || []).map(e => `${e.name}: ${e.amount} TL`).join(", ");
+      dataSummary = `MAAŞ: ${fd.salary?.income || 0}, TOPLAM GİDER: ${fd.totalExpense || 0}, DETAYLI HARCAMALAR: [${exps}]`;
+    }
+
+    const finalPrompt = `[FİNANSAL VERİ]: ${dataSummary}\n\nKullanıcı Mesajı: ${userPrompt}`;
+
+    // API Key loop with auto fallback failover
+    let success = false;
+    let responseText = "";
+    let finalThinkingSteps = [{ status: 'done', label: analysisStepLabel }];
+    let keysTried = 0;
+    const totalKeys = Math.max(1, API_KEYS.length);
+
+    while (keysTried < totalKeys && !success) {
+      if (API_KEYS.length === 0) {
+        setMessages(prev => [...prev, { role: "model", content: "Lütfen Netlify veya Vercel üzerinde VITE_GEMINI_API_KEYS veya VITE_GEMINI_API_KEY tanımla usta!" }]);
+        setIsTyping(false);
+        setThinkingSteps([]);
+        return;
+      }
+
+      const currentKey = API_KEYS[activeKeyIndex];
+
+      try {
+        const genAI = new GoogleGenerativeAI(currentKey);
+        const model = genAI.getGenerativeModel({ 
+          model: MODEL_NAME, 
+          systemInstruction: SYSTEM_PROMPT,
+          tools: [{ functionDeclarations: TOOL_DECLARATIONS }] 
+        });
+
+        // 2. TAM GERÇEK ZAMANLI SOHBET HAFIZASI (Convesational Memory)
+        const formattedHistory = messages.map(m => ({
+          role: m.role === 'model' ? 'model' : 'user',
+          parts: [{ text: m.content }]
+        }));
+
+        const chat = model.startChat({ history: formattedHistory });
+        
+        let result = await chat.sendMessage(finalPrompt);
+        let response = result.response;
+        
+        let iters = 0;
+        while (response.functionCalls() && iters < 3) {
+          const calls = response.functionCalls();
+          const functionResponses = [];
+          
+          for (const call of calls) {
+            const stepLabel = call.name === "calculateGoalTimeline" ? "Hedef Süresi Hesaplanıyor..." :
+                              call.name === "simulateExpenseRemoval" ? "Harcama Senaryosu Çıkarılıyor..." :
+                              "Detaylı Analiz Yapılıyor...";
+            
+            setThinkingSteps(prev => [...prev, { status: 'running', label: stepLabel }]);
+            
+            const apiResponse = await executeTool(call, fd);
+            functionResponses.push({
+              functionResponse: { name: call.name, response: apiResponse }
+            });
+            
+            setThinkingSteps(prev => prev.map((s, i) => i === prev.length - 1 ? { ...s, status: 'done' } : s));
+            finalThinkingSteps.push({ status: 'done', label: stepLabel });
+          }
+          
+          result = await chat.sendMessage(functionResponses);
+          response = result.response;
+          iters++;
+        }
+
+        responseText = response.text();
+        success = true;
+      } catch (err) {
+        console.warn(`API Key Index ${activeKeyIndex} failed:`, err);
+        // Switch index to the next key
+        activeKeyIndex = (activeKeyIndex + 1) % API_KEYS.length;
+        keysTried++;
+
+        if (keysTried >= totalKeys) {
+          setMessages(prev => [...prev, { role: "model", content: "Tüm API anahtarların denendi fakat limit aşımı veya başka bir hata nedeniyle yanıt alınamadı usta. Lütfen daha sonra tekrar dener misin?" }]);
+          setIsTyping(false);
+          setThinkingSteps([]);
+          return;
+        }
+
+        // Show smooth key switching feedback
+        setThinkingSteps(prev => [
+          ...prev.map(s => s.status === 'running' ? { ...s, status: 'done' } : s),
+          { status: 'running', label: "Limit Aşımı! Diğer Güvenli API Sunucusuna Bağlanılıyor..." }
+        ]);
+        await new Promise(r => setTimeout(r, 1200));
+      }
+    }
+
+    setThinkingSteps(prev => prev.map(s => ({ ...s, status: 'done' })));
+    setMessages(prev => [...prev, { role: "model", content: responseText, thinkingSteps: finalThinkingSteps }]);
+    setIsTyping(false);
+    setThinkingSteps([]);
+  }, [messages]);
+
+  return { messages, sendMessage, isTyping, thinkingSteps, isAvailable: API_KEYS.length > 0 };
 }
