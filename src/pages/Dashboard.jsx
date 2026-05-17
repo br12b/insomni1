@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wallet, TrendingDown, LayoutDashboard, Plus, X, Tag, Calendar, DollarSign, ChevronDown, ChevronUp, AlertTriangle, ShieldCheck, TrendingUp } from 'lucide-react';
 import AnimatedCounter from '../components/ui/AnimatedCounter';
@@ -146,182 +146,134 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
         </motion.div>
       </motion.div>
 
-      {/* Collapsible Idle Cash Optimization Panel */}
-      <motion.div 
-        variants={fadeUp} 
-        className="glass" 
-        style={{ 
-          border: '1px solid rgba(129,140,248,0.25)', 
-          background: 'rgba(12,12,24,0.3)', 
-          borderRadius: 16, 
-          overflow: 'hidden',
-          boxShadow: '0 8px 32px rgba(129,140,248,0.03)'
-        }}
-      >
-        <div 
-          onClick={() => setIsIdlePanelExpanded(!isIdlePanelExpanded)}
-          style={{ 
-            padding: '20px 24px', 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            cursor: 'pointer',
-            background: 'rgba(255,255,255,0.01)',
-            userSelect: 'none'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <TrendingUp size={20} color="var(--accent)" />
-            <div style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'white', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                {lang === 'tr' ? 'Atıl Para Analizi & Kalkan Projeksiyonu' : 'Idle Cash Analysis & Wealth Shield Projection'}
-                <span className={`badge ${remaining > 0 ? 'badge-warning' : 'badge-success'}`} style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  {remaining > 0 
-                    ? (lang === 'tr' ? 'Atıl Nakit Tespit Edildi' : 'Idle Cash Detected') 
-                    : (lang === 'tr' ? 'Kalkan %100 Aktif' : 'Shield 100% Active')}
-                </span>
-              </h3>
-              <p style={{ margin: 0, fontSize: '12px', color: 'var(--text2)', marginTop: 2 }}>
-                {lang === 'tr' 
-                  ? 'Paranın zamana ve enflasyona karşı koruma kalkanını simüle etmek için tıkla.' 
-                  : 'Click to simulate your asset protection shield against time and inflation.'}
-              </p>
-            </div>
-          </div>
-          <div>
-            {isIdlePanelExpanded ? <ChevronUp size={20} color="var(--text2)" /> : <ChevronDown size={20} color="var(--text2)" />}
-          </div>
-        </div>
-
-        <AnimatePresence>
-          {isIdlePanelExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              style={{ borderTop: '1px solid var(--glass-border)', background: 'rgba(0,0,0,0.15)' }}
-            >
-              <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-                
-                {(() => {
-                  const idleAmount = remaining > 0 ? remaining : 0;
-                  const monthlyLossRate = 0.045; // ~4.5% monthly inflation loss
-                  const dailyLossRate = monthlyLossRate / 30;
-                  
-                  const dailyLoss = idleAmount * dailyLossRate;
-                  const monthlyLoss = idleAmount * monthlyLossRate;
-
-                  const monthlyYieldRate = 0.04; // ~48% annual yield optimization (~4% monthly)
-                  const dailyYieldRate = monthlyYieldRate / 30;
-
-                  const dailyYield = idleAmount * dailyYieldRate;
-                  const monthlyYield = idleAmount * monthlyYieldRate;
-
-                  return (
-                    <>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
-                        
-                        {/* Scenario A Card */}
-                        <div className="glass" style={{ padding: 20, border: '1px solid rgba(239,68,68,0.2)', background: 'rgba(239,68,68,0.02)', textAlign: 'left' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                            <AlertTriangle size={18} color="var(--red)" />
-                            <h4 style={{ fontSize: '13px', fontWeight: 800, margin: 0, color: 'var(--red)' }}>
-                              {lang === 'tr' ? 'Senaryo A: Boşta Bırakma (Kayıp Güç)' : 'Scenario A: Keep Idle (Power Loss)'}
-                            </h4>
-                          </div>
-                          <p style={{ fontSize: '12px', color: 'var(--text2)', lineHeight: 1.5, marginBottom: 16 }}>
-                            {lang === 'tr'
-                              ? 'Paran boşta, sıfır getirili vadesiz hesaplarda beklediğinde her geçen saniye enflasyon canavarı karşısında erir.'
-                              : 'When your cash sits idle in zero-yield accounts, it constantly loses purchasing power due to inflation.'}
-                          </p>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                              <span style={{ color: 'var(--text2)' }}>{lang === 'tr' ? 'Günlük Kayıp:' : 'Daily Loss:'}</span>
-                              <span style={{ fontWeight: 700, color: 'var(--red)' }}>-{dailyLoss.toFixed(2)} {currency}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                              <span style={{ color: 'var(--text2)' }}>{lang === 'tr' ? 'Aylık Kayıp:' : 'Monthly Loss:'}</span>
-                              <span style={{ fontWeight: 700, color: 'var(--red)' }}>-{monthlyLoss.toFixed(2)} {currency}</span>
-                            </div>
-                          </div>
-                          {idleAmount > 0 && (
-                            <div style={{ marginTop: 16, height: 3, background: 'rgba(239,68,68,0.1)', borderRadius: 2, overflow: 'hidden' }}>
-                              <motion.div 
-                                initial={{ width: 0 }}
-                                animate={{ width: '100%' }}
-                                transition={{ duration: 1, ease: 'easeOut' }}
-                                style={{ height: '100%', background: 'var(--red)' }}
-                              />
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Scenario B Card */}
-                        <div className="glass" style={{ padding: 20, border: '1px solid rgba(52,211,153,0.2)', background: 'rgba(52,211,153,0.02)', textAlign: 'left' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                            <ShieldCheck size={18} color="var(--green)" />
-                            <h4 style={{ fontSize: '13px', fontWeight: 800, margin: 0, color: 'var(--green)' }}>
-                              {lang === 'tr' ? 'Senaryo B: Siber Kalkan (Getiri Gücü)' : 'Scenario B: Wealth Shield (Active Yield)'}
-                            </h4>
-                          </div>
-                          <p style={{ fontSize: '12px', color: 'var(--text2)', lineHeight: 1.5, marginBottom: 16 }}>
-                            {lang === 'tr'
-                              ? 'Nakitini aktif fonlarda değerlendirip abonelik ve ödeme tarihlerini saniyelerle optimize ettiğinde oluşan koruma.'
-                              : 'The wealth protection shield created by utilizing high-yield options and dynamics timeline optimization.'}
-                          </p>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                              <span style={{ color: 'var(--text2)' }}>{lang === 'tr' ? 'Günlük Korunan:' : 'Daily Protected:'}</span>
-                              <span style={{ fontWeight: 700, color: 'var(--green)' }}>+{dailyYield.toFixed(2)} {currency}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                              <span style={{ color: 'var(--text2)' }}>{lang === 'tr' ? 'Aylık Korunan:' : 'Monthly Protected:'}</span>
-                              <span style={{ fontWeight: 700, color: 'var(--green)' }}>+{monthlyYield.toFixed(2)} {currency}</span>
-                            </div>
-                          </div>
-                          {idleAmount > 0 && (
-                            <div style={{ marginTop: 16, height: 3, background: 'rgba(52,211,153,0.1)', borderRadius: 2, overflow: 'hidden' }}>
-                              <motion.div 
-                                initial={{ width: 0 }}
-                                animate={{ width: '100%' }}
-                                transition={{ duration: 1, ease: 'easeOut' }}
-                                style={{ height: '100%', background: 'var(--green)' }}
-                              />
-                            </div>
-                          )}
-                        </div>
-
-                      </div>
-
-                      {/* Summary Banner */}
-                      <div className="glass" style={{ padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(129,140,248,0.02)', border: '1px solid rgba(129,140,248,0.1)', flexWrap: 'wrap', gap: 10, borderRadius: 8, textAlign: 'left' }}>
-                        <span style={{ fontSize: '12px', color: 'var(--text2)' }}>
-                          {lang === 'tr' 
-                            ? 'Boşta duran paranın tamamını aktif kalkan kapsamına alarak aylık net ' 
-                            : 'By shielding your idle cash, you secure a net monthly asset protection of '}
-                          <strong style={{ color: 'var(--accent)' }}>{(monthlyYield + monthlyLoss).toFixed(2)} {currency}</strong>
-                          {lang === 'tr' ? ' korumuş olursun.' : ' against zero-yield loss.'}
-                        </span>
-                        <span style={{ fontSize: '10px', fontFamily: 'var(--mono)', color: 'var(--accent)', fontWeight: 800 }}>
-                          {lang === 'tr' ? 'AKTİF KORUMA RADARI' : 'ACTIVE WEALTH RADAR'}
-                        </span>
-                      </div>
-                    </>
-                  );
-                })()}
-
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'start' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 32, minWidth: 0 }}>
           <motion.div variants={fadeUp}><ExpenseChart expenses={combinedExpenses} currency={currency} salary={income} /></motion.div>
           <motion.div variants={fadeUp}><ExpenseList expenses={combinedExpenses} currency={currency} /></motion.div>
           <motion.div variants={fadeUp}><SubscriptionTracker expenses={combinedExpenses} currency={currency} /></motion.div>
+
+          {/* Collapsible Idle Cash Optimization Panel - Clean, elegant & matching native UI relocated here */}
+          <motion.div 
+            variants={fadeUp} 
+            className="glass" 
+            style={{ 
+              padding: 24, 
+              border: '1px solid var(--glass-border)', 
+              borderRadius: 16, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 16 
+            }}
+          >
+            <div 
+              onClick={() => setIsIdlePanelExpanded(!isIdlePanelExpanded)}
+              style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center', 
+                cursor: 'pointer',
+                userSelect: 'none'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <TrendingUp size={18} color="var(--accent)" />
+                <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'white', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {lang === 'tr' ? 'Atıl Para Optimizasyon Analizi' : 'Idle Cash Optimization Analysis'}
+                  {remaining > 0 && (
+                    <span className="badge badge-warning" style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      {lang === 'tr' ? 'Atıl Nakit Var' : 'Idle Cash Detected'}
+                    </span>
+                  )}
+                </h3>
+              </div>
+              <div>
+                {isIdlePanelExpanded ? <ChevronUp size={16} color="var(--text2)" /> : <ChevronDown size={16} color="var(--text2)" />}
+              </div>
+            </div>
+
+            <AnimatePresence>
+              {isIdlePanelExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20, paddingTop: 16, borderTop: '1px solid var(--glass-border)', marginTop: 12 }}>
+                    
+                    {(() => {
+                      const idleAmount = remaining > 0 ? remaining : 0;
+                      const monthlyLossRate = 0.045; // ~4.5% monthly inflation
+                      const dailyLossRate = monthlyLossRate / 30;
+                      
+                      const dailyLoss = idleAmount * dailyLossRate;
+                      const monthlyLoss = idleAmount * monthlyLossRate;
+
+                      const monthlyYieldRate = 0.04; // ~4% monthly high-yield
+                      const dailyYieldRate = monthlyYieldRate / 30;
+
+                      const dailyYield = idleAmount * dailyYieldRate;
+                      const monthlyYield = idleAmount * monthlyYieldRate;
+
+                      return (
+                        <>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+                            
+                            {/* Scenario 1 Card */}
+                            <div style={{ padding: 16, background: 'rgba(255,255,255,0.01)', borderRadius: 12, border: '1px solid var(--glass-border)', textAlign: 'left' }}>
+                              <h4 style={{ fontSize: '13px', fontWeight: 700, margin: '0 0 12px 0', color: 'var(--red)' }}>
+                                {lang === 'tr' ? '1. Vadesiz Hesap (Enflasyon Kaybı)' : '1. Zero-Yield Account (Inflation Loss)'}
+                              </h4>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: '12px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: 'var(--text2)' }}>{lang === 'tr' ? 'Günlük Kayıp:' : 'Daily Loss:'}</span>
+                                  <span style={{ fontWeight: 600, color: 'var(--red)' }}>-{dailyLoss.toFixed(2)} {currency}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: 'var(--text2)' }}>{lang === 'tr' ? 'Aylık Kayıp:' : 'Monthly Loss:'}</span>
+                                  <span style={{ fontWeight: 600, color: 'var(--red)' }}>-{monthlyLoss.toFixed(2)} {currency}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Scenario 2 Card */}
+                            <div style={{ padding: 16, background: 'rgba(255,255,255,0.01)', borderRadius: 12, border: '1px solid var(--glass-border)', textAlign: 'left' }}>
+                              <h4 style={{ fontSize: '13px', fontWeight: 700, margin: '0 0 12px 0', color: 'var(--green)' }}>
+                                {lang === 'tr' ? '2. Aktif Getiri (Potansiyel Kazanım)' : '2. Active Yield (Potential Gain)'}
+                              </h4>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: '12px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: 'var(--text2)' }}>{lang === 'tr' ? 'Günlük Getiri:' : 'Daily Yield:'}</span>
+                                  <span style={{ fontWeight: 600, color: 'var(--green)' }}>+{dailyYield.toFixed(2)} {currency}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: 'var(--text2)' }}>{lang === 'tr' ? 'Aylık Getiri:' : 'Monthly Yield:'}</span>
+                                  <span style={{ fontWeight: 600, color: 'var(--green)' }}>+{monthlyYield.toFixed(2)} {currency}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+
+                          {/* Summary Banner */}
+                          <div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.015)', borderRadius: 8, fontSize: '12px', color: 'var(--text2)', lineHeight: 1.4, textAlign: 'left', border: '1px solid var(--glass-border)' }}>
+                            {lang === 'tr' 
+                              ? 'Atıl durumdaki nakdinizi değerlendirerek enflasyon kaybını durdurabilir ve aylık net ' 
+                              : 'By optimizing your idle cash, you can prevent inflation loss and secure a monthly yield of '}
+                            <strong style={{ color: 'var(--accent)' }}>{(monthlyYield + monthlyLoss).toFixed(2)} {currency}</strong>
+                            {lang === 'tr' ? ' kazanç sağlayabilirsiniz.' : ' net gain.'}
+                          </div>
+                        </>
+                      );
+                    })()}
+
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
         </div>
         <div style={{ position: 'sticky', top: 24, minWidth: 0 }}>
           <motion.div variants={fadeUp} className="glass" style={{ padding: '32px 24px', height: 'calc(100vh - 200px)', maxHeight: 800, display: 'flex', flexDirection: 'column', border: '1px solid rgba(129,140,248,0.2)', boxShadow: '0 0 40px rgba(129,140,248,0.05)', overflow: 'hidden' }}>
