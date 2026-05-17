@@ -40,7 +40,7 @@ export default async function handler(req, res) {
       // Fetch existing traffic log from public KV store to persist across serverless containers!
       let currentLog = [];
       try {
-        const getRes = await fetch(`https://kvdb.io/insomni_bridge_v9_d7e2/${targetId}`);
+        const getRes = await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${targetId}`);
         if (getRes.ok) {
           const textData = await getRes.text();
           currentLog = JSON.parse(textData) || [];
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
 
       // Write back to KV store
       try {
-        await fetch(`https://kvdb.io/insomni_bridge_v9_d7e2/${targetId}`, {
+        await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${targetId}`, {
           method: 'POST',
           body: JSON.stringify(updatedLog)
         });
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     
     let history = [];
     try {
-      const getRes = await fetch(`https://kvdb.io/insomni_bridge_v9_d7e2/${filterId}`);
+      const getRes = await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${filterId}`);
       if (getRes.ok) {
         const textData = await getRes.text();
         history = JSON.parse(textData) || [];
