@@ -18,6 +18,92 @@ import ProfileModal from './components/ProfileModal';
 
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 
+const IntroSequence = ({ onComplete }) => {
+  const [text, setText] = useState('');
+  const fullText = "Don't miss the opportunity...";
+  const [showCursor, setShowCursor] = useState(true);
+
+  useEffect(() => {
+    let i = 0;
+    const typingInterval = setInterval(() => {
+      if (i < fullText.length) {
+        setText(fullText.slice(0, i + 1));
+        i++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, 100);
+
+    const cursorInterval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 500);
+
+    return () => {
+      clearInterval(typingInterval);
+      clearInterval(cursorInterval);
+    };
+  }, []);
+
+  return (
+    <div 
+      onDoubleClick={onComplete}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        backgroundColor: '#000',
+        zIndex: 9999,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden'
+      }}
+    >
+      <div style={{
+        width: '100%',
+        maxWidth: '1920px',
+        aspectRatio: '16/9',
+        overflow: 'hidden',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <video 
+          autoPlay 
+          muted 
+          playsInline
+          onEnded={onComplete}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            transform: 'scale(1.15)', // Siyah barları kırpmak için basıklaştırma/yakınlaştırma
+            pointerEvents: 'none'
+          }}
+        >
+          <source src="/intro.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      <div style={{
+        position: 'absolute',
+        bottom: '10%',
+        fontFamily: 'var(--mono)',
+        fontSize: '2rem',
+        fontWeight: 600,
+        color: '#fff',
+        letterSpacing: '0.05em',
+        height: 40,
+        textShadow: '0 0 15px rgba(255,255,255,0.8), 0 0 5px rgba(255,255,255,0.4)',
+        zIndex: 10
+      }}>
+        {text}<span style={{ opacity: showCursor ? 1 : 0 }}>_</span>
+      </div>
+    </div>
+  );
+};
+
 const pageVariants = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
@@ -28,7 +114,8 @@ function AppContent() {
   const { isDark } = useTheme();
   const { lang, t, toggleLang } = useLanguage();
   const [profile, setProfile] = useState(() => storage.getCurrentProfile());
-  const [showFullNav, setShowFullNav] = useState(false);
+    const [showFullNav, setShowFullNav] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   
   const initialView = window.location.pathname === '/admin' ? 'admin' : (storage.getCurrentProfile() ? 'landing' : 'profile');
   const [view, setView] = useState(initialView);
@@ -79,8 +166,23 @@ function AppContent() {
   // NAVIGATION IS NOW PURELY CONTROLLED BY THE ZAP BUTTON FOR COMPACT VIBE
   const isNavVisible = showFullNav;
 
-  return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    return (
+    <>
+      <AnimatePresence>
+        {showIntro && (
+          <motion.div
+            key="intro"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            style={{ position: 'fixed', inset: 0, zIndex: 9999 }}
+          >
+            <IntroSequence onComplete={() => setShowIntro(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {view !== 'admin' && (
       <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 40px', zIndex: 1000, position: 'relative', flexShrink: 0 }}>
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center', height: 180 }}>
@@ -180,6 +282,7 @@ function AppContent() {
         </motion.div>
       </AnimatePresence>
     </div>
+    </>
   );
 }
 
