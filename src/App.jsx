@@ -22,6 +22,7 @@ const IntroSequence = ({ onComplete }) => {
   const [text, setText] = useState('');
   const fullText = "Don't miss the opportunities in your life...";
   const [showCursor, setShowCursor] = useState(true);
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     let i = 0;
@@ -44,64 +45,94 @@ const IntroSequence = ({ onComplete }) => {
     };
   }, []);
 
+  const handleClose = () => {
+    setIsClosing(true);
+  };
+
   return (
-    <div 
-      onDoubleClick={onComplete}
+    <motion.div 
+      onDoubleClick={handleClose}
+      animate={{
+        backgroundColor: isClosing ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.85)',
+        backdropFilter: isClosing ? 'blur(0px)' : 'blur(8px)',
+      }}
+      transition={{ duration: 0.8, ease: 'easeInOut' }}
+      onAnimationComplete={() => {
+        if (isClosing) onComplete();
+      }}
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.85)', // Biraz daha koyulaştırdık ki video net çıksın
-        backdropFilter: 'blur(8px)',
         zIndex: 9999,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        pointerEvents: isClosing ? 'none' : 'auto'
       }}
     >
-      <div style={{
-        width: '100%',
-        maxWidth: '1200px',
-        aspectRatio: '21/9', // SİBER MAKAS: 16:9 yerine 21:9 Ultra Geniş yaptık. Böylece alt ve üst otomatik kırpılacak!
-        overflow: 'hidden',
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'transparent',
-      }}>
+      <motion.div 
+        animate={isClosing ? {
+          scale: 0.01,
+          x: '-44vw',
+          y: '-44vh',
+          opacity: 0,
+        } : {
+          scale: 1,
+          x: 0,
+          y: 0,
+          opacity: 1,
+        }}
+        transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+        style={{
+          width: '100%',
+          maxWidth: '1200px',
+          aspectRatio: '21/9',
+          overflow: 'hidden',
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'transparent',
+          transformOrigin: 'center center'
+        }}
+      >
         <video 
           autoPlay 
           muted 
           playsInline
-          onEnded={onComplete}
+          onEnded={handleClose}
           style={{
             width: '100%',
             height: '100%',
-            objectFit: 'cover', // Videoyu 21:9 içine yay, taşan kısımları (alt/üst) kes
-            transform: 'scale(1.02)', // Hafif bir yakınlaştırma, gereksiz payları alır
+            objectFit: 'cover',
+            transform: 'scale(1.02)',
             pointerEvents: 'none'
           }}
         >
           <source src="/intro.mp4" type="video/mp4" />
         </video>
-      </div>
+      </motion.div>
 
-      <div style={{
-        marginTop: '30px',
-        fontFamily: 'var(--mono)',
-        fontSize: '2.5rem', // Daktilo yazısını biraz daha büyüttüm
-        fontWeight: 600,
-        color: '#000',
-        letterSpacing: '0.08em',
-        height: 50,
-        textShadow: 'none',
-        zIndex: 10
-      }}>
+      <motion.div 
+        animate={isClosing ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        style={{
+          marginTop: '30px',
+          fontFamily: 'var(--mono)',
+          fontSize: '2.5rem',
+          fontWeight: 600,
+          color: '#000',
+          letterSpacing: '0.08em',
+          height: 50,
+          textShadow: 'none',
+          zIndex: 10
+        }}
+      >
         {text}<span style={{ opacity: showCursor ? 1 : 0 }}>_</span>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
