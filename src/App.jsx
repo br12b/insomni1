@@ -93,7 +93,7 @@ const IntroSequence = ({ onComplete }) => {
         fontFamily: 'var(--mono)',
         fontSize: '2.5rem', // Daktilo yazısını biraz daha büyüttüm
         fontWeight: 600,
-        color: '#fff',
+        color: '#000',
         letterSpacing: '0.08em',
         height: 50,
         textShadow: '0 0 15px rgba(255,255,255,0.8), 0 0 5px rgba(255,255,255,0.4)',
