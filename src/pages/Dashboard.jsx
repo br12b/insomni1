@@ -12,6 +12,26 @@ import { useLanguage } from '../context/LanguageContext';
 const fadeUp = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 
+// Secure date parser that parses numbers, strings, and full ISO date objects beautifully!
+const getExpenseDay = (dateVal) => {
+  if (!dateVal) return 15;
+  const strVal = dateVal.toString().trim();
+  
+  // If it's a simple day number/string
+  const num = parseInt(strVal);
+  if (!isNaN(num) && num >= 1 && num <= 31 && !strVal.includes('-') && !strVal.includes('T')) {
+    return num;
+  }
+  
+  // If it is a full ISO Date string (e.g. 2026-05-12T19:24:11Z)
+  const parsedDate = new Date(strVal);
+  if (!isNaN(parsedDate.getTime())) {
+    return parsedDate.getDate();
+  }
+  
+  return 15; // default fallback
+};
+
 export default function Dashboard({ salaryData, expensesData = [], setExpensesData, profileName }) {
   const { lang, t } = useLanguage();
   const [syncedTxs, setSyncedTxs] = useState([]);
@@ -66,6 +86,29 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
     setIsModalOpen(false);
   };
 
+  // Drag and Drop implementation to update expense date and trigger instant reactive balance recalculation
+  const handleExpenseDateChange = (expenseId, newDay) => {
+    const targetId = parseFloat(expenseId) || expenseId;
+    const parsedDay = parseInt(newDay) || 15;
+
+    // 1. Check inside user custom expensesData
+    const isNormalExpense = expensesData.some(e => e.id === targetId);
+    if (isNormalExpense) {
+      const updated = expensesData.map(e => e.id === targetId ? { ...e, date: parsedDay } : e);
+      setExpensesData(updated);
+      localStorage.setItem('insomni_expenses', JSON.stringify(updated));
+    } else {
+      // 2. Check inside synced REM transactions
+      const localSynced = JSON.parse(localStorage.getItem('insomni_synced_txs') || '[]');
+      const isSyncedExpense = localSynced.some(e => e.id === targetId || e.id === expenseId);
+      if (isSyncedExpense) {
+        const updated = localSynced.map(e => (e.id === targetId || e.id === expenseId) ? { ...e, day: parsedDay } : e);
+        localStorage.setItem('insomni_synced_txs', JSON.stringify(updated));
+        setSyncedTxs(updated);
+      }
+    }
+  };
+
   const financialDataForAI = {
     salary: { income, currency },
     expenses: combinedExpenses,
@@ -73,14 +116,17 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
     remaining
   };
 
+  // Cumulative balance flow calculated strictly across 31 full days
   let runningBalance = income;
-  const dailyBalances = Array.from({ length: 30 }, (_, i) => {
+  const dailyBalances = Array.from({ length: 31 }, (_, i) => {
     const day = i + 1;
-    const dayExps = combinedExpenses.filter(e => parseInt(e.date) === day);
+    const dayExps = combinedExpenses.filter(e => getExpenseDay(e.date) === day);
     const dayTotal = dayExps.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
     runningBalance -= dayTotal;
     return { day, balance: runningBalance, isNegative: runningBalance < 0 };
   });
+
+  const salaryDay = salaryData?.day || 1;
 
   return (
     <motion.div initial="hidden" animate="show" variants={stagger} style={{ paddingTop: '4vh', paddingBottom: 80, paddingLeft: 'max(20px, 5vw)', paddingRight: 'max(20px, 5vw)', display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 1600, margin: '0 auto', width: '100%', overflowX: 'hidden' }}>
@@ -230,7 +276,7 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                       const plannerDailyYieldRate = 0.04 / 30; // 4% monthly yield / 30 days
                       
                       const arbitrageDetails = targetedExpenses.map(e => {
-                        const day = parseInt(e.date) || 15;
+                        const day = getExpenseDay(e.date);
                         const daysActive = Math.max(1, day - 1); // Money stays in fund until day of payment
                         const amount = parseFloat(e.amount || 0); // Convert amount strictly to Number to prevent .toFixed crashes!
                         const potentialEarning = amount * plannerDailyYieldRate * daysActive;
@@ -316,8 +362,8 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                                         <strong style={{ color: 'var(--text1)' }}>{exp.name}</strong>
                                         <span style={{ color: 'var(--text2)', marginLeft: 8 }}>
                                           {lang === 'tr' 
-                                            ? `(Ayın ${exp.date}. günü, ${parseFloat(exp.amount || 0).toFixed(2)} ${currency})` 
-                                            : `(Day ${exp.date} of month, ${parseFloat(exp.amount || 0).toFixed(2)} ${currency})`}
+                                            ? `(Ayın ${getExpenseDay(exp.date)}. günü, ${parseFloat(exp.amount || 0).toFixed(2)} ${currency})` 
+                                            : `(Day ${getExpenseDay(exp.date)} of month, ${parseFloat(exp.amount || 0).toFixed(2)} ${currency})`}
                                         </span>
                                       </div>
                                       <div style={{ fontSize: '12px', color: 'var(--green)', fontWeight: 700 }}>
@@ -374,7 +420,7 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
           </motion.div>
         </div>
       </div>
-      <motion.div variants={fadeUp} style={{ width: '100%', marginTop: 0 }}><div className="glass" style={{ padding: 24 }}><MonthlyCalendar expenses={combinedExpenses} dailyBalances={dailyBalances} /></div></motion.div>
+      <motion.div variants={fadeUp} style={{ width: '100%', marginTop: 0 }}><div className="glass" style={{ padding: 24 }}><MonthlyCalendar expenses={combinedExpenses} dailyBalances={dailyBalances} salaryDay={salaryDay} onExpenseDateChange={handleExpenseDateChange} /></div></motion.div>
     </motion.div>
   );
 }

@@ -2,6 +2,24 @@ import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { parseAmount } from '../../lib/calculations';
 
+// Secure date parser that matches numbers, strings, and full ISO dates
+const getExpenseDay = (dateVal) => {
+  if (!dateVal) return 15;
+  const strVal = dateVal.toString().trim();
+  
+  const num = parseInt(strVal);
+  if (!isNaN(num) && num >= 1 && num <= 31 && !strVal.includes('-') && !strVal.includes('T')) {
+    return num;
+  }
+  
+  const parsedDate = new Date(strVal);
+  if (!isNaN(parsedDate.getTime())) {
+    return parsedDate.getDate();
+  }
+  
+  return 15;
+};
+
 function ExpBadge({ exp, onDragStart }) {
   const isSub = exp.type === 'subscription';
   return (
@@ -39,7 +57,7 @@ export default function MonthlyCalendar({ dailyBalances = [], expenses = [], sal
         const isSalary = d.day === salaryDay;
         const isDropping = dropTarget === d.day;
         const isSuccess = dropSuccess === d.day;
-        const dayExps = expenses.filter(e => parseInt(e.date) === d.day);
+        const dayExps = expenses.filter(e => getExpenseDay(e.date) === d.day);
         return (
           <motion.div key={d.day}
             whileHover={isPast ? { scale: 1.03, zIndex: 20 } : {}}
@@ -62,7 +80,7 @@ export default function MonthlyCalendar({ dailyBalances = [], expenses = [], sal
                 {d.isNegative ? '-' : ''}TL{Math.abs(d.balance).toLocaleString('tr-TR')}
               </div>
             )}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'flex-start' }}>
               {dayExps.map(exp => <ExpBadge key={exp.id || exp.name} exp={exp} onDragStart={() => {}} />)}
             </div>
           </motion.div>
