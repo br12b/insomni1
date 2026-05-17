@@ -53,7 +53,11 @@ export default async function handler(req, res) {
       // Fetch existing traffic log from public KV store to persist across serverless containers!
       let currentLog = [];
       try {
-        const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${targetId}`);
+        const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${targetId}`, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+          }
+        });
         if (getRes.ok) {
           const textData = await getRes.text();
           let parsedText = JSON.parse(textData);
@@ -74,7 +78,10 @@ export default async function handler(req, res) {
       try {
         await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${targetId}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+          },
           body: JSON.stringify(updatedLog)
         });
       } catch (e) {
@@ -90,7 +97,11 @@ export default async function handler(req, res) {
     
     let history = [];
     try {
-      const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${filterId}`);
+      const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${filterId}`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
+      });
       if (getRes.ok) {
         const textData = await getRes.text();
         let parsedText = JSON.parse(textData);
