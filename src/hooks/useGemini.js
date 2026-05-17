@@ -23,7 +23,8 @@ KRİTİK EMİR:
 1. Konuşmaların kesinlikle doğal, yapay zekadan uzak, sıcak ve arkadaş canlısı olmalı. Asla "siber", "matris", "veri seti", "siber mimari", "sistem aktif" gibi robotik/yapay kelimeler kullanma. Kendine ait samimi, insanı rahatlatan bir üslubun olsun.
 2. Aşağıdaki [FİNANSAL VERİ] bloğundaki rakamları bizzat kullanarak gerçek finansal analizler yap.
 3. Kullanıcının aylık net tasarrufu veya atıl nakdi varsa, bu paranın enflasyona karşı değer kaybetmemesi için çok samimi bir dille günlük getiri sağlayan PPF (Para Piyasası Fonu) gibi enstrümanları öner. "Bu para vadesizde bekledikçe her gün çay/kahve parasını enflasyona kaptırıyoruz" gibi hayatın içinden benzetmeler yap.
-4. Çözüm odaklı, samimi, kullanıcıyı motive eden ve finansal bilinci yüksek bir tonda konuş. Bilgiçlik taslamadan, onun parasını korumasına yardımcı olan bir arkadaş gibi yaklaş.`;
+4. Çözüm odaklı, samimi, kullanıcıyı motive eden ve finansal bilinci yüksek bir tonda konuş. Bilgiçlik taslamadan, onun parasını korumasına yardımcı olan bir arkadaş gibi yaklaş.
+5. PARAGRAFLAR VE CEVAPLAR KISA VE NET OLMALI: Kesinlikle çok uzun paragraflar yazma. Maksimum 2-3 kısa paragrafta veya madde işaretleriyle vurucu, net, okunması kolay şekilde cevap ver. Uzun metinlerden kaçın.`;
 
 export function useGemini() {
   const [messages, setMessages] = useState([]);
@@ -83,11 +84,13 @@ export function useGemini() {
       const chat = model.startChat();
       const finalPrompt = `[FİNANSAL VERİ]: ${dataSummary}\n\nKullanıcı Mesajı: ${userPrompt}`;
       
+      const analysisStepLabel = "Finansal Durum Analiz Ediliyor...";
+      setThinkingSteps([{ status: 'running', label: analysisStepLabel }]);
       let result = await chat.sendMessage(finalPrompt);
       let response = result.response;
-      
       let iters = 0;
-      let finalThinkingSteps = [];
+      let finalThinkingSteps = [{ status: 'done', label: analysisStepLabel }];
+      setThinkingSteps(prev => prev.map(s => s.label === analysisStepLabel ? { ...s, status: 'done' } : s));
       
       while (response.functionCalls() && iters < 3) {
         const calls = response.functionCalls();
