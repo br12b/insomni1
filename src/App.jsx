@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, RefreshCw, Calendar as CalendarIcon, Brain, ChevronLeft, ChevronRight, Zap, BookOpen } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
@@ -24,6 +24,7 @@ const IntroSequence = ({ onComplete }) => {
   const fullText = "Don't miss the opportunities in your life...";
   const [showCursor, setShowCursor] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     let i = 0;
@@ -39,6 +40,18 @@ const IntroSequence = ({ onComplete }) => {
     const cursorInterval = setInterval(() => {
       setShowCursor(prev => !prev);
     }, 500);
+
+    // Programmatic play & mute safety injection to bypass browser autoplay policies
+    if (videoRef.current) {
+      videoRef.current.muted = true;
+      videoRef.current.defaultMuted = true;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          console.log("Autoplay prevented, waiting for user click/interaction to play", err);
+        });
+      }
+    }
 
     return () => {
       clearInterval(typingInterval);
@@ -57,7 +70,7 @@ const IntroSequence = ({ onComplete }) => {
         backgroundColor: isClosing ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.85)',
         backdropFilter: isClosing ? 'blur(0px)' : 'blur(8px)',
       }}
-      transition={{ duration: 1.8, ease: [0.25, 1, 0.5, 1] }} // Arka plan cam erimesini de ipeksi yavaşlığa senkronize ettik
+      transition={{ duration: 1.8, ease: [0.25, 1, 0.5, 1] }}
       onAnimationComplete={() => {
         if (isClosing) onComplete();
       }}
@@ -73,6 +86,38 @@ const IntroSequence = ({ onComplete }) => {
         pointerEvents: isClosing ? 'none' : 'auto'
       }}
     >
+      {/* High-fidelity glassmorphism skip button in top right */}
+      <motion.button
+        onClick={handleClose}
+        whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.08)' }}
+        whileTap={{ scale: 0.95 }}
+        style={{
+          position: 'absolute',
+          top: '40px',
+          right: '40px',
+          padding: '10px 20px',
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '24px',
+          color: 'rgba(255, 255, 255, 0.75)',
+          fontFamily: 'var(--mono)',
+          fontSize: '11px',
+          fontWeight: 600,
+          letterSpacing: '0.08em',
+          cursor: 'pointer',
+          zIndex: 10000,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+          textTransform: 'uppercase'
+        }}
+      >
+        <span>{useLanguage().lang === 'tr' ? 'İntroyu Geç' : 'Skip Intro'}</span>
+        <ChevronRight size={14} />
+      </motion.button>
+
       <motion.div 
         animate={isClosing ? {
           scale: 0.01,
@@ -85,12 +130,11 @@ const IntroSequence = ({ onComplete }) => {
           y: 0,
           opacity: 1,
         }}
-        // FİZİK TABANLI SPRING MOTORU: Yapay süreler yerine gerçekçi süzülme sürtünmesi
         transition={{ 
           type: "spring",
-          stiffness: 22, // Yumuşacık bir çekim gerilimi
-          damping: 13,   // İpeksi, sarsıntısız sönümleme
-          mass: 0.85     // Akıcı bir kütle hissi
+          stiffness: 22,
+          damping: 13,
+          mass: 0.85
         }} 
         style={{
           width: '100%',
@@ -106,10 +150,13 @@ const IntroSequence = ({ onComplete }) => {
         }}
       >
         <video 
+          ref={videoRef}
           autoPlay 
           muted 
           playsInline
+          defaultMuted
           onEnded={handleClose}
+          onError={handleClose} // Safe defensive fallback: automatically close intro if decoding/loading fails
           style={{
             width: '100%',
             height: '100%',
