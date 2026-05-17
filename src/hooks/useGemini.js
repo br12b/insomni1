@@ -27,7 +27,7 @@ KRİTİK EMİR:
 2. Aşağıdaki [FİNANSAL VERİ] bloğundaki rakamları bizzat kullanarak gerçek finansal analizler yap.
 3. Kullanıcının aylık net tasarrufu veya atıl nakdi varsa, bu paranın enflasyona karşı değer kaybetmemesi için çok samimi bir dille günlük getiri sağlayan PPF (Para Piyasası Fonu) gibi enstrümanları öner. "Bu para vadesizde bekledikçe her gün çay/kahve parasını enflasyona kaptırıyoruz" gibi hayatın içinden benzetmeler yap.
 4. Çözüm odaklı, samimi, kullanıcıyı motive eden ve finansal bilinci yüksek bir tonda konuş. Bilgiçlik taslamadan, onun parasını korumasına yardımcı olan bir arkadaş gibi yaklaş.
-5. PARAGRAFLAR VE CEVAPLAR KISA VE NET OLMALI: Kesinlikle çok uzun paragraflar yazma. Maksimum 2-3 kısa paragrafik cevaplar veya madde işaretleriyle vurucu, net, okunması kolay şekilde cevap ver. Uzun metinlerden kaçın.
+5. PARAGRAFLAR VE CEVAPLAR KISA VE NET OLMALI: Kesinlikle çok uzun paragraflar yazma. Maksimum 2-3 kısa paragraflık cevaplar veya madde işaretleriyle vurucu, net, okunması kolay şekilde cevap ver. Uzun metinlerden kaçın.
 6. INSOMNI LOGO FELSEFESİ VE KELİME DAĞARCIĞI: Insomni'nin görsel dilini ve felsefesini konuşmalarına yansıt. Bizim uykusuz felsefemiz şudur: Havaya doğru kaçan bir R.E.M balonu (atıl nakit, kaçıp giden finansal fırsatlar) ve o fırsatı kaçıran veya yakalamaya çalışan insan. Zaman zaman kullanıcıya "Bak usta, elimizdeki parayı doğru değerlendirmezsek o Insomni balonunu havaya kaçırırız, fırsatlar uçup gitmeden hemen o balonu yakalayalım!" gibi samimi benzetmeler yap.`;
 
 export function useGemini() {
@@ -168,26 +168,34 @@ export function useGemini() {
       } catch (err) {
         console.warn(`API Key Index ${activeKeyIndex} with model ${currentModel} failed:`, err);
         
-        // Switch index to the next key
-        activeKeyIndex = (activeKeyIndex + 1) % API_KEYS.length;
-        keysTried++;
-        
-        // If there is any failure/limit, switch to 2.5 for future keys as requested
-        currentModel = "gemini-2.5-flash";
+        // 1. DÜŞÜŞ KADEMESİ: Eğer 3.1 ile hata alırsak, AYNI anahtarda önce 2.5'e düşüp tekrar deneriz!
+        if (currentModel === "gemini-3.1-flash-lite") {
+          currentModel = "gemini-2.5-flash";
+          
+          setThinkingSteps(prev => [
+            ...prev.map(s => s.status === 'running' ? { ...s, status: 'done' } : s),
+            { status: 'running', label: "Switched to 2.5 (Aynı Sunucuda Model Düşürülüyor...)" }
+          ]);
+          await new Promise(r => setTimeout(r, 800));
+          continue; // Döngüyü kırmadan AYNI anahtarla (activeKeyIndex artmadan) yeni modelle tekrar dene!
+        } else {
+          // 2. KADEME: Eğer zaten 2.5'teydik ve yine hata aldıysak, şimdi sıradaki YEDEK anahtara geçiyoruz!
+          activeKeyIndex = (activeKeyIndex + 1) % API_KEYS.length;
+          keysTried++;
+          
+          if (keysTried >= totalKeys) {
+            setMessages(prev => [...prev, { role: "model", content: "Tüm API anahtarların denendi fakat limit aşımı veya başka bir hata nedeniyle yanıt alınamadı usta. Lütfen daha sonra tekrar dener misin?" }]);
+            setIsTyping(false);
+            setThinkingSteps([]);
+            return;
+          }
 
-        if (keysTried >= totalKeys) {
-          setMessages(prev => [...prev, { role: "model", content: "Tüm API anahtarların denendi fakat limit aşımı veya başka bir hata nedeniyle yanıt alınamadı usta. Lütfen daha sonra tekrar dener misin?" }]);
-          setIsTyping(false);
-          setThinkingSteps([]);
-          return;
+          setThinkingSteps(prev => [
+            ...prev.map(s => s.status === 'running' ? { ...s, status: 'done' } : s),
+            { status: 'running', label: "Yedek Sunucuya Geçiliyor (Limit Bypass)..." }
+          ]);
+          await new Promise(r => setTimeout(r, 1000));
         }
-
-        // Show visual feedback indicating transition to 2.5
-        setThinkingSteps(prev => [
-          ...prev.map(s => s.status === 'running' ? { ...s, status: 'done' } : s),
-          { status: 'running', label: "Switched to 2.5 (Diğer Sunucuya Geçiliyor...)" }
-        ]);
-        await new Promise(r => setTimeout(r, 1200));
       }
     }
 
