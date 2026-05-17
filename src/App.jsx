@@ -255,7 +255,7 @@ function AppContent() {
               border: 'none'
             }}
           >
-            {showFullNav ? <ChevronRight size={16} /> : <Zap size={16} fill="currentColor" />}
+            {showFullNav ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </motion.button>
 
           <AnimatePresence>
