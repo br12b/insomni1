@@ -117,16 +117,24 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
   };
 
   // Cumulative balance flow calculated strictly across 31 full days
-  let runningBalance = income;
+  // Starts at 0, and receives the salary deposit exactly on the salaryDay!
+  // This allows the balance to plunge into negatives prior to receiving salary!
+  let runningBalance = 0;
   const dailyBalances = Array.from({ length: 31 }, (_, i) => {
     const day = i + 1;
+    
+    // Deposit salary exactly on the payment day
+    if (day === salaryDay) {
+      runningBalance += income;
+    }
+    
     const dayExps = combinedExpenses.filter(e => getExpenseDay(e.date) === day);
     const dayTotal = dayExps.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
     runningBalance -= dayTotal;
     return { day, balance: runningBalance, isNegative: runningBalance < 0 };
   });
 
-  const salaryDay = salaryData?.day || 1;
+  const salaryDay = salaryData?.day || salaryData?.date || 1;
 
   return (
     <motion.div initial="hidden" animate="show" variants={stagger} style={{ paddingTop: '4vh', paddingBottom: 80, paddingLeft: 'max(20px, 5vw)', paddingRight: 'max(20px, 5vw)', display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 1600, margin: '0 auto', width: '100%', overflowX: 'hidden' }}>
