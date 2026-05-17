@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Settings, RefreshCw, Calendar as CalendarIcon, Brain, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
+import { User, Settings, RefreshCw, Calendar as CalendarIcon, Brain, ChevronLeft, ChevronRight, Zap, BookOpen } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
 import { AdminUIContext, AdminUIProvider } from './context/AdminUIContext';
 import { storage } from './lib/storage';
@@ -15,6 +15,7 @@ import ProfilePage from './pages/ProfilePage';
 import SalaryInput from './components/onboarding/SalaryInput';
 import ExpenseInput from './components/onboarding/ExpenseInput';
 import ProfileModal from './components/ProfileModal';
+import Docs from './pages/Docs';
 
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 
@@ -281,6 +282,9 @@ function AppContent() {
                 <button onClick={() => goTo('calendar')} className={`btn btn-sm ${view === 'calendar' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
                   <CalendarIcon size={14} /> {lang === 'tr' ? 'Takvim' : 'Calendar'}
                 </button>
+                <button onClick={() => goTo('docs')} className={`btn btn-sm ${view === 'docs' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                  <BookOpen size={14} /> Docs
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -314,6 +318,7 @@ function AppContent() {
           {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
           {view === 'remsync' && <RemSync />}
           {view === 'calendar' && <Calendar financialData={{ salaryData, expensesData }} />}
+          {view === 'docs' && <Docs />}
         </motion.div>
       </AnimatePresence>
     </div>
