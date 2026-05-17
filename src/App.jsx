@@ -96,7 +96,7 @@ const IntroSequence = ({ onComplete }) => {
         color: '#000',
         letterSpacing: '0.08em',
         height: 50,
-        textShadow: '0 0 15px rgba(255,255,255,0.8), 0 0 5px rgba(255,255,255,0.4)',
+        textShadow: 'none',
         zIndex: 10
       }}>
         {text}<span style={{ opacity: showCursor ? 1 : 0 }}>_</span>
