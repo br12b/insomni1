@@ -56,17 +56,24 @@ export default function RemSync({ onSalaryUpdate }) {
         let history = [];
         try {
           const res = await fetch(`/api/bridge?id=${omniId}`);
-          if (res.ok) {
+          const contentType = res.headers.get('content-type') || '';
+          if (res.ok && contentType.includes('application/json')) {
             const data = await res.json();
             history = data.history || [];
           } else {
-            throw new Error("API Offline");
+            throw new Error("API Offline or Vite Fallback");
           }
         } catch (apiErr) {
           // Direct Bulut Veritabanı Fallback!
-          const getRes = await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${omniId}`);
+          const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${omniId}`);
           if (getRes.ok) {
-            history = await getRes.json() || [];
+            const rawText = await getRes.text();
+            let parsedText = JSON.parse(rawText);
+            if (typeof parsedText === 'string') {
+              history = JSON.parse(parsedText) || [];
+            } else {
+              history = parsedText || [];
+            }
           }
         }
         
@@ -163,7 +170,8 @@ export default function RemSync({ onSalaryUpdate }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: `${omniId} Yemek 340 tl` })
       });
-      if (!res.ok) throw new Error("API Offline");
+      const contentType = res.headers.get('content-type') || '';
+      if (!res.ok || !contentType.includes('application/json')) throw new Error("API Offline or Vite Fallback");
     } catch (e) {
       addLog("HYBRID: Bulut veritabanına doğrudan bağlantı kuruluyor...", "system");
       const newEntry = {
@@ -175,13 +183,20 @@ export default function RemSync({ onSalaryUpdate }) {
       };
       try {
         let currentLog = [];
-        const getRes = await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${omniId}`);
+        const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${omniId}`);
         if (getRes.ok) {
-          currentLog = await getRes.json() || [];
+          const rawText = await getRes.text();
+          let parsedText = JSON.parse(rawText);
+          if (typeof parsedText === 'string') {
+            currentLog = JSON.parse(parsedText) || [];
+          } else {
+            currentLog = parsedText || [];
+          }
         }
         const updatedLog = [newEntry, ...currentLog].slice(0, 50);
-        await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${omniId}`, {
+        await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${omniId}`, {
           method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedLog)
         });
       } catch (kvErr) {

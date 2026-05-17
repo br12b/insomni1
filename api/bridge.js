@@ -53,10 +53,15 @@ export default async function handler(req, res) {
       // Fetch existing traffic log from public KV store to persist across serverless containers!
       let currentLog = [];
       try {
-        const getRes = await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${targetId}`);
+        const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${targetId}`);
         if (getRes.ok) {
           const textData = await getRes.text();
-          currentLog = JSON.parse(textData) || [];
+          let parsedText = JSON.parse(textData);
+          if (typeof parsedText === 'string') {
+            currentLog = JSON.parse(parsedText) || [];
+          } else {
+            currentLog = parsedText || [];
+          }
         }
       } catch (e) {
         currentLog = [];
@@ -67,8 +72,9 @@ export default async function handler(req, res) {
 
       // Write back to KV store
       try {
-        await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${targetId}`, {
+        await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${targetId}`, {
           method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedLog)
         });
       } catch (e) {
@@ -84,10 +90,15 @@ export default async function handler(req, res) {
     
     let history = [];
     try {
-      const getRes = await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${filterId}`);
+      const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${filterId}`);
       if (getRes.ok) {
         const textData = await getRes.text();
-        history = JSON.parse(textData) || [];
+        let parsedText = JSON.parse(textData);
+        if (typeof parsedText === 'string') {
+          history = JSON.parse(parsedText) || [];
+        } else {
+          history = parsedText || [];
+        }
       }
     } catch (e) {
       history = [];
