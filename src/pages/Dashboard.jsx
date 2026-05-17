@@ -230,9 +230,9 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                       const arbitrageDetails = targetedExpenses.map(e => {
                         const day = parseInt(e.date) || 15;
                         const daysActive = Math.max(1, day - 1); // Money stays in fund until day of payment
-                        const amount = parseFloat(e.amount || 0);
+                        const amount = parseFloat(e.amount || 0); // Convert amount strictly to Number to prevent .toFixed crashes!
                         const potentialEarning = amount * plannerDailyYieldRate * daysActive;
-                        return { ...e, daysActive, potentialEarning };
+                        return { ...e, daysActive, potentialEarning, amount }; // Overwrite amount with float
                       });
 
                       const totalArbitrageGain = arbitrageDetails.reduce((sum, e) => sum + e.potentialEarning, 0);
@@ -314,14 +314,14 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                                         <strong style={{ color: 'var(--text1)' }}>{exp.name}</strong>
                                         <span style={{ color: 'var(--text2)', marginLeft: 8 }}>
                                           {lang === 'tr' 
-                                            ? `(Ayın ${exp.date}. günü, ${exp.amount.toFixed(2)} ${currency})` 
-                                            : `(Day ${exp.date} of month, ${exp.amount.toFixed(2)} ${currency})`}
+                                            ? `(Ayın ${exp.date}. günü, ${parseFloat(exp.amount || 0).toFixed(2)} ${currency})` 
+                                            : `(Day ${exp.date} of month, ${parseFloat(exp.amount || 0).toFixed(2)} ${currency})`}
                                         </span>
                                       </div>
                                       <div style={{ fontSize: '12px', color: 'var(--green)', fontWeight: 700 }}>
                                         {lang === 'tr' 
-                                          ? `+${exp.potentialEarning.toFixed(2)} ${currency} (${exp.daysActive} Gün Kazanım)` 
-                                          : `+${exp.potentialEarning.toFixed(2)} ${currency} (${exp.daysActive} Days Active)`}
+                                          ? `+${parseFloat(exp.potentialEarning || 0).toFixed(2)} ${currency} (${exp.daysActive} Gün Kazanım)` 
+                                          : `+${parseFloat(exp.potentialEarning || 0).toFixed(2)} ${currency} (${exp.daysActive} Days Active)`}
                                       </div>
                                     </div>
                                   ))}
