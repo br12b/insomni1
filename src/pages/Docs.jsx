@@ -126,12 +126,14 @@ export default function Docs() {
               <motion.div variants={itemVariants} className="glass" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <Eye size={18} color="var(--accent)" />
-                  <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0 }}>Holografik Arayüz (Intro)</h3>
+                  <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0 }}>
+                    {lang === 'tr' ? 'Spring & Neye Çözüm Oluyoruz?' : 'Spring Mechanics & Problem Solved'}
+                  </h3>
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text2)', margin: 0, lineHeight: 1.5 }}>
                   {lang === 'tr'
-                    ? 'Fizik tabanlı yay (spring) sönümleme motoruyla güçlendirilmiş, logoya doğru zarifçe kapanan sinematik siber hologram açılışı.'
-                    : 'A cinematic cyber holographic intro with physics-modeled spring exit transitions that elegantly collapses into the header logo.'}
+                    ? 'Giriş ekranındaki fizik tabanlı hologram yay (spring) küçülme efekti sadece görsel bir şov değildir. Bu motor, ani sayfa yüklenmelerinin ve arayüz karmaşasının (visual jarring) önüne geçerek kullanıcının dikkat dağınıklığını önler, zihinsel odaklanmayı 100% koruyan pürüzsüz bir geçiş köprüsü sağlar.'
+                    : 'The physics-based holographic spring exit transition on the intro screen is not just a visual show. This engine completely prevents visual jarring and abrupt page loading shocks, offering a smooth interface continuity that preserves 100% mental focus.'}
                 </p>
               </motion.div>
 
@@ -152,12 +154,14 @@ export default function Docs() {
               <motion.div variants={itemVariants} className="glass" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <RefreshCw size={18} color="var(--accent)" />
-                  <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0 }}>REM Sync Otonom Köprü</h3>
+                  <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0 }}>
+                    {lang === 'tr' ? 'REM Sync Otonom Köprü & Projeksiyon' : 'REM Sync Autonomous Bridge & Projection'}
+                  </h3>
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text2)', margin: 0, lineHeight: 1.5 }}>
                   {lang === 'tr'
-                    ? 'Banka ekstrelerini (PDF) yapay zeka ile okuyan veya Telegram bot köprüsüyle harcamalarını komuta merkezine anlık işleyen siber veri hattı.'
-                    : 'A high-performance bridge that parses bank statement PDFs or syncs offline chat messages into your live budget instantly.'}
+                    ? 'REM Sync, dağınık banka ekstrelerini (PDF) ve anlık Telegram verilerini yapay zeka ile saniyeler içinde okuyan hayati bir otonom köprüdür. Statik listeler yerine harcamalarını anlık olarak finansal sinir sistemine aktarır; böylece geçmişe saplanıp kalmak yerine geleceğe yönelik finansal projeksiyonlar (veri yansıtma) yaparak atıl nakdini korumanı sağlar.'
+                    : 'REM Sync is a critical autonomous bridge that uses AI to parse unstructured bank PDFs and instant Telegram inputs in seconds. Instead of static retro lists, it projects your expenses into the live nervous system, allowing you to run future cash flow projections and guard your active wealth.'}
                 </p>
               </motion.div>
 
@@ -202,8 +206,8 @@ export default function Docs() {
                 </div>
                 <div style={{ padding: 16, background: 'rgba(255,255,255,0.01)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.03)' }}>
                   <div style={{ fontSize: '11px', color: 'var(--accent)', fontWeight: 800, marginBottom: 4 }}>INTELLIGENCE LAYER</div>
-                  <div style={{ fontSize: '14px', fontWeight: 700 }}>Gemini 1.5 API</div>
-                  <div style={{ fontSize: '12px', color: 'var(--text2)', marginTop: 4 }}>Context-aware autonomous ReAct agent models.</div>
+                  <div style={{ fontSize: '14px', fontWeight: 700 }}>Gemini 3.1 Flash</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text2)', marginTop: 4 }}>Ultra-high-speed context-aware autonomous ReAct models.</div>
                 </div>
               </div>
             </motion.div>
