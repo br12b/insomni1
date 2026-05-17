@@ -34,8 +34,7 @@ export function useGemini() {
       const genAI = new GoogleGenerativeAI(API_KEY);
       const model = genAI.getGenerativeModel({ 
         model: MODEL_NAME, 
-        systemInstruction: SYSTEM_PROMPT,
-        tools: [{ functionDeclarations: TOOL_DECLARATIONS }] 
+        systemInstruction: SYSTEM_PROMPT
       });
 
       const fd = financialDataRef.current;
