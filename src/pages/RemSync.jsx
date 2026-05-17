@@ -194,10 +194,10 @@ export default function RemSync({ onSalaryUpdate }) {
           }
         }
         const updatedLog = [newEntry, ...currentLog].slice(0, 50);
-        await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${omniId}`, {
+        const encodedVal = encodeURIComponent(JSON.stringify(updatedLog));
+        await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${omniId}?value=${encodedVal}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updatedLog)
+          body: ''
         });
       } catch (kvErr) {
         console.error("KV client fallback write error", kvErr);

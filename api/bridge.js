@@ -74,15 +74,15 @@ export default async function handler(req, res) {
       // Prepend and slice to 50
       const updatedLog = [newEntry, ...currentLog].slice(0, 50);
 
-      // Write back to KV store
+      // Write back to KV store using Query Parameter (WAF and data corruption bypass!)
       try {
-        await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${targetId}`, {
+        const encodedVal = encodeURIComponent(JSON.stringify(updatedLog));
+        await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${targetId}?value=${encodedVal}`, {
           method: 'POST',
           headers: { 
-            'Content-Type': 'application/json',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
           },
-          body: JSON.stringify(updatedLog)
+          body: ''
         });
       } catch (e) {
         console.error("KV write error", e);
