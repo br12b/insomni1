@@ -53,18 +53,35 @@ export default function RemSync({ onSalaryUpdate }) {
     if (!omniId) return;
     const pollBridge = async () => {
       try {
-        const res = await fetch(`/api/bridge?id=${omniId}`);
-        const data = await res.json();
-        if (data.history && data.history.length > 0) {
-          data.history.forEach(entry => {
+        let history = [];
+        try {
+          const res = await fetch(`/api/bridge?id=${omniId}`);
+          if (res.ok) {
+            const data = await res.json();
+            history = data.history || [];
+          } else {
+            throw new Error("API Offline");
+          }
+        } catch (apiErr) {
+          // Direct Bulut Veritabanı Fallback!
+          const getRes = await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${omniId}`);
+          if (getRes.ok) {
+            history = await getRes.json() || [];
+          }
+        }
+        
+        if (history && history.length > 0) {
+          history.forEach(entry => {
             if (!lastProcessedRef.current.has(entry.id)) {
               lastProcessedRef.current.add(entry.id);
               processManual(entry.text, entry.source);
             }
           });
-          setTrafficLog(data.history.map(h => ({ text: h.text, time: h.timestamp })));
+          setTrafficLog(history.map(h => ({ text: h.text, time: h.timestamp })));
         }
-      } catch (err) { console.error("Bridge polling error", err); }
+      } catch (err) {
+        console.error("Hybrid bridge polling fallback failure", err);
+      }
     };
     const interval = setInterval(pollBridge, 2000);
     return () => clearInterval(interval);
@@ -140,11 +157,37 @@ export default function RemSync({ onSalaryUpdate }) {
 
   const sendLocalTestSignal = async () => {
     addLog("LOCAL: Test sinyali firlatiliyor...", "warning");
-    await fetch('/api/bridge', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: `${omniId} Yemek 340 tl` })
-    });
+    try {
+      const res = await fetch('/api/bridge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: `${omniId} Yemek 340 tl` })
+      });
+      if (!res.ok) throw new Error("API Offline");
+    } catch (e) {
+      addLog("HYBRID: Bulut veritabanına doğrudan bağlantı kuruluyor...", "system");
+      const newEntry = {
+        text: "Yemek 340 tl",
+        targetId: omniId,
+        source: "Otonom Bridge (Local Fallback)",
+        timestamp: new Date().toISOString(),
+        id: Math.random().toString(36).substr(2, 9)
+      };
+      try {
+        let currentLog = [];
+        const getRes = await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${omniId}`);
+        if (getRes.ok) {
+          currentLog = await getRes.json() || [];
+        }
+        const updatedLog = [newEntry, ...currentLog].slice(0, 50);
+        await fetch(`https://kvdb.io/Y3xy1UE1e8s8vTQfVx4qzz/${omniId}`, {
+          method: 'POST',
+          body: JSON.stringify(updatedLog)
+        });
+      } catch (kvErr) {
+        console.error("KV client fallback write error", kvErr);
+      }
+    }
   };
 
   const handleApiSync = async () => {

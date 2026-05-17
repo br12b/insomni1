@@ -9,12 +9,25 @@ export default async function handler(req, res) {
 
   let rawText = "";
   let source = "Unknown";
+  let body = req.body;
 
-  if (req.body && req.body.message && req.body.message.text) {
-    rawText = req.body.message.text;
+  // Safe JSON Parsing for strings
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch (e) {
+      // Keep as string if parsing fails
+    }
+  }
+
+  if (body && body.message && body.message.text) {
+    rawText = body.message.text;
     source = "Telegram Bot";
-  } else if (req.method === 'POST') {
-    rawText = req.body.text || (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
+  } else if (body && body.text) {
+    rawText = body.text;
+    source = "Otonom Bridge";
+  } else if (typeof body === 'string') {
+    rawText = body;
     source = "Otonom Bridge";
   } else if (req.query.text) {
     rawText = req.query.text;
