@@ -73,11 +73,13 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
     remaining
   };
 
+  let runningBalance = income;
   const dailyBalances = Array.from({ length: 30 }, (_, i) => {
     const day = i + 1;
     const dayExps = combinedExpenses.filter(e => parseInt(e.date) === day);
     const dayTotal = dayExps.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
-    return { day, balance: income - dayTotal, isNegative: (income - dayTotal) < 0 };
+    runningBalance -= dayTotal;
+    return { day, balance: runningBalance, isNegative: runningBalance < 0 };
   });
 
   return (
