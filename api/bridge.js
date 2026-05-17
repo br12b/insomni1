@@ -1,5 +1,4 @@
-﻿// Insomni Secured Universal Bridge - V9 (Strict ID-Based Routing)
-let trafficLog = [];
+// Insomni Secured Universal Bridge - V9 (Strict ID-Based Routing with Serverless KV Persistence)
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -38,9 +37,31 @@ export default async function handler(req, res) {
         id: Math.random().toString(36).substr(2, 9)
       };
       
-      trafficLog = [newEntry, ...trafficLog].slice(0, 50);
+      // Fetch existing traffic log from public KV store to persist across serverless containers!
+      let currentLog = [];
+      try {
+        const getRes = await fetch(`https://kvdb.io/insomni_bridge_v9_d7e2/${targetId}`);
+        if (getRes.ok) {
+          const textData = await getRes.text();
+          currentLog = JSON.parse(textData) || [];
+        }
+      } catch (e) {
+        currentLog = [];
+      }
+
+      // Prepend and slice to 50
+      const updatedLog = [newEntry, ...currentLog].slice(0, 50);
+
+      // Write back to KV store
+      try {
+        await fetch(`https://kvdb.io/insomni_bridge_v9_d7e2/${targetId}`, {
+          method: 'POST',
+          body: JSON.stringify(updatedLog)
+        });
+      } catch (e) {
+        console.error("KV write error", e);
+      }
     }
-    // Eger ID yoksa, bu mesaj sistem tarafindan reddedilir (Loga eklenmez).
   }
 
   // Frontend Polling (Sadece eslesen ID'leri getir)
@@ -48,7 +69,17 @@ export default async function handler(req, res) {
     const filterId = req.query.id;
     if (!filterId) return res.status(200).json({ history: [] }); // ID yoksa veri de yok
     
-    const history = trafficLog.filter(entry => entry.targetId === filterId);
+    let history = [];
+    try {
+      const getRes = await fetch(`https://kvdb.io/insomni_bridge_v9_d7e2/${filterId}`);
+      if (getRes.ok) {
+        const textData = await getRes.text();
+        history = JSON.parse(textData) || [];
+      }
+    } catch (e) {
+      history = [];
+    }
+    
     return res.status(200).json({ history });
   }
 
