@@ -4,7 +4,7 @@ import { useState, useCallback, useRef } from "react";
 // Multi-key support parsing from single comma-separated variable VITE_GEMINI_API_KEYS
 const API_KEYS_STR = import.meta.env.VITE_GEMINI_API_KEYS || import.meta.env.VITE_GEMINI_API_KEY || "";
 const API_KEYS = API_KEYS_STR ? API_KEYS_STR.split(",").map(k => k.trim()).filter(Boolean) : [];
-const MODEL_NAME = "gemini-3.1-flash-lite";
+const MODEL_NAME = "gemini-2.5-flash";
 
 // API Key rotation active index tracked at module level
 let activeKeyIndex = Math.floor(Math.random() * Math.max(1, API_KEYS.length));
