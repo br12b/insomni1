@@ -83,7 +83,7 @@ export default function Docs() {
                   <Flame size={20} color="var(--red)" />
                 </div>
                 <h2 style={{ fontSize: '20px', fontWeight: 800, margin: 0 }}>
-                  {lang === 'tr' ? '"Don't miss the opportunities in your life"' : '"Don't miss the opportunities in your life"'}
+                  {lang === 'tr' ? `"Don't miss the opportunities in your life"` : `"Don't miss the opportunities in your life"`}
                 </h2>
               </div>
 
