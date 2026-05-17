@@ -18,12 +18,12 @@ const TOOL_DECLARATIONS = [
   }
 ];
 
-const SYSTEM_PROMPT = `Sen R.E.M, siber bir Nakit Akışı Mimarısın. 
-KRİTİK EMİR: 
-1. Aşağıdaki [FİNANSAL VERİ] bloğundaki rakamları BİZZAT kullanarak konuş. 
-2. Basit sohbetlerde (merhaba vb.) asla araç (tool) kullanma, doğrudan kısa ve havalı siber yanıtlar ver. 
-3. Kullanıcının aylık net tasarrufu veya atıl nakdi varsa, bu paranın enflasyona karşı erimemesi için MUTLAKA günlük getiri sağlayan PPF (Para Piyasası Fonu) stratejisini öner ve bu boşta geçen sürenin maliyetinden bahset.
-4. Kısa, teknik, çözüm odaklı ve özgüvenli ol. Asla genel geçer tavsiye verme.`;
+const SYSTEM_PROMPT = `Sen R.E.M, kullanıcının kişisel, samimi ve son derece bilgili finansal danışmanı ve dostusun.
+KRİTİK EMİR:
+1. Konuşmaların kesinlikle doğal, yapay zekadan uzak, sıcak ve arkadaş canlısı olmalı. Asla "siber", "matris", "veri seti", "siber mimari", "sistem aktif" gibi robotik/yapay kelimeler kullanma. Kendine ait samimi, insanı rahatlatan bir üslubun olsun.
+2. Aşağıdaki [FİNANSAL VERİ] bloğundaki rakamları bizzat kullanarak gerçek finansal analizler yap.
+3. Kullanıcının aylık net tasarrufu veya atıl nakdi varsa, bu paranın enflasyona karşı değer kaybetmemesi için çok samimi bir dille günlük getiri sağlayan PPF (Para Piyasası Fonu) gibi enstrümanları öner. "Bu para vadesizde bekledikçe her gün çay/kahve parasını enflasyona kaptırıyoruz" gibi hayatın içinden benzetmeler yap.
+4. Çözüm odaklı, samimi, kullanıcıyı motive eden ve finansal bilinci yüksek bir tonda konuş. Bilgiçlik taslamadan, onun parasını korumasına yardımcı olan bir arkadaş gibi yaklaş.`;
 
 export function useGemini() {
   const [messages, setMessages] = useState([]);
@@ -96,7 +96,7 @@ export function useGemini() {
         for (const call of calls) {
           const stepLabel = call.name === "calculateGoalTimeline" ? "Hedef Süresi Hesaplanıyor..." :
                             call.name === "simulateExpenseRemoval" ? "Harcama Senaryosu Çıkarılıyor..." :
-                            "Siber Analiz Ediliyor...";
+                            "Detaylı Analiz Yapılıyor...";
           
           setThinkingSteps(prev => [...prev, { status: 'running', label: stepLabel }]);
           
@@ -116,7 +116,7 @@ export function useGemini() {
 
       setMessages(prev => [...prev, { role: "model", content: response.text(), thinkingSteps: finalThinkingSteps }]);
     } catch (err) {
-      setMessages(prev => [...prev, { role: "model", content: `Siber Hata: ${err.message}` }]);
+      setMessages(prev => [...prev, { role: "model", content: `Bağlantı Sorunu: ${err.message}. Lütfen tekrar dener misin?` }]);
     } finally {
       setIsTyping(false);
       setThinkingSteps([]);
