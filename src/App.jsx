@@ -56,7 +56,7 @@ const IntroSequence = ({ onComplete }) => {
         backgroundColor: isClosing ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.85)',
         backdropFilter: isClosing ? 'blur(0px)' : 'blur(8px)',
       }}
-      transition={{ duration: 1.5, ease: 'easeInOut' }} // Arka plan erimesi 1.5 saniyeye çekildi
+      transition={{ duration: 1.8, ease: [0.25, 1, 0.5, 1] }} // Arka plan cam erimesini de ipeksi yavaşlığa senkronize ettik
       onAnimationComplete={() => {
         if (isClosing) onComplete();
       }}
@@ -84,7 +84,13 @@ const IntroSequence = ({ onComplete }) => {
           y: 0,
           opacity: 1,
         }}
-        transition={{ duration: 1.5, ease: [0.25, 1, 0.5, 1] }} // Uçuş süresi 1.5 saniye (majestik yavaşlık)
+        // FİZİK TABANLI SPRING MOTORU: Yapay süreler yerine gerçekçi süzülme sürtünmesi
+        transition={{ 
+          type: "spring",
+          stiffness: 22, // Yumuşacık bir çekim gerilimi
+          damping: 13,   // İpeksi, sarsıntısız sönümleme
+          mass: 0.85     // Akıcı bir kütle hissi
+        }} 
         style={{
           width: '100%',
           maxWidth: '1200px',
@@ -114,14 +120,13 @@ const IntroSequence = ({ onComplete }) => {
           <source src="/intro.mp4" type="video/mp4" />
         </video>
 
-        {/* YAZI ARTIK VİDEONUN İÇİNDE (Absolute ve videoyla beraber sol üste uçacak) */}
         <div style={{
           position: 'absolute',
           bottom: '8%',
           fontFamily: 'var(--mono)',
-          fontSize: '2rem', // Video çerçevesine tam oturması için hafifçe optimize edildi
+          fontSize: '2rem',
           fontWeight: 700,
-          color: '#000', // Saf simsiyah yazı
+          color: '#000',
           letterSpacing: '0.08em',
           height: 40,
           textShadow: 'none',
