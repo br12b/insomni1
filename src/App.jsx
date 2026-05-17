@@ -50,8 +50,8 @@ const IntroSequence = ({ onComplete }) => {
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.75)', // Cam gibi saydam arka plan
-        backdropFilter: 'blur(12px)', // Arkadaki siber kuleyi bulanıklaştır
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        backdropFilter: 'blur(12px)',
         zIndex: 9999,
         display: 'flex',
         flexDirection: 'column',
@@ -61,17 +61,19 @@ const IntroSequence = ({ onComplete }) => {
       }}
     >
       <div style={{
-        width: '90%',
-        maxWidth: '1000px', // Videoyu tam ekran olmaktan çıkarıp dev bir pencere yaptık
+        width: '100%',
+        maxWidth: '1200px', // Biraz daha büyüttük ki fade daha doğal dursun
         aspectRatio: '16/9',
         overflow: 'hidden',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: '24px', // Yumuşak köşeler
-        boxShadow: '0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(129, 140, 248, 0.3)', // Siber mor parlama ve derin gölge
-        border: '1px solid rgba(255,255,255,0.1)' // Cam çerçeve
+        // KUTU GÖRÜNÜMÜNÜ SIFIRLADIK
+        background: 'transparent',
+        // KENARLARI SİLİKLEŞTİREREK UYGULAMAYA YEDİRİYORUZ
+        maskImage: 'radial-gradient(circle at center, black 40%, transparent 80%)',
+        WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 80%)'
       }}>
         <video 
           autoPlay 
@@ -82,8 +84,9 @@ const IntroSequence = ({ onComplete }) => {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            transform: 'scale(1.15)', // Siyah barları kırpmak için basıklaştırma/yakınlaştırma
-            pointerEvents: 'none'
+            transform: 'scale(1.15)',
+            pointerEvents: 'none',
+            mixBlendMode: 'screen' // Eğer videonun arkası siyahsa direkt transparan yapar, uygulamaya mükemmel gömülür. Siyah değilse bile mask-image korur.
           }}
         >
           <source src="/intro.mp4" type="video/mp4" />
@@ -91,7 +94,7 @@ const IntroSequence = ({ onComplete }) => {
       </div>
 
       <div style={{
-        marginTop: '40px', // Videonun altına aldık
+        marginTop: '40px',
         fontFamily: 'var(--mono)',
         fontSize: '2rem',
         fontWeight: 600,
