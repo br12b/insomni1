@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, RefreshCw, Calendar as CalendarIcon, Brain, ChevronLeft, ChevronRight, Zap, BookOpen } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
@@ -24,7 +24,6 @@ const IntroSequence = ({ onComplete }) => {
   const fullText = "Don't miss the opportunities in your life...";
   const [showCursor, setShowCursor] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
-  const videoRef = useRef(null);
 
   useEffect(() => {
     let i = 0;
@@ -41,18 +40,6 @@ const IntroSequence = ({ onComplete }) => {
       setShowCursor(prev => !prev);
     }, 500);
 
-    // Programmatic play & mute safety injection to bypass browser autoplay policies
-    if (videoRef.current) {
-      videoRef.current.muted = true;
-      videoRef.current.defaultMuted = true;
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(err => {
-          console.log("Autoplay prevented, waiting for user click/interaction to play", err);
-        });
-      }
-    }
-
     return () => {
       clearInterval(typingInterval);
       clearInterval(cursorInterval);
@@ -67,10 +54,10 @@ const IntroSequence = ({ onComplete }) => {
     <motion.div 
       onDoubleClick={handleClose}
       animate={{
-        backgroundColor: isClosing ? 'rgba(0, 0, 0, 0)' : 'rgba(5, 5, 10, 0.98)',
-        // Heavy GPU backdropFilter completely wiped to unlock buttery smooth 60FPS video playback!
+        backgroundColor: isClosing ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.85)',
+        backdropFilter: isClosing ? 'blur(0px)' : 'blur(8px)',
       }}
-      transition={{ duration: 1.8, ease: [0.25, 1, 0.5, 1] }}
+      transition={{ duration: 1.8, ease: [0.25, 1, 0.5, 1] }} // Arka plan cam erimesini de ipeksi yavaşlığa senkronize ettik
       onAnimationComplete={() => {
         if (isClosing) onComplete();
       }}
@@ -86,38 +73,6 @@ const IntroSequence = ({ onComplete }) => {
         pointerEvents: isClosing ? 'none' : 'auto'
       }}
     >
-      {/* High-fidelity glassmorphism skip button in top right */}
-      <motion.button
-        onClick={handleClose}
-        whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.08)' }}
-        whileTap={{ scale: 0.95 }}
-        style={{
-          position: 'absolute',
-          top: '40px',
-          right: '40px',
-          padding: '10px 20px',
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          backdropFilter: 'blur(12px)',
-          borderRadius: '24px',
-          color: 'rgba(255, 255, 255, 0.75)',
-          fontFamily: 'var(--mono)',
-          fontSize: '11px',
-          fontWeight: 600,
-          letterSpacing: '0.08em',
-          cursor: 'pointer',
-          zIndex: 10000,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-          textTransform: 'uppercase'
-        }}
-      >
-        <span>{useLanguage().lang === 'tr' ? 'İntroyu Geç' : 'Skip Intro'}</span>
-        <ChevronRight size={14} />
-      </motion.button>
-
       <motion.div 
         animate={isClosing ? {
           scale: 0.01,
@@ -130,11 +85,12 @@ const IntroSequence = ({ onComplete }) => {
           y: 0,
           opacity: 1,
         }}
+        // FİZİK TABANLI SPRING MOTORU: Yapay süreler yerine gerçekçi süzülme sürtünmesi
         transition={{ 
           type: "spring",
-          stiffness: 22,
-          damping: 13,
-          mass: 0.85
+          stiffness: 22, // Yumuşacık bir çekim gerilimi
+          damping: 13,   // İpeksi, sarsıntısız sönümleme
+          mass: 0.85     // Akıcı bir kütle hissi
         }} 
         style={{
           width: '100%',
@@ -150,14 +106,10 @@ const IntroSequence = ({ onComplete }) => {
         }}
       >
         <video 
-          ref={videoRef}
           autoPlay 
           muted 
           playsInline
-          defaultMuted
-          preload="auto" // Preloads the entire 5MB file aggressively into cache for lag-free rendering
           onEnded={handleClose}
-          onError={handleClose}
           style={{
             width: '100%',
             height: '100%',
@@ -198,7 +150,7 @@ function AppContent() {
   const { isDark } = useTheme();
   const { lang, t, toggleLang } = useLanguage();
   const [profile, setProfile] = useState(() => storage.getCurrentProfile());
-  const [showFullNav, setShowFullNav] = useState(false);
+    const [showFullNav, setShowFullNav] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
   
   const initialView = window.location.pathname === '/admin' ? 'admin' : (storage.getCurrentProfile() ? 'landing' : 'profile');
@@ -234,8 +186,7 @@ function AppContent() {
     setView(v);
   };
 
-  const handleResetProfile = () => { 
-    localStorage.removeItem(`insomni_synced_txs`);
+  const handleResetProfile = () => { localStorage.removeItem(`insomni_synced_txs`);
     storage.setCurrentProfile('');
     setProfile('');
     setSalaryData(null);
@@ -248,9 +199,10 @@ function AppContent() {
     setProfile(newName);
   };
 
+  // NAVIGATION IS NOW PURELY CONTROLLED BY THE ZAP BUTTON FOR COMPACT VIBE
   const isNavVisible = showFullNav;
 
-  return (
+    return (
     <>
       <AnimatePresence>
         {showIntro && (
@@ -266,144 +218,125 @@ function AppContent() {
         )}
       </AnimatePresence>
 
-      <div className={`app-container ${isDark ? 'dark' : 'light'}`}>
-        <header className="app-header glass" style={{ borderBottom: '1px solid var(--glass-border)' }}>
-          <div className="header-left">
-            <span className="logo-text" onClick={() => goTo('landing')}>
-              INSOMNI
-            </span>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {view !== 'admin' && (
+      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 40px', zIndex: 1000, position: 'relative', flexShrink: 0 }}>
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', height: 180 }}>
+          <div onClick={() => goTo('landing')} style={{ cursor: 'pointer', userSelect: 'none' }}>
+            <img src="/insomni.png" alt="Insomni" style={{ height: 180, width: 'auto' }} />
           </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            {profile && view !== 'profile' && (
-              <nav className={`app-nav ${isNavVisible ? 'nav-active' : ''}`} style={{ display: 'flex', gap: 12 }}>
-                <button className={`nav-link ${view === 'landing' ? 'active' : ''}`} onClick={() => goTo('landing')}>
-                  <User size={16} /> {lang === 'tr' ? 'Profil' : 'Profile'}
-                </button>
-                <button className={`nav-link ${view === 'dashboard' ? 'active' : ''}`} onClick={() => goTo('dashboard')}>
-                  <Settings size={16} /> {lang === 'tr' ? 'Yönetim' : 'Dashboard'}
-                </button>
-                <button className={`nav-link ${view === 'opportunities' ? 'active' : ''}`} onClick={() => goTo('opportunities')}>
-                  <Zap size={16} /> {lang === 'tr' ? 'Fırsatlar' : 'Opportunities'}
-                </button>
-                <button className={`nav-link ${view === 'remsync' ? 'active' : ''}`} onClick={() => goTo('remsync')}>
-                  <RefreshCw size={16} /> REM Sync
-                </button>
-                <button className={`nav-link ${view === 'calendar' ? 'active' : ''}`} onClick={() => goTo('calendar')}>
-                  <CalendarIcon size={16} /> {lang === 'tr' ? 'Takvim' : 'Calendar'}
-                </button>
-                <button className={`nav-link ${view === 'docs' ? 'active' : ''}`} onClick={() => goTo('docs')}>
-                  <BookOpen size={16} /> {lang === 'tr' ? 'Rehber' : 'Docs'}
-                </button>
-              </nav>
-            )}
-
-            <ThemeToggle />
-
-            {profile && (
-              <button
-                className="btn btn-icon btn-primary"
-                onClick={() => goTo('chat')}
-                style={{ width: 44, height: 44, padding: 0 }}
-                title="REM AI"
-              >
-                <Brain size={20} />
-              </button>
-            )}
-
-            {profile && (
-              <button
-                className="btn btn-secondary btn-sm"
-                onClick={handleResetProfile}
-                style={{ fontSize: 11, padding: '8px 12px' }}
-              >
-                {lang === 'tr' ? 'Profili Değiştir' : 'Switch Profile'}
-              </button>
-            )}
+          <div style={{ position: 'absolute', bottom: 20, left: 100, pointerEvents: 'none' }}>
+            <img src="/build-with-gemini.png" alt="Build with Gemini" 
+                 style={{ 
+                   height: 110, 
+                   width: 'auto', 
+                   userSelect: 'none',
+                   filter: 'brightness(0) contrast(100)'
+                 }} />
           </div>
-        </header>
+        </div>
 
-        <main className="app-main" style={{ minHeight: 'calc(100vh - 80px)', background: 'var(--bg)', color: 'var(--text1)' }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={view}
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.2 }}
-              style={{ width: '100%', height: '100%' }}
-            >
-              {view === 'profile' && (
-                <ProfilePage
-                  onSelectProfile={handleUpdateName}
-                  onResetProfile={handleResetProfile}
-                />
-              )}
+        <div className="glass" style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 20px', borderRadius: 100 }}>
+          <button onClick={toggleLang} className="btn btn-ghost btn-sm" style={{ fontWeight: 800, minWidth: 44 }}>
+            {lang.toUpperCase()}
+          </button>
 
-              {view === 'landing' && profile && (
-                <Landing
-                  salaryData={salaryData}
-                  setSalaryData={setSalaryData}
-                  expensesData={expensesData}
-                  setExpensesData={setExpensesData}
-                  onNavigate={goTo}
-                />
-              )}
+          {/* PERMANENT PURPLE ZAP BUTTON */}
+          <motion.button 
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowFullNav(!showFullNav)}
+            className="btn btn-icon btn-sm"
+            style={{ 
+              background: 'linear-gradient(135deg, #818cf8, #c084fc)', 
+              color: '#fff', 
+              borderRadius: '50%',
+              boxShadow: '0 0 15px rgba(192,132,252,0.5)',
+              border: 'none'
+            }}
+          >
+            {showFullNav ? <ChevronRight size={16} /> : <Zap size={16} fill="currentColor" />}
+          </motion.button>
 
-              {view === 'dashboard' && profile && (
-                <Dashboard
-                  salaryData={salaryData}
-                  expensesData={expensesData}
-                  setExpensesData={setExpensesData}
-                  profileName={profile}
-                />
-              )}
-
-              {view === 'opportunities' && profile && (
-                <Opportunities
-                  salaryData={salaryData}
-                  expensesData={expensesData}
-                />
-              )}
-
-              {view === 'chat' && profile && (
-                <Chat
-                  financialData={{
-                    salary: salaryData,
-                    expenses: expensesData,
-                  }}
-                />
-              )}
-
-              {view === 'remsync' && profile && (
-                <RemSync />
-              )}
-
-              {view === 'calendar' && profile && (
-                <Calendar
-                  salaryData={salaryData}
-                  expensesData={expensesData}
-                />
-              )}
-
-              {view === 'docs' && (
-                <Docs />
-              )}
-            </motion.div>
+          <AnimatePresence>
+            {isNavVisible && (
+              <motion.div 
+                initial={{ opacity: 0, x: 20, width: 0 }}
+                animate={{ opacity: 1, x: 0, width: 'auto' }}
+                exit={{ opacity: 0, x: 20, width: 0 }}
+                style={{ display: 'flex', gap: 8, overflow: 'hidden' }}
+              >
+                {/* Dashboard etc. now only show if they have data OR user explicitly expanded */}
+                <button onClick={() => goTo('dashboard')} className={`btn btn-sm ${view === 'dashboard' ? 'btn-accent' : 'btn-ghost'}`}>
+                  Dashboard
+                </button>
+                <button onClick={() => goTo('opportunities')} className={`btn btn-sm ${view === 'opportunities' ? 'btn-accent' : 'btn-ghost'}`}>
+                  {lang === 'tr' ? 'Fırsatlar' : 'Opportunities'}
+                </button>
+                <button onClick={() => goTo('remsync')} className={`btn btn-sm ${view === 'remsync' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                  <RefreshCw size={14} /> REM Sync
+                </button>
+                <button onClick={() => goTo('chat')} className={`btn btn-sm ${view === 'chat' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                  <Brain size={14} /> R.E.M AI
+                </button>
+                <button onClick={() => goTo('calendar')} className={`btn btn-sm ${view === 'calendar' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                  <CalendarIcon size={14} /> {lang === 'tr' ? 'Takvim' : 'Calendar'}
+                </button>
+                <button onClick={() => goTo('docs')} className={`btn btn-sm ${view === 'docs' ? 'btn-accent' : 'btn-ghost'}`} style={{ gap: 8 }}>
+                  <BookOpen size={14} /> Docs
+                </button>
+              </motion.div>
+            )}
           </AnimatePresence>
-        </main>
-      </div>
+
+          {profile && (
+            <>
+              <button onClick={() => goTo('profile')} className={`btn btn-icon btn-sm ${view === 'profile' ? 'btn-accent' : 'btn-ghost'}`} title={profile}>
+                <User size={16} />
+              </button>
+            </>
+          )}
+          <ThemeToggle />
+        </div>
+      </nav>
+      )}
+
+      <AnimatePresence mode="wait">
+        <motion.div key={view} variants={pageVariants} initial="initial" animate="animate" exit="exit"
+          transition={{ duration: 0.22, ease: 'easeOut' }}
+          style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          {view === 'landing' && <Landing onStart={() => goTo('salary')} />}
+          {view === 'profile' && (
+            profile ? 
+              <ProfilePage name={profile} onReset={handleResetProfile} onUpdateName={handleUpdateName} /> : 
+              <ProfileModal initialName={profile} onComplete={name => { setProfile(name); goTo('landing'); }} />
+          )}
+          {view === 'salary' && <SalaryInput onComplete={d => { setSalaryData(d); goTo('expenses'); }} />}
+          {view === 'expenses' && <ExpenseInput onComplete={d => { setExpensesData(d); goTo('dashboard'); }} />}
+          {view === 'dashboard' && <Dashboard salaryData={salaryData || {income:0, currency:'₺', day:1}} expensesData={expensesData} profileName={profile} />}
+          {view === 'opportunities' && <Opportunities expenses={expensesData} salaryData={salaryData || {income:0, currency:'₺', day:1}} />}
+          {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
+          {view === 'remsync' && <RemSync />}
+          {view === 'calendar' && <Calendar financialData={{ salaryData, expensesData }} />}
+          {view === 'docs' && <Docs />}
+        </motion.div>
+      </AnimatePresence>
+    </div>
     </>
   );
 }
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <AdminUIProvider>
+    <AdminUIProvider>
+      <LanguageProvider>
         <AppContent />
-      </AdminUIProvider>
-    </LanguageProvider>
+      </LanguageProvider>
+    </AdminUIProvider>
   );
 }
+// Force Vercel Sync: 05/16/2026 21:49:43
+// Deploy Trigger: 05/16/2026 22:05:54
+// Vercel Global Update: 05/16/2026 22:27:10
+// Vercel Global Reset Sync: 05/16/2026 23:00:51
+// Vercel Wake Up Call: 05/16/2026 23:02:19
