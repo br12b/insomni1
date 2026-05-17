@@ -50,8 +50,8 @@ const IntroSequence = ({ onComplete }) => {
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.75)',
-        backdropFilter: 'blur(12px)',
+        backgroundColor: 'rgba(0, 0, 0, 0.85)', // Biraz daha koyulaştırdık ki video net çıksın
+        backdropFilter: 'blur(8px)',
         zIndex: 9999,
         display: 'flex',
         flexDirection: 'column',
@@ -62,18 +62,14 @@ const IntroSequence = ({ onComplete }) => {
     >
       <div style={{
         width: '100%',
-        maxWidth: '1200px', // Biraz daha büyüttük ki fade daha doğal dursun
-        aspectRatio: '16/9',
+        maxWidth: '1200px',
+        aspectRatio: '21/9', // SİBER MAKAS: 16:9 yerine 21:9 Ultra Geniş yaptık. Böylece alt ve üst otomatik kırpılacak!
         overflow: 'hidden',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // KUTU GÖRÜNÜMÜNÜ SIFIRLADIK
         background: 'transparent',
-        // KENARLARI SİLİKLEŞTİREREK UYGULAMAYA YEDİRİYORUZ
-        maskImage: 'radial-gradient(circle at center, black 40%, transparent 80%)',
-        WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 80%)'
       }}>
         <video 
           autoPlay 
@@ -83,10 +79,9 @@ const IntroSequence = ({ onComplete }) => {
           style={{
             width: '100%',
             height: '100%',
-            objectFit: 'cover',
-            transform: 'scale(1.15)',
-            pointerEvents: 'none',
-            mixBlendMode: 'screen' // Eğer videonun arkası siyahsa direkt transparan yapar, uygulamaya mükemmel gömülür. Siyah değilse bile mask-image korur.
+            objectFit: 'cover', // Videoyu 21:9 içine yay, taşan kısımları (alt/üst) kes
+            transform: 'scale(1.02)', // Hafif bir yakınlaştırma, gereksiz payları alır
+            pointerEvents: 'none'
           }}
         >
           <source src="/intro.mp4" type="video/mp4" />
@@ -94,13 +89,13 @@ const IntroSequence = ({ onComplete }) => {
       </div>
 
       <div style={{
-        marginTop: '40px',
+        marginTop: '30px',
         fontFamily: 'var(--mono)',
-        fontSize: '2rem',
+        fontSize: '2.5rem', // Daktilo yazısını biraz daha büyüttüm
         fontWeight: 600,
         color: '#fff',
-        letterSpacing: '0.05em',
-        height: 40,
+        letterSpacing: '0.08em',
+        height: 50,
         textShadow: '0 0 15px rgba(255,255,255,0.8), 0 0 5px rgba(255,255,255,0.4)',
         zIndex: 10
       }}>
