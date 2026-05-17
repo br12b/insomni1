@@ -26,15 +26,15 @@ export default function Docs() {
       {/* Immersive Cyber Header */}
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', position: 'relative' }}>
         <span className="badge badge-accent" style={{ marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-          {lang === 'tr' ? 'Siber Komuta Dokümantasyonu' : 'Cyber Command Documentation'}
+          {lang === 'tr' ? 'Finansal Komuta Dokümantasyonu' : 'Financial Command Documentation'}
         </span>
         <h1 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-0.04em', background: 'linear-gradient(135deg, #fff 30%, var(--text2) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: 8 }}>
           {lang === 'tr' ? 'INSOMNI VİZYONU & REHBERİ' : 'INSOMNI VISION & HANDBOOK'}
         </h1>
         <p style={{ color: 'var(--text2)', fontSize: '15px', maxWidth: 600, margin: '0 auto' }}>
           {lang === 'tr' 
-            ? 'Finansal geleceğini otonom yapay zeka ve siber optimizasyonla yeniden tasarlayan sistemin mimarisi.' 
-            : 'The core architecture of the system reshaping your financial future with autonomous AI and cyber optimization.'}
+            ? 'Finansal geleceğini otonom yapay zeka ve akıllı optimizasyonla yeniden tasarlayan sistemin mimarisi.' 
+            : 'The core architecture of the system reshaping your financial future with autonomous AI and smart optimization.'}
         </p>
       </motion.div>
 
@@ -52,7 +52,7 @@ export default function Docs() {
           className={`btn btn-sm ${activeTab === 'features' ? 'btn-accent' : 'btn-ghost'}`}
           style={{ gap: 8, padding: '10px 20px', borderRadius: 100 }}
         >
-          <Zap size={14} /> {lang === 'tr' ? 'Siber Yetenekler' : 'Cyber Features'}
+          <Zap size={14} /> {lang === 'tr' ? 'Yetenekler' : 'Features'}
         </button>
         <button 
           onClick={() => setActiveTab('tech')} 
@@ -89,8 +89,8 @@ export default function Docs() {
 
               <p style={{ color: 'var(--text1)', fontSize: '15px', lineHeight: '1.7', margin: 0 }}>
                 {lang === 'tr'
-                  ? 'Insomni, sıradan bir bütçe takip arayüzü değildir. O, atıl duran her bir kuruşun enflasyon canavarı karşısında erimesini engelleyen, finansal özgürlüğe siber bir hassasiyetle rehberlik eden otonom bir komuta merkezidir. Vizyonumuz, genç ve vizyoner kurucuların, üreticilerin ve geliştiricilerin paranın zaman içindeki değerini kontrol altına almalarını sağlamaktır.'
-                  : 'Insomni is not a generic budget tracker. It is an autonomous financial command center engineered with cyber precision to prevent your hard-earned assets from dissolving under the forces of inflation. Our vision is to empower young builders, founders, and developers to master their cash flow and seize opportunities without friction.'}
+                  ? 'Insomni, adını uykusuzluktan (insomnia) ve R.E.M. ise uykunun en derin, beynin en aktif olduğu rüya evresinden (REM sleep) alır. Bizim vizyonumuzda paranın uykusu yoktur. Sen uyurken bile otonom yapay zeka R.E.M., atıl duran her bir kuruşun enflasyon karşısında erimesini engellemek için daima uyanık kalır. Paranın uyumadığı, sürekli çalıştığı ve akıllıca optimize edildiği otonom bir finansal komuta merkezidir.'
+                  : 'Insomni draws its name from sleeplessness (insomnia), and R.E.M. represents the deepest, most active dream state of sleep (REM sleep). In our vision, money never sleeps. Even while you rest, our autonomous AI R.E.M. stays awake, guarding your assets and optimizing every single cent against inflation. It is a sleepless command center where capital is perpetually active and intelligently refined.'}
               </p>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 12 }}>
@@ -145,7 +145,7 @@ export default function Docs() {
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text2)', margin: 0, lineHeight: 1.5 }}>
                   {lang === 'tr'
-                    ? 'Maaş ve harcama verilerini canlı okuyan, otonom Google Gemini motoruyla sana dostça ve bilge finansal tavsiyeler üreten siber yoldaş.'
+                    ? 'Maaş ve harcama verilerini canlı okuyan, otonom Google Gemini motoruyla sana dostça ve bilge finansal tavsiyeler üreten yapay zeka yoldaşı.'
                     : 'A context-aware financial companion powered by Google Gemini that analyzes your active budget and guides you with wise advice.'}
                 </p>
               </motion.div>
@@ -189,7 +189,7 @@ export default function Docs() {
                   <ShieldCheck size={18} color="var(--green)" />
                 </div>
                 <h3 style={{ fontSize: '16px', fontWeight: 800, margin: 0 }}>
-                  {lang === 'tr' ? 'Siber Altyapı ve Güvenlik' : 'Cyber Architecture & Security'}
+                  {lang === 'tr' ? 'Sistem Altyapısı ve Güvenlik' : 'System Architecture & Security'}
                 </h3>
               </div>
 
