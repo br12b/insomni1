@@ -430,7 +430,7 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
           </motion.div>
         </div>
       </div>
-      <motion.div variants={fadeUp} style={{ width: '100%', marginTop: 0 }}><div className="glass" style={{ padding: 24 }}><MonthlyCalendar expenses={combinedExpenses} dailyBalances={dailyBalances} salaryDay={salaryDay} onExpenseDateChange={handleExpenseDateChange} /></div></motion.div>
+      <motion.div variants={fadeUp} style={{ width: '100%', marginTop: 0 }}><div className="glass" style={{ padding: 24 }}><MonthlyCalendar expenses={combinedExpenses} dailyBalances={dailyBalances} salaryDay={salaryDay} income={income} onExpenseDateChange={handleExpenseDateChange} /></div></motion.div>
     </motion.div>
   );
 }

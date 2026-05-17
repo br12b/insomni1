@@ -35,7 +35,7 @@ function ExpBadge({ exp, onDragStart }) {
   );
 }
 
-export default function MonthlyCalendar({ dailyBalances = [], expenses = [], salaryDay = 1, currentDay = 31, onExpenseDateChange }) {
+export default function MonthlyCalendar({ dailyBalances = [], expenses = [], salaryDay = 1, income = 0, currentDay = 31, onExpenseDateChange }) {
   const [dropTarget, setDropTarget] = useState(null);
   const [dropSuccess, setDropSuccess] = useState(null);
 
@@ -81,6 +81,26 @@ export default function MonthlyCalendar({ dailyBalances = [], expenses = [], sal
               </div>
             )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'flex-start' }}>
+              {isSalary && income > 0 && (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    padding: '2px 7px',
+                    borderRadius: 8,
+                    background: 'rgba(16,185,129,0.15)',
+                    color: '#10b981',
+                    fontSize: 10,
+                    fontWeight: 800,
+                    marginTop: 3,
+                    border: '1px solid rgba(16,185,129,0.25)',
+                    whiteSpace: 'nowrap',
+                    maxWidth: '100%',
+                    boxShadow: '0 0 10px rgba(16,185,129,0.1)'
+                  }}
+                >
+                  +{Math.round(income).toLocaleString('tr-TR')} TL
+                </div>
+              )}
               {dayExps.map(exp => <ExpBadge key={exp.id || exp.name} exp={exp} onDragStart={() => {}} />)}
             </div>
           </motion.div>

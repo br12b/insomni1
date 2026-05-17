@@ -119,7 +119,9 @@ export default function RemSync({ onSalaryUpdate }) {
           const updatedSalary = {
             ...existingSalary,
             income: parsedBalance,
-            salary: parsedBalance
+            salary: parsedBalance,
+            day: 1,
+            date: 1
           };
           
           storage.saveProfile(currentProfileName, 'salary', updatedSalary);
@@ -152,7 +154,7 @@ export default function RemSync({ onSalaryUpdate }) {
       { id: 1, type: 'TRANSACTION', clean: "Starbucks Coffee", amount: "-185,00 TL", raw: "VTM-3910", category: "YEME-İÇME", source: "BANKA GATEWAY", icon: 'Coffee', color: "#00704A", day: 15 },
       { id: 2, type: 'TRANSACTION', clean: "Netflix Digital", amount: "-149,90 TL", raw: "NETFLIX", category: "EĞLENCE", source: "BANKA GATEWAY", icon: 'Play', color: "#e11d48", day: 14 }
     ];
-    setSyncedData(prev => [{ id: 'bal', type: 'BALANCE', clean: "Garanti BBVA Hesabı", amount: "42.850,20 ₺", raw: "TR92...", category: "ANA BAKİYE", source: "BANKA GATEWAY", icon: 'Wallet', color: "#10b981" }, ...mock, ...prev]);
+    setSyncedData(prev => [{ id: 'bal', type: 'BALANCE', clean: "Garanti BBVA Hesabı", amount: "42.850,20 ₺", raw: "TR92...", category: "ANA BAKİYE", source: "BANKA GATEWAY", icon: 'Wallet', color: "#10b981", day: 1 }, ...mock, ...prev]);
     setIsSyncing(false); addLog("Senkronizasyon tamamlandi.", "success");
   };
 
