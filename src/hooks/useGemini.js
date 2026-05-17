@@ -4,10 +4,9 @@ import { useState, useCallback, useRef } from "react";
 // Multi-key support parsing from single comma-separated variable VITE_GEMINI_API_KEYS
 const API_KEYS_STR = import.meta.env.VITE_GEMINI_API_KEYS || import.meta.env.VITE_GEMINI_API_KEY || "";
 const API_KEYS = API_KEYS_STR ? API_KEYS_STR.split(",").map(k => k.trim()).filter(Boolean) : [];
-const MODEL_NAME = "gemini-2.5-flash";
 
 // API Key rotation active index tracked at module level
-let activeKeyIndex = Math.floor(Math.random() * Math.max(1, API_KEYS.length));
+let activeKeyIndex = 0;
 
 const TOOL_DECLARATIONS = [
   { 
@@ -28,7 +27,7 @@ KRİTİK EMİR:
 2. Aşağıdaki [FİNANSAL VERİ] bloğundaki rakamları bizzat kullanarak gerçek finansal analizler yap.
 3. Kullanıcının aylık net tasarrufu veya atıl nakdi varsa, bu paranın enflasyona karşı değer kaybetmemesi için çok samimi bir dille günlük getiri sağlayan PPF (Para Piyasası Fonu) gibi enstrümanları öner. "Bu para vadesizde bekledikçe her gün çay/kahve parasını enflasyona kaptırıyoruz" gibi hayatın içinden benzetmeler yap.
 4. Çözüm odaklı, samimi, kullanıcıyı motive eden ve finansal bilinci yüksek bir tonda konuş. Bilgiçlik taslamadan, onun parasını korumasına yardımcı olan bir arkadaş gibi yaklaş.
-5. PARAGRAFLAR VE CEVAPLAR KISA VE NET OLMALI: Kesinlikle çok uzun paragraflar yazma. Maksimum 2-3 kısa paragrafta veya madde işaretleriyle vurucu, net, okunması kolay şekilde cevap ver. Uzun metinlerden kaçın.
+5. PARAGRAFLAR VE CEVAPLAR KISA VE NET OLMALI: Kesinlikle çok uzun paragraflar yazma. Maksimum 2-3 kısa paragrafik cevaplar veya madde işaretleriyle vurucu, net, okunması kolay şekilde cevap ver. Uzun metinlerden kaçın.
 6. INSOMNI LOGO FELSEFESİ VE KELİME DAĞARCIĞI: Insomni'nin görsel dilini ve felsefesini konuşmalarına yansıt. Bizim uykusuz felsefemiz şudur: Havaya doğru kaçan bir R.E.M balonu (atıl nakit, kaçıp giden finansal fırsatlar) ve o fırsatı kaçıran veya yakalamaya çalışan insan. Zaman zaman kullanıcıya "Bak usta, elimizdeki parayı doğru değerlendirmezsek o Insomni balonunu havaya kaçırırız, fırsatlar uçup gitmeden hemen o balonu yakalayalım!" gibi samimi benzetmeler yap.`;
 
 export function useGemini() {
@@ -73,18 +72,7 @@ export function useGemini() {
     // 1. DÜŞÜNME BALONLARINI SORUYA GÖRE KATEGORİZE ETME
     const promptLower = userPrompt.toLowerCase();
     let analysisStepLabel = "Finansal Durum Analiz Ediliyor...";
-    
-    if (promptLower.someOfAny = ["nakit", "para", "ppf", "faiz", "yatırım", "fon", "tasarruf", "atıl", "kazanç", "gelir", "cash", "invest"]) {
-      analysisStepLabel = "Atıl Nakit & Yatırım Fırsatları Taranıyor...";
-    } else if (promptLower.someOfAny = ["gider", "harcama", "fatura", "abonelik", "kıs", "azalt", "masraf", "ödem", "kart", "expense", "bill", "subscription"]) {
-      analysisStepLabel = "Gider Yapısı ve Abonelikler İnceleniyor...";
-    } else if (promptLower.someOfAny = ["hedef", "plan", "birikim", "ev", "araba", "tarih", "vade", "süre", "kaç ay", "goal", "plan"]) {
-      analysisStepLabel = "Finansal Hedef Zaman Çizelgesi Modelleniyor...";
-    } else if (promptLower.someOfAny = ["selam", "merhaba", "naber", "nasılsın", "kimsin", "hello", "hi"]) {
-      analysisStepLabel = "Kişisel Finans Asistanı Hazırlanıyor...";
-    }
 
-    // Helper helper to check array elements in string
     const checkKeywords = (str, keywords) => {
       return keywords.some(kw => str.includes(kw));
     };
@@ -116,6 +104,9 @@ export function useGemini() {
     let finalThinkingSteps = [{ status: 'done', label: analysisStepLabel }];
     let keysTried = 0;
     const totalKeys = Math.max(1, API_KEYS.length);
+    
+    // Start with 3.1 as the user requested
+    let currentModel = "gemini-3.1-flash-lite";
 
     while (keysTried < totalKeys && !success) {
       if (API_KEYS.length === 0) {
@@ -130,12 +121,12 @@ export function useGemini() {
       try {
         const genAI = new GoogleGenerativeAI(currentKey);
         const model = genAI.getGenerativeModel({ 
-          model: MODEL_NAME, 
+          model: currentModel, 
           systemInstruction: SYSTEM_PROMPT,
           tools: [{ functionDeclarations: TOOL_DECLARATIONS }] 
         });
 
-        // 2. TAM GERÇEK ZAMANLI SOHBET HAFIZASI (Convesational Memory)
+        // TAM GERÇEK ZAMANLI SOHBET HAFIZASI (Conversational Memory)
         const formattedHistory = messages.map(m => ({
           role: m.role === 'model' ? 'model' : 'user',
           parts: [{ text: m.content }]
@@ -175,10 +166,14 @@ export function useGemini() {
         responseText = response.text();
         success = true;
       } catch (err) {
-        console.warn(`API Key Index ${activeKeyIndex} failed:`, err);
+        console.warn(`API Key Index ${activeKeyIndex} with model ${currentModel} failed:`, err);
+        
         // Switch index to the next key
         activeKeyIndex = (activeKeyIndex + 1) % API_KEYS.length;
         keysTried++;
+        
+        // If there is any failure/limit, switch to 2.5 for future keys as requested
+        currentModel = "gemini-2.5-flash";
 
         if (keysTried >= totalKeys) {
           setMessages(prev => [...prev, { role: "model", content: "Tüm API anahtarların denendi fakat limit aşımı veya başka bir hata nedeniyle yanıt alınamadı usta. Lütfen daha sonra tekrar dener misin?" }]);
@@ -187,10 +182,10 @@ export function useGemini() {
           return;
         }
 
-        // Show smooth key switching feedback
+        // Show visual feedback indicating transition to 2.5
         setThinkingSteps(prev => [
           ...prev.map(s => s.status === 'running' ? { ...s, status: 'done' } : s),
-          { status: 'running', label: "Limit Aşımı! Diğer Güvenli API Sunucusuna Bağlanılıyor..." }
+          { status: 'running', label: "Switched to 2.5 (Diğer Sunucuya Geçiliyor...)" }
         ]);
         await new Promise(r => setTimeout(r, 1200));
       }
