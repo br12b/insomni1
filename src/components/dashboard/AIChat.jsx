@@ -100,7 +100,7 @@ function MessageBubble({ msg }) {
 
 export default function AIChat({ financialData }) {
   const { lang } = useLanguage();
-  const { messages, sendMessage, isTyping, thinkingSteps, isAvailable } = useGemini();
+  const { messages, sendMessage, isTyping, thinkingSteps, isAvailable, activeModel } = useGemini();
   const [input, setInput] = useState('');
   const messagesRef = useRef(null);
   const QUICK = lang === 'tr' ? QUICK_QUESTIONS_TR : QUICK_QUESTIONS_EN;
@@ -151,7 +151,23 @@ export default function AIChat({ financialData }) {
           }} />
         </motion.div>
         <div>
-          <div style={{ fontWeight: 700, fontSize: 14 }}>R.E.M</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontWeight: 700, fontSize: 14 }}>R.E.M</span>
+            {activeModel && (
+              <span style={{ 
+                fontSize: 9, 
+                fontWeight: 800, 
+                color: 'var(--accent)', 
+                background: 'var(--accent-dim)', 
+                padding: '2px 6px', 
+                borderRadius: 4, 
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em'
+              }}>
+                Gemini {activeModel}
+              </span>
+            )}
+          </div>
           <div style={{ fontSize: 10, color: 'var(--green)', display: 'flex', alignItems: 'center', gap: 4 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)', animation: 'blink 2s ease infinite' }} />
             {isAvailable ? (lang === 'tr' ? 'Araçlarla Aktif' : 'Active with Tools') : (lang === 'tr' ? 'Çevrimdışı' : 'Offline')}

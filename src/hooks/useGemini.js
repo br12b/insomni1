@@ -34,6 +34,7 @@ export function useGemini() {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [thinkingSteps, setThinkingSteps] = useState([]);
+  const [activeModel, setActiveModel] = useState("3.1");
   const financialDataRef = useRef(null);
 
   const executeTool = async (call, fd) => {
@@ -119,6 +120,12 @@ export function useGemini() {
       const currentKey = API_KEYS[activeKeyIndex];
 
       try {
+        if (currentModel === "gemini-3.1-flash-lite") {
+          setActiveModel("3.1");
+        } else {
+          setActiveModel("2.5");
+        }
+
         const genAI = new GoogleGenerativeAI(currentKey);
         const model = genAI.getGenerativeModel({ 
           model: currentModel, 
@@ -171,6 +178,7 @@ export function useGemini() {
         // 1. DÜŞÜŞ KADEMESİ: Eğer 3.1 ile hata alırsak, AYNI anahtarda önce 2.5'e düşüp tekrar deneriz!
         if (currentModel === "gemini-3.1-flash-lite") {
           currentModel = "gemini-2.5-flash";
+          setActiveModel("2.5");
           
           setThinkingSteps(prev => [
             ...prev.map(s => s.status === 'running' ? { ...s, status: 'done' } : s),
@@ -205,5 +213,5 @@ export function useGemini() {
     setThinkingSteps([]);
   }, [messages]);
 
-  return { messages, sendMessage, isTyping, thinkingSteps, isAvailable: API_KEYS.length > 0 };
+  return { messages, sendMessage, isTyping, thinkingSteps, activeModel, isAvailable: API_KEYS.length > 0 };
 }
