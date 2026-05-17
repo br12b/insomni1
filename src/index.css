@@ -151,5 +151,3 @@ body::before {
   opacity: 0.5;
 }
 
-.btn-spin-hover:hover .spin-icon { transform: rotate(180deg); }
-.spin-icon { transition: transform 0.4s ease-in-out; display: flex; align-items: center; justify-content: center; }
