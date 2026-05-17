@@ -28,7 +28,7 @@ export default function Docs() {
         <span className="badge badge-accent" style={{ marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
           {lang === 'tr' ? 'Finansal Komuta Dokümantasyonu' : 'Financial Command Documentation'}
         </span>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-0.04em', background: 'linear-gradient(135deg, #fff 30%, var(--text2) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: 8 }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-0.04em', background: 'linear-gradient(135deg, #818cf8 30%, #c084fc 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: 8 }}>
           {lang === 'tr' ? 'INSOMNI VİZYONU & REHBERİ' : 'INSOMNI VISION & HANDBOOK'}
         </h1>
         <p style={{ color: 'var(--text2)', fontSize: '15px', maxWidth: 600, margin: '0 auto' }}>
