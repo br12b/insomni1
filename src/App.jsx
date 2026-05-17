@@ -20,7 +20,7 @@ import { LanguageProvider, useLanguage } from './context/LanguageContext';
 
 const IntroSequence = ({ onComplete }) => {
   const [text, setText] = useState('');
-  const fullText = "Don't miss the opportunity...";
+  const fullText = "Don't miss the opportunities in your life...";
   const [showCursor, setShowCursor] = useState(true);
 
   useEffect(() => {
