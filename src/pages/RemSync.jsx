@@ -22,7 +22,7 @@ const IconMap = ({ name, color }) => {
   return <ShoppingBag {...props} />;
 };
 
-export default function RemSync() {
+export default function RemSync({ onSalaryUpdate }) {
   const [activePath, setActivePath] = useState(1); 
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncedData, setSyncedData] = useState([]);
@@ -104,6 +104,34 @@ export default function RemSync() {
     try {
       addLog(`Takvim senkronizasyonu baslatildi...`, 'system');
       localStorage.setItem('insomni_synced_txs', JSON.stringify(syncedData));
+      
+      // Dynamic active asset to salary mapping
+      const balanceItem = syncedData.find(d => d.type === 'BALANCE');
+      if (balanceItem) {
+        // Parse numerical value (e.g. "42.850,20 ₺" -> 42850.2)
+        const cleanVal = balanceItem.amount.replace(/[^\d,]/g, '').replace(',', '.');
+        const parsedBalance = parseFloat(cleanVal) || 0;
+        
+        if (parsedBalance > 0) {
+          const currentProfileName = storage.getCurrentProfile() || 'Default';
+          const existingSalary = storage.loadProfile(currentProfileName, 'salary') || { currency: '₺', day: 1 };
+          
+          const updatedSalary = {
+            ...existingSalary,
+            income: parsedBalance,
+            salary: parsedBalance
+          };
+          
+          storage.saveProfile(currentProfileName, 'salary', updatedSalary);
+          
+          // Instantly notify main React context
+          if (onSalaryUpdate) {
+            onSalaryUpdate(updatedSalary);
+          }
+          addLog(`MÜKEMMEL: Aktif varlık (${parsedBalance.toLocaleString('tr-TR')} ₺) ana maaş/gelir havuzuna eklendi!`, 'success');
+        }
+      }
+      
       addLog(`BAŞARI: Veriler mühürlendi.`, 'success');
     } catch(e) { addLog("HATA: Kayit sirasinda ariza.", "error"); }
   };

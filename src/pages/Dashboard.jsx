@@ -58,14 +58,16 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
 
   const combinedExpenses = [
     ...expensesData,
-    ...syncedTxs.map(tx => ({
-      id: tx.id,
-      name: tx.clean,
-      amount: parseRemAmount(tx.amount),
-      date: tx.day || 15,
-      category: tx.category,
-      isSynced: true
-    }))
+    ...syncedTxs
+      .filter(tx => tx.type === 'TRANSACTION') // Filter out the active asset balance item so it is never summed as an expense!
+      .map(tx => ({
+        id: tx.id,
+        name: tx.clean,
+        amount: parseRemAmount(tx.amount),
+        date: tx.day || 15,
+        category: tx.category,
+        isSynced: true
+      }))
   ];
 
   const handleAddExpense = (e) => {

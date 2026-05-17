@@ -343,7 +343,7 @@ function AppContent() {
           {view === 'dashboard' && <Dashboard salaryData={salaryData || {income:0, currency:'₺', day:1}} expensesData={expensesData} profileName={profile} />}
           {view === 'opportunities' && <Opportunities expenses={expensesData} salaryData={salaryData || {income:0, currency:'₺', day:1}} />}
           {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
-          {view === 'remsync' && <RemSync />}
+          {view === 'remsync' && <RemSync onSalaryUpdate={setSalaryData} />}
           {view === 'calendar' && <Calendar financialData={{ salaryData, expensesData }} />}
           {view === 'docs' && <Docs />}
         </motion.div>
