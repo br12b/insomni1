@@ -3,35 +3,15 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Activity } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
-export default function ExpenseChart({ expenses = [], currency = '₺', salary = 0 }) {
+export default function ExpenseChart({ dailyBalances = [], currency = '₺' }) {
   const { lang } = useLanguage();
 
-  // Generate 30-day timeline
-  // Assuming salary comes in on day 1
-  const timelineData = [];
-  let currentBalance = salary;
-  
-  // We'll distribute expenses across the month randomly for the visual timelapse effect
-  // if they don't have dates. For now, we simulate their occurrence.
-  const expenseValues = expenses.map(e => e.amount);
-  
-  // Simple distribution: subtract a bit every day to simulate cash flow
-  for (let i = 1; i <= 30; i++) {
-    // If it's a specific day, we drop the balance
-    // For demo purposes, we spread expenses evenly across the first 25 days
-    let dailyDrop = 0;
-    if (i <= 25 && expenses.length > 0) {
-      const index = i % expenses.length;
-      if (i % 3 === 0) dailyDrop = expenses[index].amount;
-    }
-    
-    currentBalance = Math.max(0, currentBalance - dailyDrop);
-    
-    timelineData.push({
-      day: `${i}`,
-      balance: currentBalance
-    });
-  }
+  // Convert the authentic kümülatif dailyBalances directly to Recharts timeline format
+  // Wipes all simulated/sallamasyon loops completely!
+  const timelineData = dailyBalances.map(d => ({
+    day: `${d.day}`,
+    balance: d.balance
+  }));
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {

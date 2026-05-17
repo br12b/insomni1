@@ -196,7 +196,7 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'start' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 32, minWidth: 0 }}>
-          <motion.div variants={fadeUp}><ExpenseChart expenses={combinedExpenses} currency={currency} salary={income} /></motion.div>
+          <motion.div variants={fadeUp}><ExpenseChart dailyBalances={dailyBalances} currency={currency} /></motion.div>
           <motion.div variants={fadeUp}><ExpenseList expenses={combinedExpenses} currency={currency} /></motion.div>
           <motion.div variants={fadeUp}><SubscriptionTracker expenses={combinedExpenses} currency={currency} /></motion.div>
 
