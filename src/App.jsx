@@ -56,7 +56,7 @@ const IntroSequence = ({ onComplete }) => {
         backgroundColor: isClosing ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.85)',
         backdropFilter: isClosing ? 'blur(0px)' : 'blur(8px)',
       }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+      transition={{ duration: 1.5, ease: 'easeInOut' }} // Arka plan erimesi 1.5 saniyeye çekildi
       onAnimationComplete={() => {
         if (isClosing) onComplete();
       }}
@@ -84,7 +84,7 @@ const IntroSequence = ({ onComplete }) => {
           y: 0,
           opacity: 1,
         }}
-        transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+        transition={{ duration: 1.5, ease: [0.25, 1, 0.5, 1] }} // Uçuş süresi 1.5 saniye (majestik yavaşlık)
         style={{
           width: '100%',
           maxWidth: '1200px',
@@ -113,24 +113,22 @@ const IntroSequence = ({ onComplete }) => {
         >
           <source src="/intro.mp4" type="video/mp4" />
         </video>
-      </motion.div>
 
-      <motion.div 
-        animate={isClosing ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        style={{
-          marginTop: '30px',
+        {/* YAZI ARTIK VİDEONUN İÇİNDE (Absolute ve videoyla beraber sol üste uçacak) */}
+        <div style={{
+          position: 'absolute',
+          bottom: '8%',
           fontFamily: 'var(--mono)',
-          fontSize: '2.5rem',
-          fontWeight: 600,
-          color: '#000',
+          fontSize: '2rem', // Video çerçevesine tam oturması için hafifçe optimize edildi
+          fontWeight: 700,
+          color: '#000', // Saf simsiyah yazı
           letterSpacing: '0.08em',
-          height: 50,
+          height: 40,
           textShadow: 'none',
           zIndex: 10
-        }}
-      >
-        {text}<span style={{ opacity: showCursor ? 1 : 0 }}>_</span>
+        }}>
+          {text}<span style={{ opacity: showCursor ? 1 : 0 }}>_</span>
+        </div>
       </motion.div>
     </motion.div>
   );
