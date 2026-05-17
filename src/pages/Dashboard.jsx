@@ -216,6 +216,27 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                       const dailyYield = idleAmount * dailyYieldRate;
                       const monthlyYield = idleAmount * monthlyYieldRate;
 
+                      // Extract large payments (rent, bills, subscriptions above 1000, or top 2 highest expenses)
+                      const largePayments = combinedExpenses.filter(e => parseFloat(e.amount || 0) >= 1000);
+                      const targetedExpenses = largePayments.length > 0 
+                        ? largePayments 
+                        : [...combinedExpenses].sort((a,b) => parseFloat(b.amount || 0) - parseFloat(a.amount || 0)).slice(0, 2);
+
+                      const totalLargeExpense = targetedExpenses.reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
+                      
+                      // Calculate Timing Arbitrage Potential using a distinct variable name
+                      const plannerDailyYieldRate = 0.04 / 30; // 4% monthly yield / 30 days
+                      
+                      const arbitrageDetails = targetedExpenses.map(e => {
+                        const day = parseInt(e.date) || 15;
+                        const daysActive = Math.max(1, day - 1); // Money stays in fund until day of payment
+                        const amount = parseFloat(e.amount || 0);
+                        const potentialEarning = amount * plannerDailyYieldRate * daysActive;
+                        return { ...e, daysActive, potentialEarning };
+                      });
+
+                      const totalArbitrageGain = arbitrageDetails.reduce((sum, e) => sum + e.potentialEarning, 0);
+
                       return (
                         <>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
@@ -263,6 +284,76 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                               : 'By optimizing your idle cash, you can prevent inflation loss and secure a monthly yield of '}
                             <strong style={{ color: 'var(--accent)' }}>{(monthlyYield + monthlyLoss).toFixed(2)} {currency}</strong>
                             {lang === 'tr' ? ' kazanç sağlayabilirsiniz.' : ' net gain.'}
+                          </div>
+
+                          {/* Dynamic Arbitrage Planning Section */}
+                          <div style={{ marginTop: 8, paddingTop: 16, borderTop: '1px solid var(--glass-border)', textAlign: 'left' }}>
+                            <h4 style={{ fontSize: '14px', fontWeight: 800, margin: '0 0 12px 0', color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <Calendar size={16} />
+                              {lang === 'tr' ? 'Gelecek Ay Otonom Yönetim & Arbitraj Planı' : 'Next Month Autonomous Yield Plan'}
+                            </h4>
+                            
+                            {targetedExpenses.length === 0 ? (
+                              <p style={{ fontSize: '12px', color: 'var(--text2)', margin: 0 }}>
+                                {lang === 'tr' 
+                                  ? 'Planlama yapılabilmesi için sisteme en az bir harcama girilmelidir.' 
+                                  : 'Enter at least one expense to activate autonomous monthly planning.'}
+                              </p>
+                            ) : (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                                <p style={{ fontSize: '12px', color: 'var(--text2)', margin: 0, lineHeight: 1.5 }}>
+                                  {lang === 'tr'
+                                    ? `Sisteminizdeki en yüksek ödemeleri analiz ettik. Maaş gününüzden ödeme gününe kadar geçecek sürede bu tutarları aktif nemalandırarak elde edeceğiniz zamanlama avantajı planı:`
+                                    : `We analyzed your highest monthly commitments. By keeping these sums active until the exact due date, here is your timing arbitrage roadmap:`}
+                                </p>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                  {arbitrageDetails.map((exp, idx) => (
+                                    <div key={idx} style={{ padding: '10px 12px', background: 'rgba(255,255,255,0.01)', borderRadius: 8, border: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+                                      <div style={{ fontSize: '12px' }}>
+                                        <strong style={{ color: 'var(--text1)' }}>{exp.name}</strong>
+                                        <span style={{ color: 'var(--text2)', marginLeft: 8 }}>
+                                          {lang === 'tr' 
+                                            ? `(Ayın ${exp.date}. günü, ${exp.amount.toFixed(2)} ${currency})` 
+                                            : `(Day ${exp.date} of month, ${exp.amount.toFixed(2)} ${currency})`}
+                                        </span>
+                                      </div>
+                                      <div style={{ fontSize: '12px', color: 'var(--green)', fontWeight: 700 }}>
+                                        {lang === 'tr' 
+                                          ? `+${exp.potentialEarning.toFixed(2)} ${currency} (${exp.daysActive} Gün Kazanım)` 
+                                          : `+${exp.potentialEarning.toFixed(2)} ${currency} (${exp.daysActive} Days Active)`}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+
+                                <div style={{ padding: 12, background: 'rgba(129,140,248,0.03)', borderRadius: 8, border: '1px solid rgba(129,140,248,0.15)', fontSize: '12px', lineHeight: 1.5, color: 'var(--text1)' }}>
+                                  <div style={{ fontWeight: 800, marginBottom: 6, color: 'var(--accent)' }}>
+                                    {lang === 'tr' ? '💡 GELECEK AY AKSİYON REHBERİ' : '💡 NEXT MONTH ACTION GUIDE'}
+                                  </div>
+                                  <ul style={{ margin: 0, paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                    <li>
+                                      {lang === 'tr'
+                                        ? `Büyük harcama kalemlerinizin toplamı olan `
+                                        : `Your major recurring bills totaling `}
+                                      <strong style={{ color: 'var(--text1)' }}>{totalLargeExpense.toFixed(2)} {currency}</strong>
+                                      {lang === 'tr'
+                                        ? ` tutarını maaş gününde vadesiz hesapta tutmak yerine, yukarıda listelenen ödeme günlerine kadar aktif fonda blokeli tutun.`
+                                        : ` should not sit idle. Block them in yield accounts until the listed due dates.`}
+                                    </li>
+                                    <li>
+                                      {lang === 'tr'
+                                        ? `Bu zamanlama taktiğiyle sadece büyük ödemelerinizden gelecek ay ekstradan `
+                                        : `By executing this timing arbitrage next month, you secure an extra net gain of `}
+                                      <strong style={{ color: 'var(--green)' }}>{totalArbitrageGain.toFixed(2)} {currency}</strong>
+                                      {lang === 'tr'
+                                        ? ` pasif getiri elde ederek vadesiz erimesini durduracaksınız.`
+                                        : ` solely from bills that would otherwise sit zero-yield.`}
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </>
                       );
