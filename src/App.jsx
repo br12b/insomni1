@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, RefreshCw, Calendar as CalendarIcon, Brain, ChevronLeft, ChevronRight, Zap, BookOpen } from 'lucide-react';
 import { useTheme } from './hooks/useTheme';
@@ -25,6 +25,11 @@ const IntroSequence = ({ onComplete }) => {
   const fullText = "Don't miss the opportunities in your life...";
   const [showCursor, setShowCursor] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
+  const videoRef = useRef(null);
+
+  const handleClose = () => {
+    setIsClosing(true);
+  };
 
   useEffect(() => {
     let i = 0;
@@ -41,15 +46,33 @@ const IntroSequence = ({ onComplete }) => {
       setShowCursor(prev => !prev);
     }, 500);
 
+    // Safari / Chrome Incognito / Low Power Mode Autoplay & Mute Fix
+    if (videoRef.current) {
+      // Explicitly set muted & defaultMuted properties to bypass React muted attribute bug
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.warn("Autoplay blocked by browser policy, bypassing intro:", error);
+          // If browser completely blocks muted autoplay, close intro immediately so user isn't stuck
+          handleClose();
+        });
+      }
+    }
+
+    // Safety fallback: if video gets stuck or is too slow to load, auto-close after 8 seconds
+    const safetyTimeout = setTimeout(() => {
+      handleClose();
+    }, 8000);
+
     return () => {
       clearInterval(typingInterval);
       clearInterval(cursorInterval);
+      clearTimeout(safetyTimeout);
     };
   }, []);
-
-  const handleClose = () => {
-    setIsClosing(true);
-  };
 
   return (
     <motion.div 
@@ -107,6 +130,7 @@ const IntroSequence = ({ onComplete }) => {
         }}
       >
         <video 
+          ref={videoRef}
           autoPlay 
           muted 
           playsInline
