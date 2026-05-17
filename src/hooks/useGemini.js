@@ -4,8 +4,8 @@ import { useState, useCallback, useRef } from "react";
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const MODEL_NAME = "gemini-3.1-flash-lite";
 
+// Gereksiz getCashFlowSummary aracını sildik çünkü veriyi zaten anlık veriyoruz.
 const TOOL_DECLARATIONS = [
-  { name: "getCashFlowSummary", description: "Kullanicinin nakit akisini ozetler." },
   { 
     name: "simulateExpenseRemoval", 
     description: "Belirtilen harcama kaldirilirsa aylik kazancin ne olacagini hesaplar.", 
@@ -20,9 +20,10 @@ const TOOL_DECLARATIONS = [
 
 const SYSTEM_PROMPT = `Sen R.E.M, siber bir Nakit Akışı Mimarısın. 
 KRİTİK EMİR: 
-1. Aşağıdaki [FİNANSAL VERİ] bloğundaki rakamları ve isimleri (Örn: Spotify 69 TL) BİZZAT kullanarak konuş. 
-2. Araç (tool) kullanarak elde ettiğin sonuçları mutlaka analize dahil et ve kullanıcıya net bir süre/strateji ver. 
-3. Kısa, teknik, çözüm odaklı ve özgüvenli ol. Asla genel geçer tavsiye verme.`;
+1. Aşağıdaki [FİNANSAL VERİ] bloğundaki rakamları BİZZAT kullanarak konuş. 
+2. Basit sohbetlerde (merhaba vb.) asla araç (tool) kullanma, doğrudan kısa ve havalı siber yanıtlar ver. 
+3. Kullanıcının aylık net tasarrufu veya atıl nakdi varsa, bu paranın enflasyona karşı erimemesi için MUTLAKA günlük getiri sağlayan PPF (Para Piyasası Fonu) stratejisini öner ve bu boşta geçen sürenin maliyetinden bahset.
+4. Kısa, teknik, çözüm odaklı ve özgüvenli ol. Asla genel geçer tavsiye verme.`;
 
 export function useGemini() {
   const [messages, setMessages] = useState([]);
@@ -36,10 +37,7 @@ export function useGemini() {
     const totalExp = fd?.totalExpense || 0;
     const netSavings = income - totalExp;
 
-    if (name === "getCashFlowSummary") {
-      return { income, totalExpense: totalExp, netSavings };
-    } 
-    else if (name === "simulateExpenseRemoval") {
+    if (name === "simulateExpenseRemoval") {
       const expName = args.expense_name || "";
       const exps = fd?.expenses || [];
       const found = exps.find(e => e.name.toLowerCase().includes(expName.toLowerCase()));
@@ -98,7 +96,7 @@ export function useGemini() {
         for (const call of calls) {
           const stepLabel = call.name === "calculateGoalTimeline" ? "Hedef Süresi Hesaplanıyor..." :
                             call.name === "simulateExpenseRemoval" ? "Harcama Senaryosu Çıkarılıyor..." :
-                            "Nakit Akışı Analiz Ediliyor...";
+                            "Siber Analiz Ediliyor...";
           
           setThinkingSteps(prev => [...prev, { status: 'running', label: stepLabel }]);
           
