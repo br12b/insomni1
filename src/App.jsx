@@ -20,6 +20,7 @@ import Docs from './pages/Docs';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 
 const IntroSequence = ({ onComplete }) => {
+  const { lang } = useLanguage();
   const [text, setText] = useState('');
   const fullText = "Don't miss the opportunities in your life...";
   const [showCursor, setShowCursor] = useState(true);
@@ -136,6 +137,40 @@ const IntroSequence = ({ onComplete }) => {
           {text}<span style={{ opacity: showCursor ? 1 : 0 }}>_</span>
         </div>
       </motion.div>
+
+      {/* ULTRA-RESPONSIVE GLASSMORPHISM SKIP INTRO BUTTON */}
+      {!isClosing && (
+        <motion.button
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 0.7, y: 0 }}
+          whileHover={{ opacity: 1, scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleClose}
+          style={{
+            position: 'absolute',
+            top: 32,
+            right: 32,
+            background: 'rgba(255, 255, 255, 0.08)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            color: 'rgba(255, 255, 255, 0.95)',
+            padding: '10px 22px',
+            borderRadius: '100px',
+            fontFamily: 'inherit',
+            fontSize: '13px',
+            fontWeight: 700,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            zIndex: 10000,
+            transition: 'border-color 0.2s, background-color 0.2s'
+          }}
+        >
+          {lang === 'tr' ? 'İntroyu Geç' : 'Skip Intro'} <ChevronRight size={14} />
+        </motion.button>
+      )}
     </motion.div>
   );
 };
