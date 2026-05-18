@@ -123,7 +123,12 @@ export default function Calendar({ financialData }) {
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const blanks = Array.from({ length: startDay }, (_, i) => i);
 
+  const salaryDay = financialData?.salaryData?.day || financialData?.salaryData?.date || 1;
+  const salaryIncome = financialData?.salaryData?.income || financialData?.salaryData?.salary || 0;
+
   const getDailyData = (day) => {
+    const isSalaryDay = day === salaryDay && currentMonth === 4 && currentYear === 2026;
+
     const dailyItems = syncedData.filter(d => {
       const itemD = d.day || 15;
       const itemM = getExpenseMonth(d);
@@ -138,10 +143,28 @@ export default function Calendar({ financialData }) {
     });
 
     const txs = dailyItems.filter(d => d.type === 'TRANSACTION');
-    const balanceItem = dailyItems.find(d => d.type === 'BALANCE');
+    
+    // Add custom onboarding salary if this is the bounded salary day
+    const items = [...dailyItems];
+    if (isSalaryDay && salaryIncome > 0) {
+      items.push({
+        id: 'onboarding-salary',
+        clean: lang === 'tr' ? 'Maaş Ödemesi' : 'Salary Payment',
+        amount: `+${salaryIncome}`,
+        day: salaryDay,
+        category: lang === 'tr' ? 'Maaş' : 'Salary',
+        type: 'BALANCE',
+        source: lang === 'tr' ? 'OTONOM KÖPRÜ' : 'AUTONOMOUS BRIDGE',
+        color: '#10b981',
+        icon: 'Wallet'
+      });
+    }
+
     const expense = txs.reduce((acc, tx) => acc + parseCurrency(tx.amount), 0);
-    const income = balanceItem ? parseCurrency(balanceItem.amount) : 0;
-    return { expense, income, items: dailyItems };
+    const balanceItems = items.filter(d => d.type === 'BALANCE');
+    const income = balanceItems.reduce((acc, b) => acc + parseCurrency(b.amount), 0);
+
+    return { expense, income, items };
   };
 
   const monthlyStats = days.reduce((acc, d) => {
