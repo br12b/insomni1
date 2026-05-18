@@ -5,10 +5,10 @@ import { useGemini } from '../../hooks/useGemini';
 import { useLanguage } from '../../context/LanguageContext';
 
 const QUICK_QUESTIONS_TR = [
+  'V.R.E.M Nedir?',
   'Günün En Çok Kazananını Tara',
   'Atıl nakit fırsatım nedir?',
   'Aboneliklerimi analiz et',
-  'En büyük maliyet nerede?',
 ];
 
 const QUICK_QUESTIONS_EN = [
@@ -141,18 +141,29 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.35 }}
           style={{
-            width: '90%',
-            padding: 16,
-            borderRadius: 14,
-            border: subagentStage === 'loading' ? '1px solid var(--amber)' : subagentStage === 'done' ? '1px solid var(--glass-border)' : '1px dashed var(--glass-border)',
-            background: 'var(--glass)',
-            backdropFilter: 'blur(20px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-            boxShadow: subagentStage === 'loading' ? '0 0 15px rgba(245,158,11,0.1)' : subagentStage === 'done' ? 'var(--shadow)' : 'none',
+            width: '95%',
+            padding: 20,
+            borderRadius: 16,
+            border: subagentStage === 'loading' 
+              ? '1px solid rgba(245, 158, 11, 0.4)' 
+              : subagentStage === 'done' 
+                ? '1px solid rgba(255, 255, 255, 0.08)' 
+                : '1px dashed rgba(255, 255, 255, 0.15)',
+            background: subagentStage === 'loading'
+              ? 'rgba(245, 158, 11, 0.03)'
+              : 'rgba(255, 255, 255, 0.02)',
+            backdropFilter: 'blur(24px) saturate(170%)',
+            WebkitBackdropFilter: 'blur(24px) saturate(170%)',
+            boxShadow: subagentStage === 'loading' 
+              ? '0 0 30px rgba(245, 158, 11, 0.15), inset 0 1px 1px rgba(255,255,255,0.05)' 
+              : subagentStage === 'done'
+                ? '0 20px 40px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.05)'
+                : 'none',
             display: 'flex',
             flexDirection: 'column',
-            gap: 12,
-            transition: 'all 0.3s ease'
+            gap: 14,
+            transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+            marginTop: 8
           }}
         >
           {/* Header */}
@@ -296,7 +307,7 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
                 gap: 6
               }}
             >
-              🎯 {opt}
+              {opt}
             </motion.button>
           ))}
         </div>
