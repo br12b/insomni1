@@ -38,7 +38,7 @@ function ThinkingStep({ step, index }) {
   );
 }
 
-// Tek bir mesaj balonu ile iç içe geçmiş V.R.E.M Subagent animasyonu
+// Tek bir mesaj balonu
 function MessageBubble({ msg, onSelectOption, isLast }) {
   const isUser = msg.role === 'user';
   
@@ -53,70 +53,12 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
       options = [match[1].trim(), match[2].trim()];
     }
   }
-
-  // V.R.E.M tetikleyici kontrolü
-  const showVremSubagent = !isUser && (
-    displayContent.toLowerCase().includes('v.r.e.m') || 
-    displayContent.toLowerCase().includes('tefas') ||
-    displayContent.toLowerCase().includes('para piyasası')
-  );
-
-  const [subagentStage, setSubagentStage] = useState('loading'); // 'loading' -> 'done'
-
-  useEffect(() => {
-    if (showVremSubagent) {
-      const timer = setTimeout(() => {
-        setSubagentStage('done');
-      }, 2200);
-      return () => clearTimeout(timer);
-    }
-  }, [showVremSubagent]);
-
-  const topPPFs = [
-    { code: 'TP2', name: 'Tera Portföy Para Piyasası', yield: '%3.91' },
-    { code: 'PNU', name: 'Pusula Portföy İkinci P.P.', yield: '%3.90' },
-    { code: 'PRY', name: 'Pusula Portföy Para Piyasası', yield: '%3.89' },
-    { code: 'MPL', name: 'MT Portföy Para Piyasası', yield: '%3.81' },
-    { code: 'PPT', name: 'Atlas Portföy Para Piyasası', yield: '%3.67' }
-  ];
-
-  const handlePrintPdf = () => {
-    const style = document.createElement('style');
-    style.innerHTML = `
-      @media print {
-        body * {
-          visibility: hidden !important;
-        }
-        #vrem-print-section, #vrem-print-section * {
-          visibility: visible !important;
-        }
-        #vrem-print-section {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100% !important;
-          background: #101012 !important;
-          color: #ffffff !important;
-          padding: 40px !important;
-          border: none !important;
-          box-shadow: none !important;
-          border-radius: 0 !important;
-        }
-        .vrem-pdf-btn {
-          display: none !important;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-    window.print();
-    document.head.removeChild(style);
-  };
   
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      style={{ display: 'flex', flexDirection: 'column', alignItems: isUser ? 'flex-end' : 'flex-start', gap: 8, width: '100%' }}>
+      style={{ display: 'flex', flexDirection: 'column', alignItems: isUser ? 'flex-end' : 'flex-start', gap: 6, width: '100%' }}>
       {/* ReAct Thinking Steps (sadece model mesajlarında) */}
       {!isUser && msg.thinkingSteps && msg.thinkingSteps.length > 0 && (
         <div style={{ padding: '10px 14px', borderRadius: 12, background: 'var(--bg2)', border: '1px solid var(--glass-border)', maxWidth: '90%' }}>
@@ -129,7 +71,7 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
       {/* Mesaj */}
       <div style={{
         maxWidth: '90%',
-        padding: '12px 16px',
+        padding: '10px 14px',
         borderRadius: isUser ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
         background: isUser ? 'var(--accent)' : 'var(--bg2)',
         color: isUser ? '#fff' : 'var(--text0)',
@@ -165,117 +107,6 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
         )}
         {displayContent}
       </div>
-
-      {/* NESTED V.R.E.M SUBAGENT INTEGRATION WITH ENERGY FLOW ANIMATIONS */}
-      {showVremSubagent && (
-        <motion.div
-          id="vrem-print-section"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.35 }}
-          style={{
-            width: '90%',
-            padding: 16,
-            borderRadius: 14,
-            border: subagentStage === 'loading' ? '1px solid var(--amber)' : '1px solid var(--glass-border)',
-            background: 'var(--glass)',
-            backdropFilter: 'blur(20px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-            boxShadow: subagentStage === 'loading' ? '0 0 15px rgba(245,158,11,0.1)' : 'var(--shadow)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 12,
-            transition: 'all 0.3s ease'
-          }}
-        >
-          {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ 
-                width: 8, 
-                height: 8, 
-                borderRadius: '50%', 
-                background: subagentStage === 'loading' ? 'var(--amber)' : 'var(--green)', 
-                boxShadow: subagentStage === 'loading' ? '0 0 8px var(--amber)' : '0 0 8px var(--green)',
-                animation: subagentStage === 'loading' ? 'blink 1s infinite' : 'none'
-              }} />
-              <span style={{ fontSize: 10, fontWeight: 800, textTransform: 'uppercase', color: 'var(--text1)', letterSpacing: '0.04em' }}>
-                V.R.E.M: TEFAS Analiz Ajanı
-              </span>
-            </div>
-            <span style={{ fontSize: 8, background: 'var(--accent-dim)', color: 'var(--accent)', fontWeight: 700, padding: '2px 5px', borderRadius: 4 }}>
-              SUBAGENT ACTIVE
-            </span>
-          </div>
-
-          {/* Body Stage 1: Active Scanning Animation */}
-          {subagentStage === 'loading' ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: 'rgba(245,158,11,0.02)', padding: 12, borderRadius: 10, border: '1px solid rgba(245,158,11,0.1)', fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--text2)', lineHeight: 1.5 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ 
-                  width: 12, 
-                  height: 12, 
-                  borderRadius: '50%', 
-                  border: '1px solid rgba(245,158,11,0.2)', 
-                  borderTopColor: 'var(--amber)', 
-                  animation: 'spin 0.8s linear infinite' 
-                }} />
-                <span style={{ color: 'var(--amber)', fontWeight: 'bold' }}>[vrem-bridge] Neural link active. Contacting TEFAS...</span>
-              </div>
-              <div>[vrem-filter] Filtering umbrella type: "PARA PİYASASI ŞEMSİYE FONU"</div>
-              <div>[vrem-sort] Sorting top 5 by highest monthly yield...</div>
-            </div>
-          ) : (
-            /* Body Stage 2: Loaded Data Table with Custom Filter */
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {topPPFs.map((ppf, idx) => (
-                  <div 
-                    key={ppf.code}
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'space-between', 
-                      padding: '6px 8px', 
-                      background: 'rgba(255,255,255,0.015)', 
-                      border: '1px solid var(--glass-border)', 
-                      borderRadius: 8,
-                      fontSize: 10
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontWeight: 800, color: 'var(--accent)', fontFamily: 'var(--mono)', fontSize: 9, background: 'var(--accent-dim)', padding: '2px 4px', borderRadius: 4 }}>
-                        {ppf.code}
-                      </span>
-                      <span style={{ color: 'var(--text1)', fontWeight: 500 }}>
-                        {ppf.name}
-                      </span>
-                    </div>
-                    <span style={{ fontWeight: 700, color: 'var(--green)', fontFamily: 'var(--mono)' }}>
-                      {ppf.yield}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Bottom Print and Filter Details */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px dashed var(--glass-border)', paddingTop: 8, marginTop: 4 }}>
-                <span style={{ fontSize: 8, color: 'var(--text3)', fontWeight: 700 }}>
-                  FİLTRE: "PARA PİYASASI ŞEMSİYE FONU"
-                </span>
-                <button 
-                  className="vrem-pdf-btn btn btn-accent btn-sm"
-                  onClick={handlePrintPdf}
-                  style={{ fontSize: 9, padding: '4px 10px', height: 22, borderRadius: 5, fontWeight: 700 }}
-                >
-                  Rapor İndir (PDF)
-                </button>
-              </div>
-            </div>
-          )}
-        </motion.div>
-      )}
-
       {/* Dynamic Follow-up Option Buttons */}
       {!isUser && isLast && options.length > 0 && (
         <div style={{ display: 'flex', gap: 8, marginTop: 4, flexWrap: 'wrap', maxWidth: '90%' }}>
@@ -325,6 +156,13 @@ export default function AIChat({ financialData }) {
     const prompt = (text || input).trim();
     if (!prompt) return;
     setInput('');
+    
+    // Check if the query asks for PPF or TEFAS to trigger V.R.E.M subagent on-demand in the left sidebar!
+    const promptLower = prompt.toLowerCase();
+    if (promptLower.includes('ppf') || promptLower.includes('tefas') || promptLower.includes('para piyasası')) {
+      window.dispatchEvent(new CustomEvent('vrem_search_start'));
+    }
+
     await sendMessage(prompt, financialData);
   };
 
