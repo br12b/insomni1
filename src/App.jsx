@@ -245,12 +245,9 @@ function AppContent() {
     setView(v);
   };
 
-  const handleResetProfile = () => { localStorage.removeItem(`insomni_synced_txs`);
-    storage.setCurrentProfile('');
-    setProfile('');
-    setSalaryData(null);
-    setExpensesData([]);
-    goTo('profile');
+  const handleResetProfile = () => {
+    localStorage.clear();
+    window.location.reload();
   };
 
   const handleUpdateName = (newName) => {

@@ -76,7 +76,6 @@ export default function ProfilePage({ name, onReset, onUpdateName }) {
 
         {/* IDENTITY INFO */}
         <div style={{ marginBottom: 60 }}>
-          <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--accent)', letterSpacing: 4, marginBottom: 12 }}>IDENTITY VERIFIED</div>
           
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginBottom: 20 }}>
             {isEditing ? (
@@ -115,7 +114,7 @@ export default function ProfilePage({ name, onReset, onUpdateName }) {
         {/* CORE ACTIONS */}
         <div style={{ display: 'flex', justifyContent: 'center', borderTop: '1px solid var(--glass-border)', paddingTop: 40, width: '100%' }}>
           <button onClick={onReset} className="btn btn-ghost" style={{ color: '#f87171', gap: 12, fontWeight: 800, fontSize: 14, padding: '16px 32px', borderRadius: 100, background: 'rgba(248,113,113,0.05)' }}>
-            <LogOut size={18} /> RESET CORE MATRIX
+            <LogOut size={18} /> LOG OUT PROFILE
           </button>
         </div>
       </motion.div>
