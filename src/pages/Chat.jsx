@@ -88,17 +88,17 @@ export default function Chat({ salaryData, expensesData }) {
         <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: 500, height: 500, borderRadius: '50%', background: 'var(--accent)', filter: 'blur(120px)' }} />
       </div>
 
-      <div style={{ display: 'flex', gap: 32, height: '100%' }}>
+      <div style={{ display: 'flex', gap: 32, height: '100%', minHeight: 0 }}>
         
-        {/* LEFT SIDE - CONTEXT & STATS */}
-        <div style={{ width: 350, display: 'flex', flexDirection: 'column', gap: 20 }}>
+        {/* LEFT SIDE - CONTEXT & STATS (Pristine, Clean Reverted Sidebar) */}
+        <div style={{ width: 320, display: 'flex', flexDirection: 'column', gap: 20, flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
             <div style={{ width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 15 }}>
               <img src="/rem_avatar.png" alt="R.E.M" style={{ 
                 width: '100%', 
                 height: '100%', 
                 objectFit: 'contain', 
-                transform: 'scale(2.2)', // 2x and a bit more for impact
+                transform: 'scale(2.2)', 
                 filter: 'drop-shadow(0 0 10px rgba(129,140,248,0.3))' 
               }} />
             </div>
@@ -135,190 +135,15 @@ export default function Chat({ salaryData, expensesData }) {
             )}
           </div>
 
-          {/* V.R.E.M - TEFAS Analiz Ajanı (On-Demand Interactive Subagent) */}
-          <div 
-            id="vrem-print-section"
-            className="glass" 
-            style={{ 
-              padding: 20, 
-              border: vremStage === 'loading' ? '1px solid var(--amber)' : vremStage === 'done' ? '1px solid var(--accent)' : '1px solid var(--glass-border)', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              gap: 14,
-              transition: 'all 0.3s ease',
-              background: 'var(--glass)',
-              backdropFilter: 'blur(24px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-              boxShadow: vremStage === 'loading' ? '0 0 15px rgba(245,158,11,0.15)' : vremStage === 'done' ? '0 0 15px var(--accent-dim)' : 'var(--shadow)'
-            }}
-          >
-            {/* Subagent Status Bar */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ 
-                  width: 8, 
-                  height: 8, 
-                  borderRadius: '50%', 
-                  background: vremStage === 'loading' ? 'var(--amber)' : vremStage === 'done' ? 'var(--green)' : 'rgba(255,255,255,0.2)', 
-                  boxShadow: vremStage === 'loading' ? '0 0 8px var(--amber)' : vremStage === 'done' ? '0 0 8px var(--green)' : 'none',
-                  animation: vremStage === 'loading' ? 'blink 1.2s infinite' : 'none'
-                }} />
-                <span style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', color: 'var(--text1)', letterSpacing: '0.04em' }}>
-                  V.R.E.M: TEFAS Analiz Ajanı
-                </span>
-              </div>
-              <span style={{ 
-                fontSize: 9, 
-                background: vremStage === 'loading' ? 'rgba(245,158,11,0.1)' : vremStage === 'done' ? 'var(--accent-dim)' : 'rgba(255,255,255,0.05)', 
-                color: vremStage === 'loading' ? 'var(--amber)' : vremStage === 'done' ? 'var(--accent)' : 'var(--text3)', 
-                fontWeight: 700, 
-                padding: '2px 6px', 
-                borderRadius: 4 
-              }}>
-                {vremStage === 'loading' ? 'SCANNING' : vremStage === 'done' ? 'ACTIVE' : 'STANDBY'}
-              </span>
+          <div className="glass" style={{ padding: 20, flex: 1, display: 'flex', flexDirection: 'column', gap: 16, overflowY: 'auto' }}>
+            <div className="glass" style={{ padding: 20, border: '1px solid var(--accent-dim)', background: 'linear-gradient(to bottom right, rgba(129,140,248,0.1), transparent)' }}>
+              <h3 style={{ fontSize: 14, fontWeight: 900, color: 'var(--accent)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 }}>Our Vision</h3>
+              <p style={{ fontSize: 12, color: 'var(--text1)', lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
+                "Insomni, atıl nakdin sadece bir rakam değil, kaçırılmış bir gelecek olduğu inancıyla doğdu. R.E.M ile amacımız, finansal verilerinizdeki her bir saniyeyi değere dönüştürmek ve size paranın gerçek zamanlı maliyetini göstererek finansal özgürlüğünüzü optimize etmektir."
+              </p>
             </div>
 
-            {/* STAGE 1: IDLE STATE */}
-            {vremStage === 'idle' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center', textAlign: 'center', padding: '10px 0' }}>
-                <div style={{ 
-                  width: 44, 
-                  height: 44, 
-                  borderRadius: '50%', 
-                  background: 'rgba(255,255,255,0.015)', 
-                  border: '1px dashed var(--glass-border)', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  color: 'var(--text3)'
-                }}>
-                  📡
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <span style={{ fontSize: 11, color: 'var(--text2)', fontWeight: 600 }}>
-                    TEFAS PPF Taraması Hazır
-                  </span>
-                  <p style={{ fontSize: 9, color: 'var(--text3)', lineHeight: 1.4, margin: 0 }}>
-                    Sorgu başlatmak için R.E.M AI sohbetinde PPF/TEFAS sorgusu yapın veya aşağıdaki butona basın.
-                  </p>
-                </div>
-                <button 
-                  className="btn btn-primary"
-                  onClick={() => setVremStage('loading')}
-                  style={{ fontSize: 10, width: '100%', padding: '8px 0', height: 'auto', fontWeight: 700 }}
-                >
-                  Canlı TEFAS PPF Taraması Başlat
-                </button>
-              </div>
-            )}
-
-            {/* STAGE 2: LOADING / SCANNING STATE */}
-            {vremStage === 'loading' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ 
-                    width: 14, 
-                    height: 14, 
-                    borderRadius: '50%', 
-                    border: '1.5px solid rgba(245,158,11,0.2)', 
-                    borderTopColor: 'var(--amber)', 
-                    animation: 'spin 0.8s linear infinite' 
-                  }} />
-                  <span style={{ fontSize: 10, color: 'var(--amber)', fontWeight: 700 }}>
-                    Veri Köprüsü Aktif, Sorgulanıyor...
-                  </span>
-                </div>
-                
-                {/* Console logs */}
-                <div style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  gap: 6, 
-                  background: 'rgba(245,158,11,0.015)', 
-                  border: '1px solid rgba(245,158,11,0.1)', 
-                  borderRadius: 8, 
-                  padding: 10, 
-                  fontFamily: 'var(--mono)', 
-                  fontSize: 9, 
-                  color: 'var(--text2)',
-                  lineHeight: 1.4
-                }}>
-                  <div>[vrem-bridge] Connecting to tefas.gov.tr...</div>
-                  <div>[vrem-filter] Filtering: "PARA PİYASASI ŞEMSİYE FONU"</div>
-                  <div>[vrem-sort] Sorting top 5 by highest returns...</div>
-                </div>
-              </div>
-            )}
-
-            {/* STAGE 3: COMPLETED STATE */}
-            {vremStage === 'done' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <span style={{ fontSize: 10, color: 'var(--text2)', fontWeight: 600 }}>
-                  Günün En Çok Kazandıran PPF'leri (1 Aylık Getiri)
-                </span>
-                
-                {/* PPF Table */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {topPPFs.map((ppf) => (
-                    <div 
-                      key={ppf.code}
-                      style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'space-between', 
-                        padding: '8px 10px', 
-                        background: 'rgba(255,255,255,0.015)', 
-                        border: '1px solid var(--glass-border)', 
-                        borderRadius: 8,
-                        fontSize: 10
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontWeight: 800, color: 'var(--accent)', fontFamily: 'var(--mono)', fontSize: 9, background: 'var(--accent-dim)', padding: '2px 4px', borderRadius: 4 }}>
-                          {ppf.code}
-                        </span>
-                        <span style={{ color: 'var(--text1)', fontWeight: 500 }}>
-                          {ppf.name}
-                        </span>
-                      </div>
-                      <span style={{ fontWeight: 700, color: 'var(--green)', fontFamily: 'var(--mono)' }}>
-                        {ppf.yield}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Print & Reset Buttons */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px dashed var(--glass-border)', paddingTop: 10, marginTop: 4 }}>
-                  <button 
-                    className="vrem-reset-btn btn btn-sm"
-                    onClick={() => setVremStage('idle')}
-                    style={{ fontSize: 9, padding: '4px 8px', height: 22, border: '1px solid var(--glass-border)', color: 'var(--text2)' }}
-                  >
-                    Sıfırla
-                  </button>
-                  <button 
-                    className="vrem-pdf-btn btn btn-accent btn-sm"
-                    onClick={handlePrintPdf}
-                    style={{ fontSize: 9, padding: '4px 10px', height: 22, fontWeight: 700 }}
-                  >
-                    Rapor İndir (PDF)
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="glass" style={{ padding: 20, flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
-                      <div className="glass" style={{ padding: 20, border: '1px solid var(--accent-dim)', background: 'linear-gradient(to bottom right, rgba(129,140,248,0.1), transparent)' }}>
-            <h3 style={{ fontSize: 14, fontWeight: 900, color: 'var(--accent)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 }}>Our Vision</h3>
-            <p style={{ fontSize: 12, color: 'var(--text1)', lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
-              "Insomni, atıl nakdin sadece bir rakam değil, kaçırılmış bir gelecek olduğu inancıyla doğdu. R.E.M ile amacımız, finansal verilerinizdeki her bir saniyeyi değere dönüştürmek ve size paranın gerçek zamanlı maliyetini göstererek finansal özgürlüğünüzü optimize etmektir."
-            </p>
-          </div>
-
-          <h3 style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>AI Capabilities</h3>
+            <h3 style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>AI Capabilities</h3>
             <div style={{ display: 'flex', gap: 10 }}>
               <Sparkles size={16} color="var(--accent)" />
               <div style={{ fontSize: 12 }}>
@@ -336,9 +161,184 @@ export default function Chat({ salaryData, expensesData }) {
           </div>
         </div>
 
-        {/* RIGHT SIDE - THE CHAT */}
-        <div className="glass" style={{ flex: 1, display: 'flex', flexDirection: 'column', border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.02)', padding: 32, borderRadius: 'var(--r-lg)' }}>
-          <AIChat financialData={financialData} />
+        {/* RIGHT SIDE - THE R.E.M WORKSPACE CONTAINER (Holds both Chat and V.R.E.M subagent side-by-side dynamically) */}
+        <div style={{ flex: 1, display: 'flex', gap: 24, minWidth: 0, height: '100%' }}>
+          
+          {/* R.E.M Chat Panel (Glassmorphic) */}
+          <div className="glass" style={{ 
+            flex: 1.3, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            border: '1px solid var(--glass-border)', 
+            background: 'rgba(255,255,255,0.02)', 
+            padding: 24, 
+            borderRadius: 'var(--r-lg)',
+            minWidth: 0,
+            transition: 'all 0.3s ease'
+          }}>
+            <AIChat financialData={financialData} />
+          </div>
+
+          {/* V.R.E.M Subagent Panel (Fades & slides in dynamically on-demand inside R.E.M container) */}
+          {vremStage !== 'idle' && (
+            <div 
+              id="vrem-print-section"
+              className="glass" 
+              style={{ 
+                width: 380, 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: 16,
+                padding: 24,
+                border: vremStage === 'loading' ? '1px solid var(--amber)' : '1px solid var(--accent)', 
+                borderRadius: 'var(--r-lg)',
+                background: 'var(--glass)',
+                backdropFilter: 'blur(30px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(30px) saturate(180%)',
+                boxShadow: vremStage === 'loading' ? '0 0 25px rgba(245,158,11,0.2)' : '0 0 25px var(--accent-dim)',
+                transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                animation: 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                overflowY: 'auto'
+              }}
+            >
+              {/* Header */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ 
+                    width: 8, 
+                    height: 8, 
+                    borderRadius: '50%', 
+                    background: vremStage === 'loading' ? 'var(--amber)' : 'var(--green)', 
+                    boxShadow: vremStage === 'loading' ? '0 0 8px var(--amber)' : '0 0 8px var(--green)',
+                    animation: vremStage === 'loading' ? 'blink 1s infinite' : 'none'
+                  }} />
+                  <span style={{ fontSize: 12, fontWeight: 900, textTransform: 'uppercase', color: 'var(--text1)', letterSpacing: '0.06em' }}>
+                    V.R.E.M: TEFAS Analiz Ajanı
+                  </span>
+                </div>
+                <button 
+                  onClick={() => setVremStage('idle')}
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    color: 'var(--text3)', 
+                    fontSize: 22, 
+                    cursor: 'pointer', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    padding: '2px 8px',
+                    borderRadius: '50%',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.target.style.color = 'var(--text1)'}
+                  onMouseLeave={(e) => e.target.style.color = 'var(--text3)'}
+                >
+                  ×
+                </button>
+              </div>
+
+              {/* STAGE 2: LOADING / SCANNING STATE */}
+              {vremStage === 'loading' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16, height: '100%', justifyContent: 'center', paddingBottom: 40 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+                    <div style={{ 
+                      width: 32, 
+                      height: 32, 
+                      borderRadius: '50%', 
+                      border: '2px solid rgba(245,158,11,0.2)', 
+                      borderTopColor: 'var(--amber)', 
+                      animation: 'spin 0.8s linear infinite' 
+                    }} />
+                    <span style={{ fontSize: 13, color: 'var(--amber)', fontWeight: 700, letterSpacing: '0.04em' }}>
+                      Canlı Veri Köprüsü Aktif...
+                    </span>
+                  </div>
+                  
+                  {/* Console logs */}
+                  <div style={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    gap: 10, 
+                    background: 'rgba(0,0,0,0.3)', 
+                    border: '1px solid rgba(245,158,11,0.15)', 
+                    borderRadius: 12, 
+                    padding: 16, 
+                    fontFamily: 'var(--mono)', 
+                    fontSize: 10, 
+                    color: 'rgba(255,255,255,0.7)', 
+                    lineHeight: 1.6,
+                    boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.5)'
+                  }}>
+                    <div style={{ color: 'var(--amber)' }}>&gt; [vrem-bridge] Connecting to tefas.gov.tr...</div>
+                    <div style={{ paddingLeft: 12 }}>Connection established successfully.</div>
+                    <div style={{ color: 'var(--amber)' }}>&gt; [vrem-filter] Filtering umbrella type: "PARA PİYASASI ŞEMSİYE FONU"</div>
+                    <div style={{ paddingLeft: 12 }}>Found 42 matching Money Market Funds.</div>
+                    <div style={{ color: 'var(--amber)' }}>&gt; [vrem-sort] Sorting top 5 by highest monthly yields...</div>
+                  </div>
+                </div>
+              )}
+
+              {/* STAGE 3: COMPLETED STATE */}
+              {vremStage === 'done' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16, height: '100%' }}>
+                  <div style={{ fontSize: 12, color: 'var(--text2)', fontWeight: 600 }}>
+                    Günün En Çok Kazandıran PPF'leri (1 Aylık Getiri)
+                  </div>
+                  
+                  {/* PPF Table */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {topPPFs.map((ppf) => (
+                      <div 
+                        key={ppf.code}
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'space-between', 
+                          padding: '12px 14px', 
+                          background: 'rgba(255,255,255,0.01)', 
+                          border: '1px solid var(--glass-border)', 
+                          borderRadius: 12,
+                          fontSize: 12
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <span style={{ fontWeight: 800, color: 'var(--accent)', fontFamily: 'var(--mono)', fontSize: 10, background: 'var(--accent-dim)', padding: '3px 6px', borderRadius: 5 }}>
+                            {ppf.code}
+                          </span>
+                          <span style={{ color: 'var(--text1)', fontWeight: 600 }}>
+                            {ppf.name}
+                          </span>
+                        </div>
+                        <span style={{ fontWeight: 700, color: 'var(--green)', fontFamily: 'var(--mono)', fontSize: 13 }}>
+                          {ppf.yield}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Print & Reset Buttons */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px dashed var(--glass-border)', paddingTop: 14, marginTop: 'auto' }}>
+                    <button 
+                      className="vrem-reset-btn btn btn-sm"
+                      onClick={() => setVremStage('idle')}
+                      style={{ fontSize: 10, padding: '6px 12px', height: 28, border: '1px solid var(--glass-border)', color: 'var(--text2)' }}
+                    >
+                      Sıfırla
+                    </button>
+                    <button 
+                      className="vrem-pdf-btn btn btn-accent btn-sm"
+                      onClick={handlePrintPdf}
+                      style={{ fontSize: 10, padding: '6px 14px', height: 28, fontWeight: 700 }}
+                    >
+                      Rapor İndir (PDF)
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
 
       </div>
