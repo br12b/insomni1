@@ -351,7 +351,7 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
         </motion.div>
       </motion.div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 500px), 1fr))', gap: 32, alignItems: 'start' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 32, minWidth: 0 }}>
           <motion.div variants={fadeUp}><ExpenseChart dailyBalances={dailyBalances} currency={currency} /></motion.div>
           <motion.div variants={fadeUp}><ExpenseList expenses={combinedExpenses} currency={currency} /></motion.div>
@@ -572,7 +572,7 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
 
         </div>
         <div style={{ position: 'sticky', top: 24, minWidth: 0 }}>
-          <motion.div variants={fadeUp} className="glass" style={{ padding: '32px 24px', height: 'calc(100vh - 200px)', maxHeight: 800, display: 'flex', flexDirection: 'column', border: '1px solid rgba(129,140,248,0.2)', boxShadow: '0 0 40px rgba(129,140,248,0.05)', overflow: 'hidden' }}>
+          <motion.div variants={fadeUp} className="glass" style={{ padding: '32px 24px', height: 680, maxHeight: '85vh', display: 'flex', flexDirection: 'column', border: '1px solid rgba(129,140,248,0.2)', boxShadow: '0 0 40px rgba(129,140,248,0.05)', overflow: 'hidden' }}>
             <AIChat financialData={financialDataForAI} />
           </motion.div>
         </div>

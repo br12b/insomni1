@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -19,17 +19,41 @@ const IconMap = ({ name, color, type }) => {
 };
 
 const SourceIcon = ({ source }) => {
-  if (source === 'BANKA GATEWAY') return <Landmark size={10} />;
-  if (source === 'OTONOM KÖPRÜ') return <Radio size={10} />;
+  if (source === 'BANKA GATEWAY' || source === 'BANK GATEWAY') return <Landmark size={10} />;
+  if (source === 'OTONOM KÖPRÜ' || source === 'AUTONOMOUS BRIDGE') return <Radio size={10} />;
   return null;
 };
 
 export default function Calendar() {
   const { lang, t } = useLanguage();
-  // BUGÜNÜN TARİHİNE MÜHÜRLEME
-  const today = new Date().getDate();
-  const [selectedDay, setSelectedDay] = useState(today);
+  const [selectedDay, setSelectedDay] = useState(new Date().getDate());
   const [syncedData, setSyncedData] = useState([]);
+
+  // Dynamic month & year state to navigate manual backwards and forwards all the way back to 2026!
+  const [currentMonth, setCurrentMonth] = useState(4); // May (0-indexed)
+  const [currentYear, setCurrentYear] = useState(2026);
+
+  const MONTHS = lang === 'tr'
+    ? ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK']
+    : ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+
+  const prevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(y => y - 1);
+    } else {
+      setCurrentMonth(m => m - 1);
+    }
+  };
+
+  const nextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(y => y + 1);
+    } else {
+      setCurrentMonth(m => m + 1);
+    }
+  };
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem('insomni_synced_txs') || '[]');
@@ -42,13 +66,43 @@ export default function Calendar() {
     return Math.abs(parseFloat(cleaned)) || 0;
   };
 
-  const daysInMonth = 31;
-  const startDay = new Date(2026, 4, 1).getDay();
+  const getExpenseMonth = (item) => {
+    if (item.date) {
+      const p = new Date(item.date);
+      if (!isNaN(p.getTime())) return p.getMonth();
+    }
+    return 4; // May default
+  };
+
+  const getExpenseYear = (item) => {
+    if (item.date) {
+      const p = new Date(item.date);
+      if (!isNaN(p.getTime())) return p.getFullYear();
+    }
+    return 2026; // 2026 default
+  };
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const startDay = (() => {
+    const raw = new Date(currentYear, currentMonth, 1).getDay();
+    return raw === 0 ? 6 : raw - 1; // Monday aligned
+  })();
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const blanks = Array.from({ length: startDay === 0 ? 6 : startDay - 1 }, (_, i) => i);
+  const blanks = Array.from({ length: startDay }, (_, i) => i);
 
   const getDailyData = (day) => {
-    const dailyItems = syncedData.filter(d => d.day === day);
+    const dailyItems = syncedData.filter(d => {
+      const itemD = d.day || 15;
+      const itemM = getExpenseMonth(d);
+      const itemY = getExpenseYear(d);
+      
+      const isSimpleDay = !d.date?.toString().includes('-') && !d.date?.toString().includes('T');
+      if (isSimpleDay) {
+        return itemD === day;
+      }
+      return itemD === day && itemM === currentMonth && itemY === currentYear;
+    });
+
     const txs = dailyItems.filter(d => d.type === 'TRANSACTION');
     const balanceItem = dailyItems.find(d => d.type === 'BALANCE');
     const expense = txs.reduce((acc, tx) => acc + parseCurrency(tx.amount), 0);
@@ -63,6 +117,10 @@ export default function Calendar() {
 
   const selectedData = getDailyData(selectedDay);
 
+  const MONTH_NAMES_DISPLAY = lang === 'tr'
+    ? ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
+    : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', background: '#fcfdfe' }}>
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 40px 20px 40px' }}>
@@ -72,9 +130,9 @@ export default function Calendar() {
             <p style={{ color: '#94a3b8', fontWeight: 700, fontSize: 13, letterSpacing: '0.05em' }}>{lang === 'tr' ? 'VERİ ANALİTİĞİ VE MATRİS ANALİZİ' : 'DATA ANALYTICS & MATRIX ANALYSIS'}</p>
           </div>
           <div className="glass" style={{ padding: '12px 28px', borderRadius: 100, display: 'flex', alignItems: 'center', gap: 24, border: '1px solid #f1f5f9', background: '#fff' }}>
-            <ChevronLeft size={18} color="#64748b" style={{ cursor: 'pointer' }} />
-            <span style={{ fontWeight: 950, fontSize: 14, letterSpacing: '0.05em', color: '#1e293b' }}>{lang === 'tr' ? 'MAYIS 2026' : 'MAY 2026'}</span>
-            <ChevronRight size={18} color="#64748b" style={{ cursor: 'pointer' }} />
+            <ChevronLeft size={18} color="#64748b" style={{ cursor: 'pointer' }} onClick={prevMonth} />
+            <span style={{ fontWeight: 950, fontSize: 14, letterSpacing: '0.05em', color: '#1e293b' }}>{MONTHS[currentMonth]} {currentYear}</span>
+            <ChevronRight size={18} color="#64748b" style={{ cursor: 'pointer' }} onClick={nextMonth} />
           </div>
         </div>
 
@@ -104,10 +162,10 @@ export default function Calendar() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <AnimatePresence mode="wait">
-              <motion.div key={selectedDay} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} 
+              <motion.div key={`${selectedDay}-${currentMonth}-${currentYear}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} 
                 className="glass" style={{ padding: 40, borderRadius: 48, background: '#fff', border: '1px solid #f1f5f9' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-                  <div><div style={{ fontSize: 11, fontWeight: 900, color: '#6366f1', letterSpacing: '0.1em' }}>{lang === 'tr' ? 'SEÇİLİ GÜN' : 'SELECTED DAY'}</div><div style={{ fontSize: 28, fontWeight: 950, color: '#1e293b' }}>{selectedDay} {lang === 'tr' ? 'Mayıs' : 'May'} 2026</div></div>
+                  <div><div style={{ fontSize: 11, fontWeight: 900, color: '#6366f1', letterSpacing: '0.1em' }}>{lang === 'tr' ? 'SEÇİLİ GÜN' : 'SELECTED DAY'}</div><div style={{ fontSize: 28, fontWeight: 950, color: '#1e293b' }}>{selectedDay} {MONTH_NAMES_DISPLAY[currentMonth]} {currentYear}</div></div>
                   <div style={{ width: 48, height: 48, borderRadius: 16, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #f1f5f9' }}><Activity size={20} color="#6366f1" /></div>
                 </div>
                 
@@ -127,7 +185,7 @@ export default function Calendar() {
                      <div key={i} style={{ padding: 18, borderRadius: 20, background: '#f8fafc', border: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                            <div style={{ width: 44, height: 44, borderRadius: 12, background: item.type === 'BALANCE' ? '#10b98110' : `${item.color}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconMap name={item.icon} color={item.type === 'BALANCE' ? '#10b981' : item.color} type={item.type} /></div>
-                           <div><div style={{ fontSize: 16, fontWeight: 950, color: '#1e293b' }}>{item.clean}</div><div style={{ fontSize: 10, fontWeight: 800, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>{item.type === 'BALANCE' ? <ShieldCheck size={10} color="#10b981"/> : <SourceIcon source={item.source} />} {item.source === 'BANKA GATEWAY' ? (lang === 'tr' ? 'BANKA GATEWAY' : 'BANK GATEWAY') : (lang === 'tr' ? 'OTONOM KÖPRÜ' : 'AUTONOMOUS BRIDGE')}</div></div>
+                           <div><div style={{ fontSize: 16, fontWeight: 950, color: '#1e293b' }}>{item.clean}</div><div style={{ fontSize: 10, fontWeight: 800, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>{item.type === 'BALANCE' ? <ShieldCheck size={10} color="#10b981"/> : <SourceIcon source={item.source} />} {item.source === 'BANKA GATEWAY' || item.source === 'BANK GATEWAY' ? (lang === 'tr' ? 'BANKA GATEWAY' : 'BANK GATEWAY') : (lang === 'tr' ? 'OTONOM KÖPRÜ' : 'AUTONOMOUS BRIDGE')}</div></div>
                         </div>
                         <div style={{ fontSize: 18, fontWeight: 950, color: item.type === 'BALANCE' ? '#10b981' : '#ef4444' }}>{item.amount}</div>
                      </div>

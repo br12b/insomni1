@@ -144,7 +144,7 @@ function MessageBubble({ msg, onSelectOption, isLast, msgIndex, allMessages }) {
               border: 'none',
               boxShadow: 'none'
             }}>
-              <img src="/rem_avatar.png" alt="R.E.M" style={{ 
+              <img src="/rem_avatar.webp" alt="R.E.M" style={{ 
                 width: '100%', 
                 height: '100%', 
                 objectFit: 'cover', 
@@ -409,7 +409,7 @@ export default function AIChat({ financialData }) {
             boxShadow: 'none',
             position: 'relative'
           }}>
-          <img src="/rem_avatar.png" alt="R.E.M" style={{ 
+          <img src="/rem_avatar.webp" alt="R.E.M" style={{ 
             width: '100%', 
             height: '100%', 
             objectFit: 'contain', // Using contain to prevent squashing

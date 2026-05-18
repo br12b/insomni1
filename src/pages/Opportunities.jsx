@@ -1,4 +1,4 @@
-﻿import React, { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Zap, 
@@ -59,34 +59,78 @@ function OpportunityCard({ icon: Icon, title, desc, value, color, action, lang }
         <h3 style={{ fontSize: 17, fontWeight: 800, marginBottom: 8, color: 'var(--text0)' }}>{title}</h3>
         <p style={{ fontSize: 13, color: 'var(--text2)', lineHeight: 1.6 }}>{desc}</p>
       </div>
-
-      
     </motion.div>
   );
 }
 
 export default function Opportunities({ expenses = [], salaryData = null }) {
   const { lang } = useLanguage();
+
+  const getExpenseDay = (dateVal) => {
+    if (!dateVal) return 15;
+    const strVal = dateVal.toString().trim();
+    const num = parseInt(strVal);
+    if (!isNaN(num) && num >= 1 && num <= 31 && !strVal.includes('-') && !strVal.includes('T')) {
+      return num;
+    }
+    const parsedDate = new Date(strVal);
+    if (!isNaN(parsedDate.getTime())) {
+      return parsedDate.getDate();
+    }
+    return 15;
+  };
+
+  const parseRemAmount = (val) => {
+    if (!val) return 0;
+    const cleaned = val.toString().replace(/[^\d,]/g, '').replace(',', '.');
+    return parseFloat(cleaned) || 0;
+  };
   
-  const financialData = useMemo(() => ({
-    salary: salaryData?.income || 0,
-    expenses,
-    dailyBalances: Array.from({ length: 30 }, (_, i) => ({ balance: (salaryData?.income || 50000) * 0.4 }))
-  }), [expenses, salaryData]);
+  const financialData = useMemo(() => {
+    const income = salaryData?.income || salaryData?.salary || 0;
+    const salaryDay = salaryData?.day || salaryData?.date || 1;
+    
+    let syncedTxs = [];
+    try {
+      syncedTxs = JSON.parse(localStorage.getItem('insomni_synced_txs') || '[]');
+    } catch(e) {}
+
+    const combinedExpenses = [
+      ...expenses,
+      ...syncedTxs
+        .filter(tx => tx.type === 'TRANSACTION')
+        .map(tx => ({
+          id: tx.id,
+          name: tx.clean,
+          amount: parseRemAmount(tx.amount),
+          date: tx.day || 15,
+          category: tx.category,
+          isSynced: true
+        }))
+    ];
+
+    let runningBalance = 0;
+    const dailyBalances = Array.from({ length: 31 }, (_, i) => {
+      const day = i + 1;
+      if (day === salaryDay) {
+        runningBalance += income;
+      }
+      const dayExps = combinedExpenses.filter(e => getExpenseDay(e.date) === day);
+      const dayTotal = dayExps.reduce((sum, e) => sum + parseFloat(e.amount || 0), 0);
+      runningBalance -= dayTotal;
+      return { day, balance: runningBalance, isNegative: runningBalance < 0 };
+    });
+
+    return {
+      salary: income,
+      expenses: combinedExpenses,
+      dailyBalances
+    };
+  }, [expenses, salaryData]);
 
   const idleCash = useMemo(() => findIdleCashOpportunity(financialData), [financialData]);
   const subscriptions = useMemo(() => getSubscriptionBreakdown(financialData), [financialData]);
-  const timing = useMemo(() => optimizeExpenseTiming(financialData), [financialData]);
 
-  const optimizationScore = useMemo(() => {
-    let score = 95;
-    if (subscriptions.salaryPercent > 10) score -= 15;
-    if (idleCash.monthlyYield > 1000) score -= 10;
-    if (timing.hasSuggestions) score -= 5;
-    return Math.max(score, 40);
-  }, [subscriptions, idleCash, timing]);
-
-  // Dynamic Cashback Matching Logic
   const cashbackOpportunities = useMemo(() => {
     const list = [];
     const lowerExpenses = expenses.map(e => e.name.toLowerCase());
@@ -110,17 +154,6 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
         color: '#1DB954',
         title: lang === 'tr' ? 'Spotify %50 Cashback' : 'Spotify 50% Cashback',
         desc: lang === 'tr' ? `Müzik keyfini ucuza getir. Spotify ödemelerinde %50 iade fırsatını kaçırma.` : `Enjoy music for less. Don't miss the 50% cashback on Spotify payments.`
-      });
-    }
-
-    if (lowerExpenses.some(e => e.includes('Play'))) {
-      list.push({
-        id: 'Play',
-        brand: 'Play',
-        icon: Play,
-        color: '#FF0000',
-        title: lang === 'tr' ? 'Play Premium Cashback' : 'Play Premium Cashback',
-        desc: lang === 'tr' ? `Play Premium üyeliğin için %50 iade alarak tasarruf edebilirsin.` : `Save by getting 50% cashback for your Play Premium membership.`
       });
     }
 
@@ -150,7 +183,6 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
             {lang === 'tr' ? 'R.E.M harcamalarını analiz etti ve sana özel fırsatları çıkardı.' : 'R.E.M analyzed your expenses and found tailored opportunities.'}
           </p>
         </div>
-
       </motion.div>
 
       <motion.div variants={containerVariants} initial="hidden" animate="show"
@@ -164,7 +196,6 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
             ? `Boşta duran ₺${idleCash.avgIdleBalance.toLocaleString('tr-TR')} bakiyen var. Bunu PPF ile değerlendirerek pasif gelir yaratabilirsin.`
             : `You have ₺${idleCash.avgIdleBalance.toLocaleString('tr-TR')} sitting idle. Invest it in MMF to generate passive income.`}
           value={lang === 'tr' ? `₺${idleCash.monthlyYield}/ay` : `₺${idleCash.monthlyYield}/mo`}
-          action={lang === 'tr' ? 'Stratejiyi Uygula' : 'Apply Strategy'}
           lang={lang}
         />
 
@@ -176,14 +207,10 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
             ? `Aboneliklerin maaşının %${subscriptions.salaryPercent}'ine ulaştı. R.E.M kullanmadığın servisleri eleyebileceğini düşünüyor.`
             : `Your subscriptions reached ${subscriptions.salaryPercent}% of income. R.E.M thinks you can cut unused services.`}
           value={lang === 'tr' ? `₺${subscriptions.totalAnnual.toLocaleString('tr-TR')}/yıl` : `₺${subscriptions.totalAnnual.toLocaleString('tr-TR')}/yr`}
-          action={lang === 'tr' ? 'Detayları Gör' : 'See Details'}
           lang={lang}
         />
-
-
       </motion.div>
 
-      {/* Dynamic Cashback Feed */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} style={{ marginTop: 60 }}>
         <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10 }}>
           <ShieldCheck size={20} color="var(--green)" /> {lang === 'tr' ? 'Sana Özel Cashback Fırsatları' : 'Personalized Cashback Offers'}
@@ -214,9 +241,3 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
     </div>
   );
 }
-
-
-
-
-
-
