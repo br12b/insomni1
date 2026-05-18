@@ -160,8 +160,8 @@ export default function Docs() {
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text2)', margin: 0, lineHeight: 1.5 }}>
                   {lang === 'tr'
-                    ? 'REM Sync, dağınık banka ekstrelerini (PDF) ve anlık Telegram verilerini yapay zeka ile saniyeler içinde okuyan hayati bir otonom köprüdür. Statik listeler yerine harcamalarını anlık olarak finansal sinir sistemine aktarır; böylece geçmişe saplanıp kalmak yerine geleceğe yönelik finansal projeksiyonlar (veri yansıtma) yaparak atıl nakdini korumanı sağlar.'
-                    : 'REM Sync is a critical autonomous bridge that uses AI to parse unstructured bank PDFs and instant Telegram inputs in seconds. Instead of static retro lists, it projects your expenses into the live nervous system, allowing you to run future cash flow projections and guard your active wealth.'}
+                    ? 'REM Sync, dağınık banka ekstrelerini (PDF) ve anlık Telegram verilerini yapay zeka ile saniyeler içinde okuyan hayati bir otonom köprüdür. Eğer test için hazır bir PDF ekstreniz yoksa, yerelde `npm run generate-statement` komutunu çalıştırarak saniyeler içinde kendinize özel, aboneliklerle dolu harika bir test ekstresi (PDF) üretebilir ve bunu sisteme yükleyebilirsiniz!'
+                    : 'REM Sync is a critical autonomous bridge that uses AI to parse unstructured bank PDFs in seconds. If you do not have a test PDF statement ready, you can run `npm run generate-statement` locally to produce a custom simulation statement filled with mock subscriptions in seconds!'}
                 </p>
               </motion.div>
 

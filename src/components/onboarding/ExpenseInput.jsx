@@ -81,7 +81,37 @@ export default function ExpenseInput({ onComplete }) {
           <div className="glass" style={{ padding: '40px 44px', marginBottom: 20 }}>
             <span className="badge badge-accent" style={{ marginBottom: 8, display: 'inline-flex' }}>{lang === 'tr' ? 'Adım 2 / 2' : 'Step 2 / 2'}</span>
             <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 6 }}>{t.onboarding.expenseTitle}</h2>
-            <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 28 }}>{lang === 'tr' ? 'Manuel girin ya da banka ekstrenizi yükleyin.' : 'Enter manually or upload PDF.'}</p>
+            <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 20 }}>{lang === 'tr' ? 'Manuel girin ya da banka ekstrenizi yükleyin.' : 'Enter manually or upload PDF.'}</p>
+            
+            {/* 💡 PDF Generator Onboarding Tip Banner */}
+            <div style={{ 
+              background: 'rgba(129, 140, 248, 0.05)', 
+              border: '1px solid rgba(129, 140, 248, 0.2)', 
+              borderRadius: 12, 
+              padding: '12px 16px', 
+              marginBottom: 20, 
+              fontSize: 12, 
+              color: 'var(--text1)',
+              lineHeight: 1.5,
+              textAlign: 'left'
+            }}>
+              💡 <strong>{lang === 'tr' ? 'Test Ekstresi Oluşturucu:' : 'Test Statement Generator:'}</strong>{' '}
+              {lang === 'tr' 
+                ? 'Eğer elinizde hazır bir banka ekstresi (PDF) yoksa, proje klasöründeki Python CLI aracını kullanarak saniyeler içinde kendinize özel, aboneliklerle dolu bir test ekstresi oluşturabilirsiniz! Terminalden şu komutu çalıştırmanız yeterli:'
+                : 'If you do not have a PDF bank statement ready, you can generate a custom one in seconds using our Python CLI tool! Just run:'}{' '}
+              <code style={{ 
+                background: 'var(--accent-dim)', 
+                color: 'var(--accent)', 
+                padding: '2px 6px', 
+                borderRadius: 4, 
+                fontFamily: 'var(--mono)',
+                fontSize: 11,
+                display: 'inline-block',
+                marginTop: 4
+              }}>
+                npm run generate-statement
+              </code>
+            </div>
             <div onDragOver={e => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={e => { e.preventDefault(); setDragOver(false); handlePdfUpload(e.dataTransfer.files[0]); }} onClick={() => { if (!scanning) document.getElementById('pdfInput').click(); }} style={{ border: '2px dashed var(--glass-border)', borderRadius: 16, padding: '24px', textAlign: 'center', cursor: 'pointer', marginBottom: 24, background: dragOver ? 'rgba(129,140,248,0.1)' : 'rgba(0,0,0,0.2)' }}>
               <input id="pdfInput" type="file" accept=".pdf" style={{ display: 'none' }} onChange={e => handlePdfUpload(e.target.files[0])} />
               {scanning ? (

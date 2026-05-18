@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "refresh-funds": "python scripts/refresh_funds.py"
+    "refresh-funds": "python scripts/refresh_funds.py",
+    "generate-statement": "python scripts/ekstre_pro.py"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

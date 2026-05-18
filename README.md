@@ -117,7 +117,14 @@ npm install
 ```bash
 npm run dev
 ```
-Uygulama yerel adresinizde (`http://localhost:5200/` veya `http://localhost:5173/`) çalışmaya başlayacaktır.
+Uygulama yerel adresinizde
+
+### 💡 Simülasyon Banka Ekstresi (PDF) Üretici:
+Eğer REM Sync testleriniz veya önyüz onboarding testleriniz için hazır bir banka ekstresi (PDF) dosyanız yoksa, projenin içinde yer alan interaktif Python CLI aracını çalıştırarak saniyeler içinde kendinize özel bir test ekstresi (PDF) üretebilirsiniz:
+```bash
+npm run generate-statement
+```
+Bu komut, belirlediğiniz isim ve harcama alışkanlıklarına göre zengin bir PDF ekstresi hazırlayıp bilgisayarınızda otomatik olarak açacaktır! (`http://localhost:5200/` veya `http://localhost:5173/`) çalışmaya başlayacaktır.
 
 ### 4. Yayına Hazırlama (Build)
 ```bash
@@ -254,7 +261,14 @@ npm install
 ```bash
 npm run dev
 ```
-The application will launch on your local host (usually `http://localhost:5173/` or `http://localhost:5200/`).
+The application will launch
+
+### 💡 Simulation Bank Statement (PDF) Generator:
+If you do not have a PDF bank statement ready for testing the REM Sync or onboarding statement parser, you can launch our interactive Python CLI tool to compile a custom PDF statement filled with mock items in seconds:
+```bash
+npm run generate-statement
+```
+This CLI tool will dynamically compile a beautifully formatted PDF bank statement matching your preferred spending level and open it automatically! on your local host (usually `http://localhost:5173/` or `http://localhost:5200/`).
 
 ### 4. Build for Production
 ```bash
