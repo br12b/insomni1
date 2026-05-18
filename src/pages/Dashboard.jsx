@@ -143,38 +143,181 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
       
       <AnimatePresence>
         {isModalOpen && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }} className="glass" style={{ width: '100%', maxWidth: 450, padding: 32, border: '1px solid var(--glass-border)', position: 'relative' }}>
-              <button onClick={() => setIsModalOpen(false)} style={{ position: 'absolute', top: 20, right: 20, background: 'none', border: 'none', color: 'var(--text2)', cursor: 'pointer' }}><X size={20} /></button>
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            style={{ 
+              position: 'fixed', 
+              inset: 0, 
+              background: 'rgba(10, 10, 15, 0.4)', 
+              backdropFilter: 'blur(16px)', 
+              WebkitBackdropFilter: 'blur(16px)', 
+              zIndex: 2000, 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              padding: 20 
+            }}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 15 }} 
+              animate={{ scale: 1, y: 0 }} 
+              exit={{ scale: 0.95, y: 15 }} 
+              style={{ 
+                width: '100%', 
+                maxWidth: 440, 
+                padding: '36px 32px', 
+                background: 'rgba(24, 24, 37, 0.85)', 
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid rgba(129, 140, 248, 0.3)', 
+                borderRadius: 24,
+                boxShadow: '0 25px 60px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.05)',
+                position: 'relative',
+                color: '#ffffff'
+              }}
+            >
+              <button 
+                onClick={() => setIsModalOpen(false)} 
+                style={{ 
+                  position: 'absolute', 
+                  top: 24, 
+                  right: 24, 
+                  background: 'none', 
+                  border: 'none', 
+                  color: 'rgba(255, 255, 255, 0.4)', 
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = '#ffffff'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.4)'}
+              >
+                <X size={20} />
+              </button>
               
-              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 12 }}><Plus size={24} className="text-primary" /> {lang === 'tr' ? 'Harcama Ekle' : 'Add Expense'}</h2>
+              <h2 style={{ fontSize: 24, fontWeight: 900, marginBottom: 28, display: 'flex', alignItems: 'center', gap: 12, letterSpacing: '-0.02em', color: '#ffffff' }}>
+                <Plus size={24} style={{ color: 'var(--accent)' }} /> 
+                {lang === 'tr' ? 'Harcama Ekle' : 'Add Expense'}
+              </h2>
               
               <form onSubmit={handleAddExpense} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <label style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 600 }}>{lang === 'tr' ? 'HARCAMA İSMİ' : 'EXPENSE NAME'}</label>
+                  <label style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.5)', fontWeight: 800, letterSpacing: '0.06em' }}>
+                    {lang === 'tr' ? 'HARCAMA İSMİ' : 'EXPENSE NAME'}
+                  </label>
                   <div style={{ position: 'relative' }}>
-                    <Tag size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text3)' }} />
-                    <input type="text" value={newExpense.name} onChange={e => setNewExpense({...newExpense, name: e.target.value})} placeholder={lang === 'tr' ? "Örn: Starbucks" : "e.g. Starbucks"} style={{ width: '100%', padding: '12px 12px 12px 40px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 12, color: 'white' }} required />
+                    <Tag size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255, 255, 255, 0.3)' }} />
+                    <input 
+                      type="text" 
+                      value={newExpense.name} 
+                      onChange={e => setNewExpense({...newExpense, name: e.target.value})} 
+                      placeholder={lang === 'tr' ? "Örn: Starbucks" : "e.g. Starbucks"} 
+                      style={{ 
+                        width: '100%', 
+                        padding: '12px 12px 12px 42px', 
+                        background: 'rgba(255, 255, 255, 0.04)', 
+                        border: '1px solid rgba(129, 140, 248, 0.25)', 
+                        borderRadius: 14, 
+                        color: '#ffffff',
+                        fontSize: 14,
+                        outline: 'none',
+                        transition: 'all 0.2s ease',
+                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2)'
+                      }} 
+                      required 
+                    />
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <label style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 600 }}>{lang === 'tr' ? 'MİKTAR' : 'AMOUNT'}</label>
+                  <label style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.5)', fontWeight: 800, letterSpacing: '0.06em' }}>
+                    {lang === 'tr' ? 'MİKTAR' : 'AMOUNT'}
+                  </label>
                   <div style={{ position: 'relative' }}>
-                    <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text3)", fontWeight: 800 }}>{currency}</div>
-                    <input type="number" value={newExpense.amount} onChange={e => setNewExpense({...newExpense, amount: e.target.value})} placeholder="0.00" style={{ width: '100%', padding: '12px 12px 12px 40px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 12, color: 'white' }} required />
+                    <div style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: "rgba(255, 255, 255, 0.3)", fontWeight: 800, fontSize: 14 }}>{currency}</div>
+                    <input 
+                      type="number" 
+                      step="any"
+                      value={newExpense.amount} 
+                      onChange={e => setNewExpense({...newExpense, amount: e.target.value})} 
+                      placeholder="0.00" 
+                      style={{ 
+                        width: '100%', 
+                        padding: '12px 12px 12px 42px', 
+                        background: 'rgba(255, 255, 255, 0.04)', 
+                        border: '1px solid rgba(129, 140, 248, 0.25)', 
+                        borderRadius: 14, 
+                        color: '#ffffff',
+                        fontSize: 14,
+                        outline: 'none',
+                        transition: 'all 0.2s ease',
+                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2)'
+                      }} 
+                      required 
+                    />
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <label style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 600 }}>{lang === 'tr' ? 'TARİH (GÜN)' : 'DATE (DAY)'}</label>
+                  <label style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.5)', fontWeight: 800, letterSpacing: '0.06em' }}>
+                    {lang === 'tr' ? 'TARİH (GÜN)' : 'DATE (DAY)'}
+                  </label>
                   <div style={{ position: 'relative' }}>
-                    <Calendar size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text3)' }} />
-                    <input type="number" min="1" max="31" value={newExpense.date} onChange={e => setNewExpense({...newExpense, date: e.target.value})} style={{ width: '100%', padding: '12px 12px 12px 40px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 12, color: 'white' }} required />
+                    <Calendar size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255, 255, 255, 0.3)' }} />
+                    <input 
+                      type="number" 
+                      min="1" 
+                      max="31" 
+                      value={newExpense.date} 
+                      onChange={e => setNewExpense({...newExpense, date: e.target.value})} 
+                      style={{ 
+                        width: '100%', 
+                        padding: '12px 12px 12px 42px', 
+                        background: 'rgba(255, 255, 255, 0.04)', 
+                        border: '1px solid rgba(129, 140, 248, 0.25)', 
+                        borderRadius: 14, 
+                        color: '#ffffff',
+                        fontSize: 14,
+                        outline: 'none',
+                        transition: 'all 0.2s ease',
+                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2)'
+                      }} 
+                      required 
+                    />
                   </div>
                 </div>
 
-                <button type="submit" className="btn btn-primary" style={{ marginTop: 12, padding: 16 }}>{lang === 'tr' ? 'Sisteme İşle' : 'Register Expense'}</button>
+                <button 
+                  type="submit" 
+                  style={{ 
+                    marginTop: 16, 
+                    padding: '14px 20px', 
+                    background: 'linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%)', 
+                    border: 'none', 
+                    borderRadius: 100, 
+                    color: '#ffffff', 
+                    fontWeight: 800, 
+                    fontSize: 14, 
+                    boxShadow: '0 4px 20px rgba(129, 140, 248, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)', 
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                    e.currentTarget.style.boxShadow = '0 6px 24px rgba(129, 140, 248, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(129, 140, 248, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
+                  }}
+                >
+                  {lang === 'tr' ? 'Sisteme İşle' : 'Register Expense'}
+                </button>
               </form>
             </motion.div>
           </motion.div>
