@@ -70,12 +70,7 @@ export async function fetchLiveTefasPPFs() {
       return resData.resultList || [];
     };
 
-    // Phase 1: Initialize Session Cookie (Warm up)
-    try {
-      await fetch('/tefas-api/TefasGrafik.aspx', { method: 'GET' });
-    } catch (e) {
-      console.warn("TEFAS Session warming up warning, proceeding...", e);
-    }
+
 
     // Phase 2: Find the most recent business day that has active data
     let dateB = new Date();
