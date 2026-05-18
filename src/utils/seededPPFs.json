@@ -1,0 +1,30 @@
+{
+  "updatedAt": "2026-05-18",
+  "data": [
+    {
+      "code": "KHP",
+      "name": "Kuveyt Türk Paylaşimli Hesap Katilim Para Piyasası",
+      "yield": "%4.35"
+    },
+    {
+      "code": "ZA2",
+      "name": "Kuveyt Türk İki̇nci̇ Sepet Hesap Katilim Para Piyasası",
+      "yield": "%4.18"
+    },
+    {
+      "code": "PSE",
+      "name": "Atlas  Serbest Fon Para Piyasası",
+      "yield": "%4.06"
+    },
+    {
+      "code": "MT2",
+      "name": "Mt  Serbest Fon Para Piyasası",
+      "yield": "%4.03"
+    },
+    {
+      "code": "PNU",
+      "name": "Pusula İki̇nci̇ Para Piyasası",
+      "yield": "%4.02"
+    }
+  ]
+}
