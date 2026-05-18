@@ -150,9 +150,9 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
             style={{ 
               position: 'fixed', 
               inset: 0, 
-              background: 'rgba(10, 10, 15, 0.4)', 
-              backdropFilter: 'blur(16px)', 
-              WebkitBackdropFilter: 'blur(16px)', 
+              background: 'rgba(255, 255, 255, 0.15)', 
+              backdropFilter: 'blur(20px)', 
+              WebkitBackdropFilter: 'blur(20px)', 
               zIndex: 2000, 
               display: 'flex', 
               alignItems: 'center', 
@@ -168,14 +168,14 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                 width: '100%', 
                 maxWidth: 440, 
                 padding: '36px 32px', 
-                background: 'rgba(24, 24, 37, 0.85)', 
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
+                background: 'rgba(255, 255, 255, 0.45)', 
+                backdropFilter: 'blur(30px)',
+                WebkitBackdropFilter: 'blur(30px)',
                 border: '1px solid rgba(129, 140, 248, 0.3)', 
                 borderRadius: 24,
-                boxShadow: '0 25px 60px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.05)',
+                boxShadow: '0 30px 70px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
                 position: 'relative',
-                color: '#ffffff'
+                color: 'var(--text1)'
               }}
             >
               <button 
@@ -186,28 +186,28 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                   right: 24, 
                   background: 'none', 
                   border: 'none', 
-                  color: 'rgba(255, 255, 255, 0.4)', 
+                  color: 'var(--text2)', 
                   cursor: 'pointer',
                   transition: 'all 0.2s ease'
                 }}
-                onMouseEnter={e => e.currentTarget.style.color = '#ffffff'}
-                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.4)'}
+                onMouseEnter={e => e.currentTarget.style.color = 'var(--text1)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'var(--text2)'}
               >
                 <X size={20} />
               </button>
               
-              <h2 style={{ fontSize: 24, fontWeight: 900, marginBottom: 28, display: 'flex', alignItems: 'center', gap: 12, letterSpacing: '-0.02em', color: '#ffffff' }}>
+              <h2 style={{ fontSize: 24, fontWeight: 900, marginBottom: 28, display: 'flex', alignItems: 'center', gap: 12, letterSpacing: '-0.02em', color: 'var(--text1)' }}>
                 <Plus size={24} style={{ color: 'var(--accent)' }} /> 
                 {lang === 'tr' ? 'Harcama Ekle' : 'Add Expense'}
               </h2>
               
               <form onSubmit={handleAddExpense} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <label style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.5)', fontWeight: 800, letterSpacing: '0.06em' }}>
+                  <label style={{ fontSize: 11, color: 'var(--text2)', fontWeight: 800, letterSpacing: '0.06em' }}>
                     {lang === 'tr' ? 'HARCAMA İSMİ' : 'EXPENSE NAME'}
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <Tag size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255, 255, 255, 0.3)' }} />
+                    <Tag size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text3)' }} />
                     <input 
                       type="text" 
                       value={newExpense.name} 
@@ -216,14 +216,14 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                       style={{ 
                         width: '100%', 
                         padding: '12px 12px 12px 42px', 
-                        background: 'rgba(255, 255, 255, 0.04)', 
+                        background: 'rgba(255, 255, 255, 0.5)', 
                         border: '1px solid rgba(129, 140, 248, 0.25)', 
                         borderRadius: 14, 
-                        color: '#ffffff',
+                        color: 'var(--text1)',
                         fontSize: 14,
                         outline: 'none',
                         transition: 'all 0.2s ease',
-                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2)'
+                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.03)'
                       }} 
                       required 
                     />
@@ -231,11 +231,11 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <label style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.5)', fontWeight: 800, letterSpacing: '0.06em' }}>
+                  <label style={{ fontSize: 11, color: 'var(--text2)', fontWeight: 800, letterSpacing: '0.06em' }}>
                     {lang === 'tr' ? 'MİKTAR' : 'AMOUNT'}
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <div style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: "rgba(255, 255, 255, 0.3)", fontWeight: 800, fontSize: 14 }}>{currency}</div>
+                    <div style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: "var(--text3)", fontWeight: 800, fontSize: 14 }}>{currency}</div>
                     <input 
                       type="number" 
                       step="any"
@@ -245,14 +245,14 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                       style={{ 
                         width: '100%', 
                         padding: '12px 12px 12px 42px', 
-                        background: 'rgba(255, 255, 255, 0.04)', 
+                        background: 'rgba(255, 255, 255, 0.5)', 
                         border: '1px solid rgba(129, 140, 248, 0.25)', 
                         borderRadius: 14, 
-                        color: '#ffffff',
+                        color: 'var(--text1)',
                         fontSize: 14,
                         outline: 'none',
                         transition: 'all 0.2s ease',
-                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2)'
+                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.03)'
                       }} 
                       required 
                     />
@@ -260,11 +260,11 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <label style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.5)', fontWeight: 800, letterSpacing: '0.06em' }}>
+                  <label style={{ fontSize: 11, color: 'var(--text2)', fontWeight: 800, letterSpacing: '0.06em' }}>
                     {lang === 'tr' ? 'TARİH (GÜN)' : 'DATE (DAY)'}
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <Calendar size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255, 255, 255, 0.3)' }} />
+                    <Calendar size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text3)' }} />
                     <input 
                       type="number" 
                       min="1" 
@@ -274,14 +274,14 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                       style={{ 
                         width: '100%', 
                         padding: '12px 12px 12px 42px', 
-                        background: 'rgba(255, 255, 255, 0.04)', 
+                        background: 'rgba(255, 255, 255, 0.5)', 
                         border: '1px solid rgba(129, 140, 248, 0.25)', 
                         borderRadius: 14, 
-                        color: '#ffffff',
+                        color: 'var(--text1)',
                         fontSize: 14,
                         outline: 'none',
                         transition: 'all 0.2s ease',
-                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2)'
+                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.03)'
                       }} 
                       required 
                     />
@@ -293,13 +293,13 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                   style={{ 
                     marginTop: 16, 
                     padding: '14px 20px', 
-                    background: 'linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%)', 
+                    background: 'linear-gradient(135deg, #818cf8 0%, #c084fc 100%)', 
                     border: 'none', 
                     borderRadius: 100, 
                     color: '#ffffff', 
                     fontWeight: 800, 
                     fontSize: 14, 
-                    boxShadow: '0 4px 20px rgba(129, 140, 248, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)', 
+                    boxShadow: '0 4px 20px rgba(129, 140, 248, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)', 
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -309,11 +309,11 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                   }}
                   onMouseEnter={e => {
                     e.currentTarget.style.transform = 'translateY(-1px)';
-                    e.currentTarget.style.boxShadow = '0 6px 24px rgba(129, 140, 248, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3)';
+                    e.currentTarget.style.boxShadow = '0 6px 24px rgba(129, 140, 248, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.3)';
                   }}
                   onMouseLeave={e => {
                     e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(129, 140, 248, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
+                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(129, 140, 248, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
                   }}
                 >
                   {lang === 'tr' ? 'Sisteme İşle' : 'Register Expense'}

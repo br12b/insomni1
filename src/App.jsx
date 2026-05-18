@@ -360,7 +360,7 @@ function AppContent() {
           )}
           {view === 'salary' && <SalaryInput onComplete={d => { setSalaryData(d); goTo('expenses'); }} />}
           {view === 'expenses' && <ExpenseInput onComplete={d => { setExpensesData(d); goTo('dashboard'); }} />}
-          {view === 'dashboard' && <Dashboard salaryData={salaryData || {income:0, currency:'₺', day:1}} expensesData={expensesData} profileName={profile} />}
+          {view === 'dashboard' && <Dashboard salaryData={salaryData || {income:0, currency:'₺', day:1}} expensesData={expensesData} setExpensesData={setExpensesData} profileName={profile} />}
           {view === 'opportunities' && <Opportunities expenses={expensesData} salaryData={salaryData || {income:0, currency:'₺', day:1}} />}
           {view === 'chat' && <Chat salaryData={salaryData} expensesData={expensesData} />}
           {view === 'remsync' && <RemSync onSalaryUpdate={setSalaryData} />}
