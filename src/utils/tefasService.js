@@ -1,6 +1,7 @@
 /**
  * TEFAS Real-time PPF Data Fetcher Service
- * Implements standard Takasbank / TEFAS API crawling with warm session headers.
+ * Implements new official Next.js-based TEFAS API (fonGnlBlgSiraliGetir) with warm session.
+ * Features automated business day backtracking (up to 7 days) to support weekends and holidays.
  * Bypasses CORS via reverse-proxy rewrites on Vercel/Netlify.
  * Features an absolute, zero-crash failover fallback to high-fidelity simulated values.
  */
@@ -15,77 +16,176 @@ export async function fetchLiveTefasPPFs() {
   ];
 
   try {
+    // 1. Helper function to format date as YYYYMMDD
+    const formatDate = (dateObj) => {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}${m}${d}`;
+    };
+
+    // 2. Helper to fetch single date fund list from TEFAS
+    const fetchDateData = async (dateStr) => {
+      const bodyPayload = {
+        fonTipi: "YAT",
+        fonKodu: null,
+        aramaMetni: null,
+        fonTurKod: null,
+        fonGrubu: null,
+        sfonTurKod: null,
+        fonTurAciklama: null,
+        kurucuKod: null,
+        basTarih: dateStr,
+        bitTarih: dateStr,
+        basSira: 1,
+        bitSira: 100000,
+        dil: "TR",
+        sFonTurKod: "",
+        fonKod: "",
+        fonGrup: "",
+        fonUnvanTip: ""
+      };
+
+      const response = await fetch('/tefas-api/api/funds/fonGnlBlgSiraliGetir', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json, text/javascript, */*; q=0.01',
+          'Origin': 'https://www.tefas.gov.tr',
+          'Referer': 'https://www.tefas.gov.tr/tr/fon-verileri',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(bodyPayload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Status: ${response.status}`);
+      }
+
+      const resData = await response.json();
+      if (resData.errorCode || resData.errorMessage) {
+        throw new Error(resData.errorMessage || "API error");
+      }
+
+      return resData.resultList || [];
+    };
+
     // Phase 1: Initialize Session Cookie (Warm up)
-    // TefasGrafik.aspx yields initial session cookie
     try {
       await fetch('/tefas-api/TefasGrafik.aspx', { method: 'GET' });
     } catch (e) {
       console.warn("TEFAS Session warming up warning, proceeding...", e);
     }
 
-    // Phase 2: Query All Mutual Funds (fonGetiriBazliBilgiGetir)
-    // Form Url Encoded payload exactly mimicking standard browser behavior
-    const formData = new URLSearchParams();
-    formData.append('fonTipi', 'YAT'); // YAT = Yatırım Fonları
-    formData.append('getiriOrani', '1'); // 1 = 1-Month yields sorting baseline
-
-    const response = await fetch('/tefas-api/api/funds/fonGetiriBazliBilgiGetir', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Accept': 'application/json, text/javascript, */*; q=0.01',
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-      body: formData
-    });
-
-    if (!response.ok) {
-      throw new Error(`TEFAS API gateway returned status: ${response.status}`);
-    }
-
-    const rawData = await response.json();
+    // Phase 2: Find the most recent business day that has active data
+    let dateB = new Date();
+    let listB = [];
+    let attempts = 0;
     
-    // Validate if structure has raw array payload
-    const fundArray = Array.isArray(rawData) ? rawData : (rawData?.data || []);
-    if (!fundArray || fundArray.length === 0) {
-      throw new Error("TEFAS returned empty or invalid data payload.");
+    // We try going backwards up to 7 days to find the last valid trading day (handling weekends/holidays)
+    while (listB.length === 0 && attempts < 7) {
+      const dateStr = formatDate(dateB);
+      try {
+        listB = await fetchDateData(dateStr);
+      } catch (e) {
+        console.warn(`No TEFAS data for ${dateStr}, retrying...`, e);
+      }
+      if (listB.length === 0) {
+        dateB.setDate(dateB.getDate() - 1);
+        attempts++;
+      }
     }
 
-    // Filter strictly by: "Para Piyasası Şemsiye Fonu" (PPF)
-    // Turkish mutual funds type checks are case-insensitive
-    const rawPPFs = fundArray.filter(fund => {
-      const type = (fund.FonTipi || fund.Tipi || fund.Group || "").toLowerCase();
-      const name = (fund.FonAdi || fund.Adi || "").toLowerCase();
-      return type.includes('para piyasası') || type.includes('ppf') || name.includes('para piyasası');
-    });
-
-    if (rawPPFs.length === 0) {
-      throw new Error("No PPFs found in active TEFAS list.");
+    if (listB.length === 0) {
+      throw new Error("Could not find any recent trading day with TEFAS data.");
     }
 
-    // Parse and Map TEFAS fields to unified schema
-    // Extract: code (FonKodu), name (FonAdi), monthly yield (Getiri)
-    const mappedPPFs = rawPPFs.map(fund => {
-      const code = fund.FonKodu || fund.Kod || "FON";
-      let name = fund.FonAdi || fund.Adi || "Para Piyasası Fonu";
-      
-      // Clean up names if they are too long or contain duplicated words
-      name = name.replace("Portföy", "").replace("Para Piyasası", "").replace("Şemsiye", "").replace("Fonu", "").replace("  ", " ").trim();
-      name = name + " Para Piyasası"; // standardize suffix
+    // Phase 3: Fetch data for 30 days prior to our found dateB for yield comparison
+    const dateA = new Date(dateB);
+    dateA.setDate(dateA.getDate() - 30);
+    
+    let listA = [];
+    let attemptsA = 0;
+    
+    // Similarly try going backwards up to 7 days from target history date
+    while (listA.length === 0 && attemptsA < 7) {
+      const dateStr = formatDate(dateA);
+      try {
+        listA = await fetchDateData(dateStr);
+      } catch (e) {
+        console.warn(`No TEFAS historical data for ${dateStr}, retrying...`, e);
+      }
+      if (listA.length === 0) {
+        dateA.setDate(dateA.getDate() - 1);
+        attemptsA++;
+      }
+    }
 
-      // Extract yield (usually 1-month or current rate)
-      const rawYield = parseFloat(fund.Getiri || fund.Getiri1Ay || fund.Yield || 3.5);
-      const yieldStr = `%${(isNaN(rawYield) ? 3.5 : rawYield).toFixed(2)}`;
+    if (listA.length === 0) {
+      throw new Error("Could not find historical trading day for yield calculation.");
+    }
 
-      return { code, name, yield: yieldStr, rawVal: rawYield };
+    // Filter lists strictly for Money Market Funds (PPFs)
+    const isPPF = (name) => {
+      const n = name.toUpperCase();
+      return n.includes("PARA P") || n.includes("P.P.") || n.includes("PPF");
+    };
+
+    const ppfsB = listB.filter(f => f.fonUnvan && isPPF(f.fonUnvan));
+    const ppfsA = listA.filter(f => f.fonUnvan && isPPF(f.fonUnvan));
+
+    // Map historical prices by code
+    const priceMapA = {};
+    ppfsA.forEach(f => {
+      if (f.fonKodu && f.fiyat) {
+        priceMapA[f.fonKodu] = f.fiyat;
+      }
     });
 
-    // Sort descending by highest yield percentage
-    mappedPPFs.sort((a, b) => b.rawVal - a.rawVal);
+    // Merge and calculate yields
+    const mergedPPFs = [];
+    ppfsB.forEach(f => {
+      const priceEnd = f.fiyat;
+      const priceStart = priceMapA[f.fonKodu];
+      if (priceStart && priceEnd) {
+        const yieldVal = ((priceEnd - priceStart) / priceStart) * 100;
+        
+        let cleanName = f.fonUnvan || "Para Piyasası Fonu";
+        
+        // Clean special characters
+        cleanName = cleanName
+          .replace("PORTFÖY", "")
+          .replace("PARA PİYASASI", "")
+          .replace("ŞEMSİYE", "")
+          .replace("FONU", "")
+          .replace("(TL)", "")
+          .replace("  ", " ")
+          .trim();
+        cleanName = cleanName + " Para Piyasası"; // standardize suffix
+        
+        // Format name capitalization beautifully
+        const words = cleanName.toLowerCase().split(' ');
+        const capName = words.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+        mergedPPFs.push({
+          code: f.fonKodu,
+          name: capName,
+          yield: `%${yieldVal.toFixed(2)}`,
+          rawVal: yieldVal
+        });
+      }
+    });
+
+    if (mergedPPFs.length === 0) {
+      throw new Error("No matching funds merged between dates.");
+    }
+
+    // Sort descending by highest yield
+    mergedPPFs.sort((a, b) => b.rawVal - a.rawVal);
 
     // Limit strictly to top 5 high-performing funds
-    const top5 = mappedPPFs.slice(0, 5).map(f => ({ code: f.code, name: f.name, yield: f.yield }));
-    
+    const top5 = mergedPPFs.slice(0, 5).map(f => ({ code: f.code, name: f.name, yield: f.yield }));
+
     return {
       success: true,
       method: 'Live TEFAS Fetch (Vercel/Netlify Proxy Gateway)',
