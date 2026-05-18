@@ -39,13 +39,26 @@ function ThinkingStep({ step, index }) {
 }
 
 // Tek bir mesaj balonu
-function MessageBubble({ msg }) {
+function MessageBubble({ msg, onSelectOption, isLast }) {
   const isUser = msg.role === 'user';
+  
+  let displayContent = msg.content;
+  let options = [];
+  
+  if (!isUser) {
+    const optionsRegex = /\[OPTIONS:\s*([^\]|]+)\s*\|\s*([^\]]+)\s*\]/;
+    const match = displayContent.match(optionsRegex);
+    if (match) {
+      displayContent = displayContent.replace(optionsRegex, '').trim();
+      options = [match[1].trim(), match[2].trim()];
+    }
+  }
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      style={{ display: 'flex', flexDirection: 'column', alignItems: isUser ? 'flex-end' : 'flex-start', gap: 6 }}>
+      style={{ display: 'flex', flexDirection: 'column', alignItems: isUser ? 'flex-end' : 'flex-start', gap: 6, width: '100%' }}>
       {/* ReAct Thinking Steps (sadece model mesajlarında) */}
       {!isUser && msg.thinkingSteps && msg.thinkingSteps.length > 0 && (
         <div style={{ padding: '10px 14px', borderRadius: 12, background: 'var(--bg2)', border: '1px solid var(--glass-border)', maxWidth: '90%' }}>
@@ -92,8 +105,38 @@ function MessageBubble({ msg }) {
             <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.06em' }}>R.E.M</span>
           </div>
         )}
-        {msg.content}
+        {displayContent}
       </div>
+      {/* Dynamic Follow-up Option Buttons */}
+      {!isUser && isLast && options.length > 0 && (
+        <div style={{ display: 'flex', gap: 8, marginTop: 4, flexWrap: 'wrap', maxWidth: '90%' }}>
+          {options.map((opt, idx) => (
+            <motion.button
+              key={idx}
+              whileHover={{ scale: 1.03, background: 'var(--accent-dim)', borderColor: 'var(--accent)' }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => onSelectOption && onSelectOption(opt)}
+              style={{
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)',
+                color: 'var(--text0)',
+                padding: '8px 16px',
+                borderRadius: '100px',
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6
+              }}
+            >
+              🎯 {opt}
+            </motion.button>
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 }
@@ -186,7 +229,14 @@ export default function AIChat({ financialData }) {
         )}
 
         <AnimatePresence>
-          {messages.map((msg, i) => <MessageBubble key={i} msg={msg} />)}
+          {messages.map((msg, i) => (
+            <MessageBubble 
+              key={i} 
+              msg={msg} 
+              onSelectOption={handleSend} 
+              isLast={i === messages.length - 1 && !isTyping} 
+            />
+          ))}
         </AnimatePresence>
 
         {/* Live Thinking Steps (aktif araç çağrıları) */}
