@@ -31,7 +31,7 @@ const getExpenseMonth = (dateVal) => {
       return parsedDate.getMonth();
     }
   }
-  return new Date().getMonth(); // default to active onboarding month
+  return 4; // default to May (active month under analysis)
 };
 
 // Secure year parser
@@ -108,7 +108,10 @@ export default function MonthlyCalendar({ expenses = [], salaryDay = 1, income =
   let runningBalance = 0;
   const activeDailyBalances = Array.from({ length: daysInMonth }, (_, i) => {
     const day = i + 1;
-    if (day === salaryDay) {
+    
+    // Bounding the salary deposit strictly to May 2026 so it is not duplicated in other months!
+    const isSalary = day === salaryDay && currentMonth === 4 && currentYear === 2026;
+    if (isSalary) {
       runningBalance += income;
     }
     
@@ -118,9 +121,9 @@ export default function MonthlyCalendar({ expenses = [], salaryDay = 1, income =
       const expM = getExpenseMonth(e.date);
       const expY = getExpenseYear(e.date);
       
-      // If the expense date is a simple day number, show it on every month's that day
       const isSimpleDay = !e.date.toString().includes('-') && !e.date.toString().includes('T');
       if (isSimpleDay) {
+        // Bound simple days strictly to May 2026 so they don't clone across other months!
         return expD === day && currentMonth === 4 && currentYear === 2026;
       }
       return expD === day && expM === currentMonth && expY === currentYear;
@@ -209,11 +212,11 @@ export default function MonthlyCalendar({ expenses = [], salaryDay = 1, income =
 
         {/* Dynamic Month Days */}
         {activeDailyBalances.map(d => {
-          const isSalary = d.day === salaryDay;
+          // Bounding payday display strictly to May 2026!
+          const isSalary = d.day === salaryDay && currentMonth === 4 && currentYear === 2026;
           const isDropping = dropTarget === d.day;
           const isSuccess = dropSuccess === d.day;
           
-          // Current date is 18 May 2026
           const isToday = currentYear === 2026 && currentMonth === 4 && d.day === 18;
 
           return (

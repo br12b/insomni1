@@ -24,7 +24,7 @@ const SourceIcon = ({ source }) => {
   return null;
 };
 
-export default function Calendar() {
+export default function Calendar({ financialData }) {
   const { lang, t } = useLanguage();
   const [selectedDay, setSelectedDay] = useState(new Date().getDate());
   const [syncedData, setSyncedData] = useState([]);
@@ -59,8 +59,8 @@ export default function Calendar() {
     // 1. Load R.E.M Synced Transactions
     const synced = JSON.parse(localStorage.getItem('insomni_synced_txs') || '[]');
     
-    // 2. Load User Expenses added via Dashboard
-    const userExpenses = JSON.parse(localStorage.getItem('insomni_expenses') || '[]');
+    // 2. Use reactive expensesData passed down from parent App state (Direct Information Bridge!)
+    const userExpenses = financialData?.expensesData || [];
     
     // 3. Map user expenses to the calendar schema
     const mappedUserExpenses = userExpenses.map(e => ({
@@ -81,7 +81,7 @@ export default function Calendar() {
       ...mappedUserExpenses
     ];
     setSyncedData(Array.isArray(combined) ? combined : []);
-  }, [lang]);
+  }, [lang, financialData]);
 
   const parseCurrency = (str) => {
     if (!str) return 0;
