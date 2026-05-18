@@ -36,7 +36,7 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
   const { lang, t } = useLanguage();
   const [syncedTxs, setSyncedTxs] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newExpense, setNewExpense] = useState({ name: '', amount: '', date: new Date().getDate(), category: 'Diğer' });
+  const [newExpense, setNewExpense] = useState({ name: '', amount: '', date: new Date().getDate(), category: lang === 'tr' ? 'Diğer' : 'Other' });
   const [isIdlePanelExpanded, setIsIdlePanelExpanded] = useState(false);
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
     setExpensesData(updatedExpenses);
     localStorage.setItem('insomni_expenses', JSON.stringify(updatedExpenses));
     
-    setNewExpense({ name: '', amount: '', date: new Date().getDate(), category: 'Diğer' });
+    setNewExpense({ name: '', amount: '', date: new Date().getDate(), category: lang === 'tr' ? 'Diğer' : 'Other' });
     setIsModalOpen(false);
   };
 
@@ -154,7 +154,7 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
                   <label style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 600 }}>{lang === 'tr' ? 'HARCAMA İSMİ' : 'EXPENSE NAME'}</label>
                   <div style={{ position: 'relative' }}>
                     <Tag size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text3)' }} />
-                    <input type="text" value={newExpense.name} onChange={e => setNewExpense({...newExpense, name: e.target.value})} placeholder="Örn: Starbucks" style={{ width: '100%', padding: '12px 12px 12px 40px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 12, color: 'white' }} required />
+                    <input type="text" value={newExpense.name} onChange={e => setNewExpense({...newExpense, name: e.target.value})} placeholder={lang === 'tr' ? "Örn: Starbucks" : "e.g. Starbucks"} style={{ width: '100%', padding: '12px 12px 12px 40px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 12, color: 'white' }} required />
                   </div>
                 </div>
 
@@ -183,23 +183,27 @@ export default function Dashboard({ salaryData, expensesData = [], setExpensesDa
 
       <motion.div variants={fadeUp} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20 }}>
         <div>
-          <h1 style={{ fontSize: 'clamp(28px, 4vw, 36px)', fontWeight: 900, marginBottom: 8, letterSpacing: '-0.03em' }}>Hoş Geldin, {profileName || 'Kullanıcı'}</h1>
-          <p style={{ color: 'var(--text2)', fontSize: 15 }}>Finansal durumunun güncel özeti ve AI içgörüleri.</p>
+          <h1 style={{ fontSize: 'clamp(28px, 4vw, 36px)', fontWeight: 900, marginBottom: 8, letterSpacing: '-0.03em' }}>
+            {lang === 'tr' ? 'Hoş Geldin' : 'Welcome Back'}, {profileName || (lang === 'tr' ? 'Kullanıcı' : 'User')}
+          </h1>
+          <p style={{ color: 'var(--text2)', fontSize: 15 }}>
+            {lang === 'tr' ? 'Finansal durumunun güncel özeti ve AI içgörüleri.' : 'Current summary of your financial status and AI insights.'}
+          </p>
         </div>
         <button onClick={() => setIsModalOpen(true)} className="btn btn-primary btn-sm"><Plus size={18} /> {lang === 'tr' ? 'Harcama Ekle' : 'Add Expense'}</button>
       </motion.div>
 
       <motion.div variants={stagger} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 20 }}>
         <motion.div variants={fadeUp} className="glass" style={{ padding: '16px 20px', border: '1px solid var(--glass-border)' }}>
-          <div className="label" style={{ marginBottom: 12 }}><Wallet size={16}/> {t.dashboard?.salary || 'MAAŞ'}</div>
+          <div className="label" style={{ marginBottom: 12 }}><Wallet size={16}/> {lang === 'tr' ? 'MAAŞ' : 'NET INCOME'}</div>
           <div className="stat-num" style={{ fontSize: 24 }}><AnimatedCounter value={income} suffix={` ${currency}`} /></div>
         </motion.div>
         <motion.div variants={fadeUp} className="glass" style={{ padding: '16px 20px', border: '1px solid var(--glass-border)' }}>
-          <div className="label" style={{ marginBottom: 12 }}><TrendingDown size={16}/> {t.dashboard?.totalExp || 'TOPLAM GİDER'}</div>
+          <div className="label" style={{ marginBottom: 12 }}><TrendingDown size={16}/> {lang === 'tr' ? 'TOPLAM GİDER' : 'TOTAL EXPENSE'}</div>
           <div className="stat-num" style={{ color: 'var(--red)', fontSize: 24 }}><AnimatedCounter value={totalExpense} suffix={` ${currency}`} /></div>
         </motion.div>
         <motion.div variants={fadeUp} className="glass" style={{ padding: '16px 20px', border: '1px solid var(--glass-border)' }}>
-          <div className="label" style={{ marginBottom: 12 }}><LayoutDashboard size={16}/> {t.dashboard?.remaining || 'KALAN ATIL NAKİT'}</div>
+          <div className="label" style={{ marginBottom: 12 }}><LayoutDashboard size={16}/> {lang === 'tr' ? 'KALAN ATIL NAKİT' : 'REMAINING IDLE CASH'}</div>
           <div className="stat-num" style={{ color: 'var(--green)', fontSize: 24 }}><AnimatedCounter value={remaining} suffix={` ${currency}`} /></div>
         </motion.div>
       </motion.div>

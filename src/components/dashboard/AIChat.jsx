@@ -12,10 +12,10 @@ const QUICK_QUESTIONS_TR = [
 ];
 
 const QUICK_QUESTIONS_EN = [
+  'What is V.R.E.M?',
+  'Scan Today\'s Top Yields',
   'What is my idle cash opportunity?',
   'Analyze my subscriptions',
-  'Is my expense timing optimal?',
-  'Where is my biggest cost?',
 ];
 
 // Thinking step — tek bir ReAct adımı
@@ -89,7 +89,7 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
       {!isUser && msg.thinkingSteps && msg.thinkingSteps.length > 0 && (
         <div style={{ padding: '10px 14px', borderRadius: 12, background: 'var(--bg2)', border: '1px solid var(--glass-border)', maxWidth: '90%' }}>
           <div style={{ fontSize: 10, color: 'var(--text2)', marginBottom: 6, fontWeight: 600, letterSpacing: '0.08em' }}>
-            R.E.M ANALIZ
+            {lang === 'tr' ? 'R.E.M ANALİZ' : 'R.E.M ANALYSIS'}
           </div>
           {msg.thinkingSteps.map((step, i) => <ThinkingStep key={i} step={step} index={i} />)}
         </div>
@@ -436,7 +436,7 @@ export default function AIChat({ financialData }) {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             style={{ padding: '10px 14px', borderRadius: 12, background: 'var(--bg2)', border: '1px solid var(--accent)', maxWidth: '90%' }}>
             <div style={{ fontSize: 10, color: 'var(--accent)', marginBottom: 6, fontWeight: 700, letterSpacing: '0.08em' }}>
-              R.E.M DÜŞÜNÜYOR
+              {lang === 'tr' ? 'R.E.M DÜŞÜNÜYOR' : 'R.E.M THINKING'}
             </div>
             {thinkingSteps.map((step, i) => <ThinkingStep key={i} step={step} index={i} />)}
           </motion.div>

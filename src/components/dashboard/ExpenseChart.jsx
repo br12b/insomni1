@@ -49,7 +49,14 @@ export default function ExpenseChart({ dailyBalances = [], currency = '₺' }) {
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
             <XAxis dataKey="day" stroke="var(--text2)" fontSize={10} tickLine={false} axisLine={false} minTickGap={20} />
-            <YAxis stroke="var(--text2)" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `${val >= 1000 ? (val/1000).toFixed(0) + 'k' : val}`} />
+            <YAxis stroke="var(--text2)" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => {
+              const absVal = Math.abs(val);
+              if (absVal >= 1000) {
+                const sign = val < 0 ? '-' : '';
+                return `${sign}${(absVal / 1000).toFixed(0)}k`;
+              }
+              return val;
+            }} />
             <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--accent)', strokeWidth: 1, strokeDasharray: '3 3' }} />
             <Area type="monotone" dataKey="balance" stroke="var(--accent)" strokeWidth={3} fillOpacity={1} fill="url(#colorBalance)" />
           </AreaChart>

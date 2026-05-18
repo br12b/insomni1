@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { parseAmount } from '../../lib/calculations';
+import { useLanguage } from '../../context/LanguageContext';
 
 // Secure date parser that matches numbers, strings, and full ISO dates
 const getExpenseDay = (dateVal) => {
@@ -20,7 +21,7 @@ const getExpenseDay = (dateVal) => {
   return 15;
 };
 
-function ExpBadge({ exp, onDragStart }) {
+function ExpBadge({ exp, onDragStart, lang, currency }) {
   const isSub = exp.type === 'subscription';
   return (
     <div draggable onDragStart={e => { e.dataTransfer.setData('expId', exp.id); onDragStart?.(exp.id); }}
@@ -29,13 +30,14 @@ function ExpBadge({ exp, onDragStart }) {
         color: isSub ? 'var(--accent)' : 'var(--green)',
         fontSize: 10, fontWeight: 600, cursor: 'grab', userSelect: 'none', marginTop: 3,
         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}
-      title={exp.name + ': TL' + parseAmount(exp.amount).toLocaleString('tr-TR')}>
+      title={exp.name + ': ' + currency + parseAmount(exp.amount).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}>
       {exp.name.length > 9 ? exp.name.slice(0,9) + '..' : exp.name}
     </div>
   );
 }
 
 export default function MonthlyCalendar({ dailyBalances = [], expenses = [], salaryDay = 1, income = 0, currentDay = 31, onExpenseDateChange }) {
+  const { lang, t } = useLanguage();
   const [dropTarget, setDropTarget] = useState(null);
   const [dropSuccess, setDropSuccess] = useState(null);
 
@@ -73,11 +75,11 @@ export default function MonthlyCalendar({ dailyBalances = [], expenses = [], sal
             }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
               <span style={{ fontSize: 11, fontWeight: 700, color: d.day === currentDay ? 'var(--accent)' : 'var(--text2)', fontFamily: 'var(--mono)' }}>{d.day}</span>
-              {isSalary && <span style={{ fontSize: 8, color: 'var(--green)', fontWeight: 700 }}>MAAS</span>}
+              {isSalary && <span style={{ fontSize: 8, color: 'var(--green)', fontWeight: 700 }}>{lang === 'tr' ? 'MAAŞ' : 'PAYDAY'}</span>}
             </div>
             {isPast && (
               <div style={{ fontFamily: 'var(--mono)', fontSize: 11, fontWeight: 700, color: d.isNegative ? 'var(--red)' : 'var(--text0)', marginBottom: 2 }}>
-                {d.isNegative ? '-' : ''}TL{Math.abs(d.balance).toLocaleString('tr-TR')}
+                {d.isNegative ? '-' : ''}{t.currency}{Math.abs(d.balance).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}
               </div>
             )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'flex-start' }}>
@@ -98,10 +100,10 @@ export default function MonthlyCalendar({ dailyBalances = [], expenses = [], sal
                     boxShadow: '0 0 10px rgba(16,185,129,0.1)'
                   }}
                 >
-                  +{Math.round(income).toLocaleString('tr-TR')} TL
+                  +{Math.round(income).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')} {t.currency}
                 </div>
               )}
-              {dayExps.map(exp => <ExpBadge key={exp.id || exp.name} exp={exp} onDragStart={() => {}} />)}
+              {dayExps.map(exp => <ExpBadge key={exp.id || exp.name} exp={exp} onDragStart={() => {}} lang={lang} currency={t.currency} />)}
             </div>
           </motion.div>
         );
