@@ -1,69 +1,10 @@
-﻿import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { MessageSquare, Sparkles, Shield, Zap } from 'lucide-react';
+import React from 'react';
+import { Sparkles, Shield, Zap } from 'lucide-react';
 import AIChat from '../components/dashboard/AIChat';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Chat({ salaryData, expensesData }) {
-  const { lang, t } = useLanguage();
-  const [vremStage, setVremStage] = useState('idle'); // 'idle' -> 'loading' -> 'done'
-
-  useEffect(() => {
-    const handleTrigger = () => {
-      setVremStage('loading');
-    };
-    window.addEventListener('vrem_search_start', handleTrigger);
-    return () => window.removeEventListener('vrem_search_start', handleTrigger);
-  }, []);
-
-  useEffect(() => {
-    if (vremStage === 'loading') {
-      const timer = setTimeout(() => {
-        setVremStage('done');
-      }, 2200);
-      return () => clearTimeout(timer);
-    }
-  }, [vremStage]);
-
-  const topPPFs = [
-    { code: 'TP2', name: 'Tera Portföy Para Piyasası', yield: '%3.91' },
-    { code: 'PNU', name: 'Pusula Portföy İkinci P.P.', yield: '%3.90' },
-    { code: 'PRY', name: 'Pusula Portföy Para Piyasası', yield: '%3.89' },
-    { code: 'MPL', name: 'MT Portföy Para Piyasası', yield: '%3.81' },
-    { code: 'PPT', name: 'Atlas Portföy Para Piyasası', yield: '%3.67' }
-  ];
-
-  const handlePrintPdf = () => {
-    const style = document.createElement('style');
-    style.innerHTML = `
-      @media print {
-        body * {
-          visibility: hidden !important;
-        }
-        #vrem-print-section, #vrem-print-section * {
-          visibility: visible !important;
-        }
-        #vrem-print-section {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100% !important;
-          background: #101012 !important;
-          color: #ffffff !important;
-          padding: 40px !important;
-          border: none !important;
-          box-shadow: none !important;
-          border-radius: 0 !important;
-        }
-        .vrem-pdf-btn, .vrem-reset-btn {
-          display: none !important;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-    window.print();
-    document.head.removeChild(style);
-  };
+  const { lang } = useLanguage();
 
   const hasData = salaryData && expensesData && expensesData.length > 0;
 
@@ -90,7 +31,7 @@ export default function Chat({ salaryData, expensesData }) {
 
       <div style={{ display: 'flex', gap: 32, height: '100%', minHeight: 0 }}>
         
-        {/* LEFT SIDE - CONTEXT & STATS (Pristine, Clean Reverted Sidebar) */}
+        {/* LEFT SIDE - CONTEXT & STATS (Clean, Reverted Sidebar) */}
         <div style={{ width: 320, display: 'flex', flexDirection: 'column', gap: 20, flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
             <div style={{ width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 15 }}>
@@ -161,184 +102,19 @@ export default function Chat({ salaryData, expensesData }) {
           </div>
         </div>
 
-        {/* RIGHT SIDE - THE R.E.M WORKSPACE CONTAINER (Holds both Chat and V.R.E.M subagent side-by-side dynamically) */}
-        <div style={{ flex: 1, display: 'flex', gap: 24, minWidth: 0, height: '100%' }}>
-          
-          {/* R.E.M Chat Panel (Glassmorphic) */}
-          <div className="glass" style={{ 
-            flex: 1.3, 
-            display: 'flex', 
-            flexDirection: 'column', 
-            border: '1px solid var(--glass-border)', 
-            background: 'rgba(255,255,255,0.02)', 
-            padding: 24, 
-            borderRadius: 'var(--r-lg)',
-            minWidth: 0,
-            transition: 'all 0.3s ease'
-          }}>
-            <AIChat financialData={financialData} />
-          </div>
-
-          {/* V.R.E.M Subagent Panel (Fades & slides in dynamically on-demand inside R.E.M container) */}
-          {vremStage !== 'idle' && (
-            <div 
-              id="vrem-print-section"
-              className="glass" 
-              style={{ 
-                width: 380, 
-                display: 'flex', 
-                flexDirection: 'column', 
-                gap: 16,
-                padding: 24,
-                border: vremStage === 'loading' ? '1px solid var(--amber)' : '1px solid var(--accent)', 
-                borderRadius: 'var(--r-lg)',
-                background: 'var(--glass)',
-                backdropFilter: 'blur(30px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-                boxShadow: vremStage === 'loading' ? '0 0 25px rgba(245,158,11,0.2)' : '0 0 25px var(--accent-dim)',
-                transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                animation: 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                overflowY: 'auto'
-              }}
-            >
-              {/* Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ 
-                    width: 8, 
-                    height: 8, 
-                    borderRadius: '50%', 
-                    background: vremStage === 'loading' ? 'var(--amber)' : 'var(--green)', 
-                    boxShadow: vremStage === 'loading' ? '0 0 8px var(--amber)' : '0 0 8px var(--green)',
-                    animation: vremStage === 'loading' ? 'blink 1s infinite' : 'none'
-                  }} />
-                  <span style={{ fontSize: 12, fontWeight: 900, textTransform: 'uppercase', color: 'var(--text1)', letterSpacing: '0.06em' }}>
-                    V.R.E.M: TEFAS Analiz Ajanı
-                  </span>
-                </div>
-                <button 
-                  onClick={() => setVremStage('idle')}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    color: 'var(--text3)', 
-                    fontSize: 22, 
-                    cursor: 'pointer', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    padding: '2px 8px',
-                    borderRadius: '50%',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.color = 'var(--text1)'}
-                  onMouseLeave={(e) => e.target.style.color = 'var(--text3)'}
-                >
-                  ×
-                </button>
-              </div>
-
-              {/* STAGE 2: LOADING / SCANNING STATE */}
-              {vremStage === 'loading' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16, height: '100%', justifyContent: 'center', paddingBottom: 40 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-                    <div style={{ 
-                      width: 32, 
-                      height: 32, 
-                      borderRadius: '50%', 
-                      border: '2px solid rgba(245,158,11,0.2)', 
-                      borderTopColor: 'var(--amber)', 
-                      animation: 'spin 0.8s linear infinite' 
-                    }} />
-                    <span style={{ fontSize: 13, color: 'var(--amber)', fontWeight: 700, letterSpacing: '0.04em' }}>
-                      Canlı Veri Köprüsü Aktif...
-                    </span>
-                  </div>
-                  
-                  {/* Console logs */}
-                  <div style={{ 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    gap: 10, 
-                    background: 'rgba(0,0,0,0.3)', 
-                    border: '1px solid rgba(245,158,11,0.15)', 
-                    borderRadius: 12, 
-                    padding: 16, 
-                    fontFamily: 'var(--mono)', 
-                    fontSize: 10, 
-                    color: 'rgba(255,255,255,0.7)', 
-                    lineHeight: 1.6,
-                    boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.5)'
-                  }}>
-                    <div style={{ color: 'var(--amber)' }}>&gt; [vrem-bridge] Connecting to tefas.gov.tr...</div>
-                    <div style={{ paddingLeft: 12 }}>Connection established successfully.</div>
-                    <div style={{ color: 'var(--amber)' }}>&gt; [vrem-filter] Filtering umbrella type: "PARA PİYASASI ŞEMSİYE FONU"</div>
-                    <div style={{ paddingLeft: 12 }}>Found 42 matching Money Market Funds.</div>
-                    <div style={{ color: 'var(--amber)' }}>&gt; [vrem-sort] Sorting top 5 by highest monthly yields...</div>
-                  </div>
-                </div>
-              )}
-
-              {/* STAGE 3: COMPLETED STATE */}
-              {vremStage === 'done' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16, height: '100%' }}>
-                  <div style={{ fontSize: 12, color: 'var(--text2)', fontWeight: 600 }}>
-                    Günün En Çok Kazandıran PPF'leri (1 Aylık Getiri)
-                  </div>
-                  
-                  {/* PPF Table */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {topPPFs.map((ppf) => (
-                      <div 
-                        key={ppf.code}
-                        style={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'space-between', 
-                          padding: '12px 14px', 
-                          background: 'rgba(255,255,255,0.01)', 
-                          border: '1px solid var(--glass-border)', 
-                          borderRadius: 12,
-                          fontSize: 12
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                          <span style={{ fontWeight: 800, color: 'var(--accent)', fontFamily: 'var(--mono)', fontSize: 10, background: 'var(--accent-dim)', padding: '3px 6px', borderRadius: 5 }}>
-                            {ppf.code}
-                          </span>
-                          <span style={{ color: 'var(--text1)', fontWeight: 600 }}>
-                            {ppf.name}
-                          </span>
-                        </div>
-                        <span style={{ fontWeight: 700, color: 'var(--green)', fontFamily: 'var(--mono)', fontSize: 13 }}>
-                          {ppf.yield}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Print & Reset Buttons */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px dashed var(--glass-border)', paddingTop: 14, marginTop: 'auto' }}>
-                    <button 
-                      className="vrem-reset-btn btn btn-sm"
-                      onClick={() => setVremStage('idle')}
-                      style={{ fontSize: 10, padding: '6px 12px', height: 28, border: '1px solid var(--glass-border)', color: 'var(--text2)' }}
-                    >
-                      Sıfırla
-                    </button>
-                    <button 
-                      className="vrem-pdf-btn btn btn-accent btn-sm"
-                      onClick={handlePrintPdf}
-                      style={{ fontSize: 10, padding: '6px 14px', height: 28, fontWeight: 700 }}
-                    >
-                      Rapor İndir (PDF)
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
+        {/* RIGHT SIDE - THE CHAT (Stretched fully downwards, premium and massive) */}
+        <div className="glass" style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          border: '1px solid var(--glass-border)', 
+          background: 'rgba(255,255,255,0.02)', 
+          padding: 32, 
+          borderRadius: 'var(--r-lg)',
+          minWidth: 0,
+          height: '100%'
+        }}>
+          <AIChat financialData={financialData} />
         </div>
 
       </div>
