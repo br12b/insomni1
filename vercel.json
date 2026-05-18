@@ -1,1 +1,10 @@
-{ "version": 2, "framework": "vite" }
+{
+  "version": 2,
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/tefas-api/:path*",
+      "destination": "https://www.tefas.gov.tr/:path*"
+    }
+  ]
+}

@@ -69,23 +69,37 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
   );
 
   const [subagentStage, setSubagentStage] = useState('idle'); // 'idle' -> 'loading' -> 'done'
-
-  useEffect(() => {
-    if (subagentStage === 'loading') {
-      const timer = setTimeout(() => {
-        setSubagentStage('done');
-      }, 2200);
-      return () => clearTimeout(timer);
-    }
-  }, [subagentStage]);
-
-  const topPPFs = [
+  const [topPPFs, setTopPPFs] = useState([
     { code: 'TP2', name: 'Tera Portföy Para Piyasası', yield: '%3.91' },
     { code: 'PNU', name: 'Pusula Portföy İkinci P.P.', yield: '%3.90' },
     { code: 'PRY', name: 'Pusula Portföy Para Piyasası', yield: '%3.89' },
     { code: 'MPL', name: 'MT Portföy Para Piyasası', yield: '%3.81' },
     { code: 'PPT', name: 'Atlas Portföy Para Piyasası', yield: '%3.67' }
-  ];
+  ]);
+  const [fetchMethod, setFetchMethod] = useState('Simulation Backup (Local Seeded Database)');
+
+  useEffect(() => {
+    if (subagentStage === 'loading') {
+      // Start real-time TEFAS fetch in parallel with loader
+      let isMounted = true;
+      import('../../utils/tefasService').then(module => {
+        module.fetchLiveTefasPPFs().then(res => {
+          if (isMounted) {
+            setTopPPFs(res.data);
+            setFetchMethod(res.method);
+          }
+        });
+      });
+
+      const timer = setTimeout(() => {
+        setSubagentStage('done');
+      }, 2200);
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
+    }
+  }, [subagentStage]);
   
   return (
     <motion.div
@@ -294,9 +308,12 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
               </div>
 
               {/* Bottom Filter Details */}
-              <div style={{ borderTop: '1px dashed var(--glass-border)', paddingTop: 8, marginTop: 4 }}>
+              <div style={{ borderTop: '1px dashed var(--glass-border)', paddingTop: 8, marginTop: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <span style={{ fontSize: 8, color: 'var(--text3)', fontWeight: 700 }}>
                   FİLTRE: "PARA PİYASASI ŞEMSİYE FONU"
+                </span>
+                <span style={{ fontSize: 8, color: fetchMethod.includes('Live') ? 'var(--green)' : 'var(--amber)', fontWeight: 700, letterSpacing: '0.02em' }}>
+                  YÖNTEM: {fetchMethod}
                 </span>
               </div>
             </div>
