@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import seededPPFs from "../utils/seededPPFs.json";
 import { useState, useCallback, useRef } from "react";
 
 // Multi-key support parsing from single comma-separated variable VITE_GEMINI_API_KEYS
@@ -108,7 +109,13 @@ export function useGemini() {
       dataSummary = `MAAŞ: ${fd.salary?.income || 0}, TOPLAM GİDER: ${fd.totalExpense || 0}, DETAYLI HARCAMALAR: [${exps}]`;
     }
 
-    const finalPrompt = `[FİNANSAL VERİ]: ${dataSummary}\n\nKullanıcı Mesajı: ${userPrompt}`;
+    let tefasSummary = "TEFAS CANLI PPF VERİSİ ALINAMADI";
+    if (seededPPFs && seededPPFs.data) {
+      const fundsList = seededPPFs.data.map(f => `${f.code} (${f.name}): %${f.yield} (Aylık Getiri)`).join(", ");
+      tefasSummary = `EN YÜKSEK GETİRİLİ PARA PİYASASI FONLARI (Son Güncelleme: ${seededPPFs.updatedAt}): [${fundsList}]`;
+    }
+
+    const finalPrompt = `[FİNANSAL VERİ]: ${dataSummary}\n[TEFAS CANLI FON VERİLERİ]: ${tefasSummary}\n\nKullanıcı Mesajı: ${userPrompt}`;
 
     // API Key loop with auto fallback failover
     let success = false;

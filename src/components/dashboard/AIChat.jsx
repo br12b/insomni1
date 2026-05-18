@@ -301,7 +301,7 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
                       </span>
                     </div>
                     <span style={{ fontWeight: 700, color: 'var(--green)', fontFamily: 'var(--mono)' }}>
-                      {ppf.yield}
+                      {ppf.yield} <span style={{ fontSize: 8, color: 'var(--text3)', fontWeight: 'normal', marginLeft: 2 }}>(Aylık)</span>
                     </span>
                   </div>
                 ))}
@@ -310,7 +310,7 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
               {/* Bottom Filter Details */}
               <div style={{ borderTop: '1px dashed var(--glass-border)', paddingTop: 8, marginTop: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <span style={{ fontSize: 8, color: 'var(--text3)', fontWeight: 700 }}>
-                  FİLTRE: "PARA PİYASASI ŞEMSİYE FONU"
+                  FİLTRE: "PARA PİYASASI ŞEMSİYE FONU" (Son 30 Günlük Net Aylık Getiri)
                 </span>
                 <span style={{ fontSize: 8, color: fetchMethod.includes('Live') ? 'var(--green)' : 'var(--amber)', fontWeight: 700, letterSpacing: '0.02em' }}>
                   YÖNTEM: {fetchMethod}
