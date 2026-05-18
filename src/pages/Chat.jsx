@@ -21,7 +21,7 @@ export default function Chat({ salaryData, expensesData }) {
   } : null;
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: 'calc(100vh - 120px)', padding: '0 40px 40px 40px' }}>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, padding: '0 40px 40px 40px' }}>
       
       {/* Background Decor */}
       <div style={{ position: 'fixed', inset: 0, zIndex: -1, opacity: 0.03, pointerEvents: 'none' }}>
@@ -29,7 +29,7 @@ export default function Chat({ salaryData, expensesData }) {
         <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: 500, height: 500, borderRadius: '50%', background: 'var(--accent)', filter: 'blur(120px)' }} />
       </div>
 
-      <div style={{ display: 'flex', gap: 32, height: '100%', minHeight: 0 }}>
+      <div style={{ display: 'flex', gap: 32, flex: 1, minHeight: 0 }}>
         
         {/* LEFT SIDE - CONTEXT & STATS (Clean, Reverted Sidebar) */}
         <div style={{ width: 320, display: 'flex', flexDirection: 'column', gap: 20, flexShrink: 0 }}>

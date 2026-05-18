@@ -61,16 +61,16 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
     displayContent.toLowerCase().includes('para piyasası')
   );
 
-  const [subagentStage, setSubagentStage] = useState('loading'); // 'loading' -> 'done'
+  const [subagentStage, setSubagentStage] = useState('idle'); // 'idle' -> 'loading' -> 'done'
 
   useEffect(() => {
-    if (showVremSubagent) {
+    if (subagentStage === 'loading') {
       const timer = setTimeout(() => {
         setSubagentStage('done');
       }, 2200);
       return () => clearTimeout(timer);
     }
-  }, [showVremSubagent]);
+  }, [subagentStage]);
 
   const topPPFs = [
     { code: 'TP2', name: 'Tera Portföy Para Piyasası', yield: '%3.91' },
@@ -144,11 +144,11 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
             width: '90%',
             padding: 16,
             borderRadius: 14,
-            border: subagentStage === 'loading' ? '1px solid var(--amber)' : '1px solid var(--glass-border)',
+            border: subagentStage === 'loading' ? '1px solid var(--amber)' : subagentStage === 'done' ? '1px solid var(--glass-border)' : '1px dashed var(--glass-border)',
             background: 'var(--glass)',
             backdropFilter: 'blur(20px) saturate(180%)',
             WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-            boxShadow: subagentStage === 'loading' ? '0 0 15px rgba(245,158,11,0.1)' : 'var(--shadow)',
+            boxShadow: subagentStage === 'loading' ? '0 0 15px rgba(245,158,11,0.1)' : subagentStage === 'done' ? 'var(--shadow)' : 'none',
             display: 'flex',
             flexDirection: 'column',
             gap: 12,
@@ -162,8 +162,8 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
                 width: 8, 
                 height: 8, 
                 borderRadius: '50%', 
-                background: subagentStage === 'loading' ? 'var(--amber)' : 'var(--green)', 
-                boxShadow: subagentStage === 'loading' ? '0 0 8px var(--amber)' : '0 0 8px var(--green)',
+                background: subagentStage === 'loading' ? 'var(--amber)' : subagentStage === 'done' ? 'var(--green)' : 'rgba(255,255,255,0.2)', 
+                boxShadow: subagentStage === 'loading' ? '0 0 8px var(--amber)' : subagentStage === 'done' ? '0 0 8px var(--green)' : 'none',
                 animation: subagentStage === 'loading' ? 'blink 1s infinite' : 'none'
               }} />
               <span style={{ fontSize: 10, fontWeight: 800, textTransform: 'uppercase', color: 'var(--text1)', letterSpacing: '0.04em' }}>
@@ -171,12 +171,45 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
               </span>
             </div>
             <span style={{ fontSize: 8, background: 'var(--accent-dim)', color: 'var(--accent)', fontWeight: 700, padding: '2px 5px', borderRadius: 4 }}>
-              SUBAGENT ACTIVE
+              {subagentStage === 'loading' ? 'SCANNING' : subagentStage === 'done' ? 'SUBAGENT ACTIVE' : 'STANDBY'}
             </span>
           </div>
 
+          {/* Body Stage 0: Idle / Click to start */}
+          {subagentStage === 'idle' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center', textAlign: 'center', padding: '8px 0' }}>
+              <button 
+                onClick={() => setSubagentStage('loading')}
+                style={{
+                  background: 'linear-gradient(135deg, var(--accent), #a78bfa)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '100px',
+                  padding: '10px 24px',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  width: '100%',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 4px 15px rgba(129,140,248,0.4)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                ⚡ Günün En Çok Kazananını Tara
+              </button>
+              <span style={{ fontSize: 9, color: 'var(--text2)', lineHeight: 1.4, maxWidth: '90%' }}>
+                TEFAS Canlı Para Piyasası Şemsiye Fonu (PPF) verilerini çekmek ve en yüksek getirili 5 fonu listelemek için tıklayın.
+              </span>
+            </div>
+          )}
+
           {/* Body Stage 1: Active Scanning Animation */}
-          {subagentStage === 'loading' ? (
+          {subagentStage === 'loading' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: 'rgba(245,158,11,0.02)', padding: 12, borderRadius: 10, border: '1px solid rgba(245,158,11,0.1)', fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--text2)', lineHeight: 1.5 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <div style={{ 
@@ -192,8 +225,10 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
               <div>[vrem-filter] Filtering umbrella type: "PARA PİYASASI ŞEMSİYE FONU"</div>
               <div>[vrem-sort] Sorting top 5 by highest monthly yield...</div>
             </div>
-          ) : (
-            /* Body Stage 2: Loaded Data Table with Custom Filter */
+          )}
+
+          {/* Body Stage 2: Loaded Data Table with Custom Filter */}
+          {subagentStage === 'done' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {topPPFs.map((ppf) => (
