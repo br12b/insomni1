@@ -55,7 +55,7 @@ export default function ProfileModal({ initialName, onComplete }) {
                initial={{ scale: 0.8, opacity: 0 }}
                animate={{ scale: 1.25, opacity: 1 }} // Enlarged to 1.25x
                transition={{ duration: 0.8 }}
-               src="/rem_avatar.png" 
+               src="/rem_avatar.webp" 
                alt="R.E.M Front" 
                style={{ 
                  width: '90%', 

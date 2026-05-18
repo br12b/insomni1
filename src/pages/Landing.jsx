@@ -56,7 +56,7 @@ export default function Landing({ onStart, editMode = false }) {
           pointerEvents: editMode ? 'auto' : 'none'
         }}
       >
-        <img src="/aria_standing.png" alt="Aria" 
+        <img src="/aria_standing.webp" alt="Aria" 
           style={{ 
             width: '100%', 
             height: '100%', 
@@ -117,7 +117,7 @@ export default function Landing({ onStart, editMode = false }) {
               x: settings.layout?.landing_remSmall?.x || 0,
               y: settings.layout?.landing_remSmall?.y || 0
             }}
-            src="/rem_profile.png" 
+            src="/rem_profile.webp" 
             alt="R.E.M Small" 
             style={{ 
               width: 120, 

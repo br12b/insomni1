@@ -35,7 +35,7 @@ export default function Chat({ salaryData, expensesData }) {
         <div style={{ width: 320, display: 'flex', flexDirection: 'column', gap: 20, flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
             <div style={{ width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 15 }}>
-              <img src="/rem_avatar.png" alt="R.E.M" style={{ 
+              <img src="/rem_avatar.webp" alt="R.E.M" style={{ 
                 width: '100%', 
                 height: '100%', 
                 objectFit: 'contain', 
