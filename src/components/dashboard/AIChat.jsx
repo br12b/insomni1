@@ -27,7 +27,13 @@ function ThinkingStep({ step, index }) {
       transition={{ delay: index * 0.1 }}
       style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0' }}>
       {step.status === 'running' ? (
-        <Loader2 size={12} color="var(--accent)" style={{ animation: 'spin 1s linear infinite', flexShrink: 0 }} />
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          style={{ display: 'flex', flexShrink: 0 }}
+        >
+          <Loader2 size={12} color="var(--accent)" />
+        </motion.div>
       ) : (
         <CheckCircle size={12} color="var(--green)" style={{ flexShrink: 0 }} />
       )}
@@ -446,7 +452,13 @@ export default function AIChat({ financialData }) {
         {/* Typing indicator (araç yokken) */}
         {isTyping && thinkingSteps.length === 0 && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Loader2 size={14} color="var(--accent)" style={{ animation: 'spin 1s linear infinite' }} />
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              style={{ display: 'flex', flexShrink: 0 }}
+            >
+              <Loader2 size={14} color="var(--accent)" />
+            </motion.div>
             <span style={{ fontSize: 11, color: 'var(--text2)' }}>R.E.M...</span>
           </div>
         )}
