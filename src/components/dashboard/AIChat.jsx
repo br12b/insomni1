@@ -188,32 +188,42 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
 
           {/* Body Stage 0: Idle / Click to start */}
           {subagentStage === 'idle' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center', textAlign: 'center', padding: '8px 0' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center', textAlign: 'center', padding: '12px 0' }}>
               <button 
                 onClick={() => setSubagentStage('loading')}
                 style={{
-                  background: 'linear-gradient(135deg, var(--accent), #a78bfa)',
-                  color: '#fff',
-                  border: 'none',
+                  background: 'rgba(255, 255, 255, 0.02)',
+                  color: 'var(--text0)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
                   borderRadius: '100px',
-                  padding: '10px 24px',
+                  padding: '12px 32px',
                   fontSize: 11,
                   fontWeight: 700,
                   cursor: 'pointer',
-                  width: '100%',
-                  transition: 'all 0.2s',
-                  boxShadow: '0 4px 15px rgba(129,140,248,0.4)',
+                  width: 'auto',
+                  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                  boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.1)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: 8
+                  outline: 'none'
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(129, 140, 248, 0.08)';
+                  e.currentTarget.style.borderColor = 'var(--accent)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(129, 140, 248, 0.2), inset 0 1px 1px rgba(255,255,255,0.05)';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                  e.currentTarget.style.boxShadow = 'inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.1)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
-                ⚡ Günün En Çok Kazananını Tara
+                Günün En Çok Kazananını Tara
               </button>
-              <span style={{ fontSize: 9, color: 'var(--text2)', lineHeight: 1.4, maxWidth: '90%' }}>
+              <span style={{ fontSize: 9, color: 'var(--text2)', lineHeight: 1.4, maxWidth: '85%', opacity: 0.8 }}>
                 TEFAS Canlı Para Piyasası Şemsiye Fonu (PPF) verilerini çekmek ve en yüksek getirili 5 fonu listelemek için tıklayın.
               </span>
             </div>
