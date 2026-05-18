@@ -55,8 +55,7 @@ const IntroSequence = ({ onComplete }) => {
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch(error => {
-          console.warn("Autoplay blocked by browser policy, bypassing intro:", error);
-          // If browser completely blocks muted autoplay, close intro immediately so user isn't stuck
+          // Quietly bypass intro when browser autoplay policy blocks the video (e.g. low power mode, lack of user gesture)
           handleClose();
         });
       }

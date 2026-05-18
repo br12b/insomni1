@@ -169,7 +169,9 @@ export default function Docs() {
               <motion.div variants={itemVariants} className="glass" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <Calendar size={18} color="var(--accent)" />
-                  <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0 }}>Finansal Isı Haritası Takvimi</h3>
+                  <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0 }}>
+                    {lang === 'tr' ? 'Finansal Isı Haritası Takvimi' : 'Financial Heatmap Calendar'}
+                  </h3>
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text2)', margin: 0, lineHeight: 1.5 }}>
                   {lang === 'tr'

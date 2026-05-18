@@ -202,7 +202,12 @@ export function useGemini() {
           keysTried++;
           
           if (keysTried >= totalKeys) {
-            setMessages(prev => [...prev, { role: "model", content: "Tüm API anahtarların denendi fakat limit aşımı veya başka bir hata nedeniyle yanıt alınamadı usta. Lütfen daha sonra tekrar dener misin?" }]);
+            let errorMsg = "Tüm API anahtarların denendi fakat limit aşımı veya başka bir hata nedeniyle yanıt alınamadı usta. Lütfen daha sonra tekrar dener misin?";
+            const errMsgLower = (err && err.message) ? err.message.toLowerCase() : "";
+            if (errMsgLower.includes("expired") || errMsgLower.includes("invalid") || errMsgLower.includes("key_invalid") || errMsgLower.includes("api key")) {
+              errorMsg = "⚠️ GEMINI API ANAHTARI HATASI:\n\nKullandığın API anahtarının süresi dolmuş veya geçersiz görünüyor usta!\n\nLütfen Google AI Studio (https://aistudio.google.com/) üzerinden yeni ve ücretsiz bir anahtar alarak .env dosyasındaki VITE_GEMINI_API_KEY değerini güncelleyebilir misin?";
+            }
+            setMessages(prev => [...prev, { role: "model", content: errorMsg }]);
             setIsTyping(false); window.dispatchEvent(new CustomEvent('rem_typing_change', { detail: { isTyping: false } }));
             setThinkingSteps([]);
             return;

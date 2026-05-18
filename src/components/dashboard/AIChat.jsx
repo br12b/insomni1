@@ -40,12 +40,13 @@ function ThinkingStep({ step, index }) {
 
 // // Tek bir mesaj balonu ile iç içe geçmiş V.R.E.M Subagent konsolu (PDF indir yok, sıfırla yok!)
 function MessageBubble({ msg, onSelectOption, isLast }) {
+  const { lang } = useLanguage();
   const isUser = msg.role === 'user';
   
-  let displayContent = msg.content;
+  let displayContent = msg.content || '';
   let options = [];
   
-  if (!isUser) {
+  if (!isUser && displayContent) {
     const optionsRegex = /\[OPTIONS:\s*([^\]|]+)\s*\|\s*([^\]]+)\s*\]/;
     const match = displayContent.match(optionsRegex);
     if (match) {
@@ -55,7 +56,7 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
   }
 
   // V.R.E.M tetikleyici kontrolü
-  const showVremSubagent = !isUser && (
+  const showVremSubagent = !isUser && displayContent && (
     displayContent.toLowerCase().includes('v.r.e.m') || 
     displayContent.toLowerCase().includes('tefas') ||
     displayContent.toLowerCase().includes('para piyasası')
@@ -464,6 +465,8 @@ export default function AIChat({ financialData }) {
       {/* Input */}
       <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
         <input
+          id="rem-chat-input"
+          name="rem-chat-input"
           className="input"
           style={{ flex: 1, fontSize: 13, padding: '10px 14px' }}
           placeholder={lang === 'tr' ? 'İstediğini sor...' : 'Ask anything...'}

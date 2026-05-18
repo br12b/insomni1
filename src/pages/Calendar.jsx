@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, MessageSquare, 
@@ -24,6 +25,7 @@ const SourceIcon = ({ source }) => {
 };
 
 export default function Calendar() {
+  const { lang, t } = useLanguage();
   // BUGÜNÜN TARİHİNE MÜHÜRLEME
   const today = new Date().getDate();
   const [selectedDay, setSelectedDay] = useState(today);
@@ -67,11 +69,11 @@ export default function Calendar() {
         <div style={{ marginBottom: 40, marginTop: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1 style={{ fontSize: 38, fontWeight: 950, margin: 0, letterSpacing: '-0.04em', color: '#1e293b' }}>Financial <span style={{ color: '#6366f1' }}>Journal</span></h1>
-            <p style={{ color: '#94a3b8', fontWeight: 700, fontSize: 13, letterSpacing: '0.05em' }}>VERİ ANALİTİĞİ VE MATRİS ANALİZİ</p>
+            <p style={{ color: '#94a3b8', fontWeight: 700, fontSize: 13, letterSpacing: '0.05em' }}>{lang === 'tr' ? 'VERİ ANALİTİĞİ VE MATRİS ANALİZİ' : 'DATA ANALYTICS & MATRIX ANALYSIS'}</p>
           </div>
           <div className="glass" style={{ padding: '12px 28px', borderRadius: 100, display: 'flex', alignItems: 'center', gap: 24, border: '1px solid #f1f5f9', background: '#fff' }}>
             <ChevronLeft size={18} color="#64748b" style={{ cursor: 'pointer' }} />
-            <span style={{ fontWeight: 950, fontSize: 14, letterSpacing: '0.05em', color: '#1e293b' }}>MAYIS 2026</span>
+            <span style={{ fontWeight: 950, fontSize: 14, letterSpacing: '0.05em', color: '#1e293b' }}>{lang === 'tr' ? 'MAYIS 2026' : 'MAY 2026'}</span>
             <ChevronRight size={18} color="#64748b" style={{ cursor: 'pointer' }} />
           </div>
         </div>
@@ -79,7 +81,7 @@ export default function Calendar() {
         <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 40, marginBottom: 40 }}>
           <div className="glass" style={{ padding: 40, borderRadius: 48, background: '#fff', border: '1px solid #f1f5f9' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 12, textAlign: 'center', marginBottom: 32 }}>
-              {['PZT', 'SAL', 'ÇAR', 'PER', 'CUM', 'CMT', 'PAZ'].map(d => <div key={d} style={{ fontSize: 11, fontWeight: 950, color: '#cbd5e1' }}>{d}</div>)}
+              {(lang === 'tr' ? ['PZT', 'SAL', 'ÇAR', 'PER', 'CUM', 'CMT', 'PAZ'] : ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']).map(d => <div key={d} style={{ fontSize: 11, fontWeight: 950, color: '#cbd5e1' }}>{d}</div>)}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 12 }}>
               {blanks.map(b => <div key={`b-${b}`} />)}
@@ -105,18 +107,18 @@ export default function Calendar() {
               <motion.div key={selectedDay} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} 
                 className="glass" style={{ padding: 40, borderRadius: 48, background: '#fff', border: '1px solid #f1f5f9' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-                  <div><div style={{ fontSize: 11, fontWeight: 900, color: '#6366f1', letterSpacing: '0.1em' }}>SEÇİLİ GÜN</div><div style={{ fontSize: 28, fontWeight: 950, color: '#1e293b' }}>{selectedDay} Mayıs 2026</div></div>
+                  <div><div style={{ fontSize: 11, fontWeight: 900, color: '#6366f1', letterSpacing: '0.1em' }}>{lang === 'tr' ? 'SEÇİLİ GÜN' : 'SELECTED DAY'}</div><div style={{ fontSize: 28, fontWeight: 950, color: '#1e293b' }}>{selectedDay} {lang === 'tr' ? 'Mayıs' : 'May'} 2026</div></div>
                   <div style={{ width: 48, height: 48, borderRadius: 16, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #f1f5f9' }}><Activity size={20} color="#6366f1" /></div>
                 </div>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 32 }}>
                    <div style={{ padding: 20, borderRadius: 24, background: '#10b98105', border: '1px solid #10b98115' }}>
-                      <div style={{ fontSize: 10, fontWeight: 900, color: '#10b981', marginBottom: 6 }}>GELİR</div>
-                      <div style={{ fontSize: 22, fontWeight: 950, color: '#064e3b' }}>{selectedData.income.toLocaleString('tr-TR')} ₺</div>
+                      <div style={{ fontSize: 10, fontWeight: 900, color: '#10b981', marginBottom: 6 }}>{lang === 'tr' ? 'GELİR' : 'INCOME'}</div>
+                      <div style={{ fontSize: 22, fontWeight: 950, color: '#064e3b' }}>{t.currency || '₺'}{selectedData.income.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}</div>
                    </div>
                    <div style={{ padding: 20, borderRadius: 24, background: '#ef444405', border: '1px solid #ef444415' }}>
-                      <div style={{ fontSize: 10, fontWeight: 900, color: '#ef4444', marginBottom: 6 }}>GİDER</div>
-                      <div style={{ fontSize: 22, fontWeight: 950, color: '#7f1d1d' }}>-{selectedData.expense.toLocaleString('tr-TR')} ₺</div>
+                      <div style={{ fontSize: 10, fontWeight: 900, color: '#ef4444', marginBottom: 6 }}>{lang === 'tr' ? 'GİDER' : 'EXPENSE'}</div>
+                      <div style={{ fontSize: 22, fontWeight: 950, color: '#7f1d1d' }}>-{t.currency || '₺'}{selectedData.expense.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}</div>
                    </div>
                 </div>
 
@@ -125,7 +127,7 @@ export default function Calendar() {
                      <div key={i} style={{ padding: 18, borderRadius: 20, background: '#f8fafc', border: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                            <div style={{ width: 44, height: 44, borderRadius: 12, background: item.type === 'BALANCE' ? '#10b98110' : `${item.color}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconMap name={item.icon} color={item.type === 'BALANCE' ? '#10b981' : item.color} type={item.type} /></div>
-                           <div><div style={{ fontSize: 16, fontWeight: 950, color: '#1e293b' }}>{item.clean}</div><div style={{ fontSize: 10, fontWeight: 800, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>{item.type === 'BALANCE' ? <ShieldCheck size={10} color="#10b981"/> : <SourceIcon source={item.source} />} {item.source}</div></div>
+                           <div><div style={{ fontSize: 16, fontWeight: 950, color: '#1e293b' }}>{item.clean}</div><div style={{ fontSize: 10, fontWeight: 800, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>{item.type === 'BALANCE' ? <ShieldCheck size={10} color="#10b981"/> : <SourceIcon source={item.source} />} {item.source === 'BANKA GATEWAY' ? (lang === 'tr' ? 'BANKA GATEWAY' : 'BANK GATEWAY') : (lang === 'tr' ? 'OTONOM KÖPRÜ' : 'AUTONOMOUS BRIDGE')}</div></div>
                         </div>
                         <div style={{ fontSize: 18, fontWeight: 950, color: item.type === 'BALANCE' ? '#10b981' : '#ef4444' }}>{item.amount}</div>
                      </div>
@@ -141,18 +143,18 @@ export default function Calendar() {
           <div style={{ display: 'flex', gap: 60 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <div style={{ width: 44, height: 44, borderRadius: 12, background: '#10b98110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><TrendingUp size={20} color="#10b981" /></div>
-              <div><div style={{ fontSize: 10, fontWeight: 900, color: '#94a3b8', letterSpacing: '0.05em' }}>AYLIK TOPLAM GELİR</div><div style={{ fontSize: 24, fontWeight: 950, color: '#10b981' }}>{monthlyStats.income.toLocaleString('tr-TR')} ₺</div></div>
+              <div><div style={{ fontSize: 10, fontWeight: 900, color: '#94a3b8', letterSpacing: '0.05em' }}>{lang === 'tr' ? 'AYLIK TOPLAM GELİR' : 'MONTHLY TOTAL INCOME'}</div><div style={{ fontSize: 24, fontWeight: 950, color: '#10b981' }}>{t.currency || '₺'}{monthlyStats.income.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}</div></div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <div style={{ width: 44, height: 44, borderRadius: 12, background: '#ef444410', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><TrendingDown size={20} color="#ef4444" /></div>
-              <div><div style={{ fontSize: 10, fontWeight: 900, color: '#94a3b8', letterSpacing: '0.05em' }}>AYLIK TOPLAM GİDER</div><div style={{ fontSize: 24, fontWeight: 950, color: '#ef4444' }}>-{monthlyStats.expense.toLocaleString('tr-TR')} ₺</div></div>
+              <div><div style={{ fontSize: 10, fontWeight: 900, color: '#94a3b8', letterSpacing: '0.05em' }}>{lang === 'tr' ? 'AYLIK TOPLAM GİDER' : 'MONTHLY TOTAL EXPENSE'}</div><div style={{ fontSize: 24, fontWeight: 950, color: '#ef4444' }}>-{t.currency || '₺'}{monthlyStats.expense.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}</div></div>
             </div>
           </div>
 
           <div style={{ padding: '12px 32px', borderRadius: 20, background: '#6366f1', display: 'flex', alignItems: 'center', gap: 20, boxShadow: '0 10px 25px rgba(99, 102, 241, 0.2)' }}>
             <div>
-              <div style={{ fontSize: 9, fontWeight: 950, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>AYLIK NET DURUM</div>
-              <div style={{ fontSize: 28, fontWeight: 950, color: '#fff' }}>{(monthlyStats.income - monthlyStats.expense).toLocaleString('tr-TR')} ₺</div>
+              <div style={{ fontSize: 9, fontWeight: 950, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>{lang === 'tr' ? 'AYLIK NET DURUM' : 'MONTHLY NET STATUS'}</div>
+              <div style={{ fontSize: 28, fontWeight: 950, color: '#fff' }}>{t.currency || '₺'}{(monthlyStats.income - monthlyStats.expense).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}</div>
             </div>
             <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={18} color="#fff" fill="#fff" /></div>
           </div>
