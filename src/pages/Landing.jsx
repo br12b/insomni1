@@ -78,15 +78,15 @@ export default function Landing({ onStart, editMode = false }) {
                                         {lang === 'tr' ? (
             <>
               <div>Finansal huzur için uykusuz bir zeka</div>
-              <div style={{ fontSize: '0.65em', opacity: 0.9, marginTop: 16 }}>
-                <span style={{ color: 'var(--accent)' }}>R.E.M.</span> ile tanışın
+              <div style={{ fontSize: '0.65em', opacity: 0.9, marginTop: 16, letterSpacing: '-0.01em' }}>
+                <span style={{ color: 'var(--accent)', marginRight: 10 }}>R.E.M.</span>ile tanışın
               </div>
             </>
           ) : (
             <>
               <div>A sleepless intelligence for financial peace</div>
-              <div style={{ fontSize: '0.65em', opacity: 0.9, marginTop: 16 }}>
-                meet <span style={{ color: 'var(--accent)' }}>R.E.M.</span>
+              <div style={{ fontSize: '0.65em', opacity: 0.9, marginTop: 16, letterSpacing: '-0.01em' }}>
+                meet <span style={{ color: 'var(--accent)', marginLeft: 10 }}>R.E.M.</span>
               </div>
             </>
           )}
