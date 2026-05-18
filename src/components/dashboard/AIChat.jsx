@@ -240,14 +240,19 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
           {subagentStage === 'loading' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: 'rgba(245,158,11,0.02)', padding: 12, borderRadius: 10, border: '1px solid rgba(245,158,11,0.1)', fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--text2)', lineHeight: 1.5 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ 
-                  width: 12, 
-                  height: 12, 
-                  borderRadius: '50%', 
-                  border: '1px solid rgba(245,158,11,0.2)', 
-                  borderTopColor: 'var(--amber)', 
-                  animation: 'spin 0.8s linear infinite' 
-                }} />
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+                  style={{ 
+                    width: 12, 
+                    height: 12, 
+                    borderRadius: '50%', 
+                    border: '1px solid rgba(245,158,11,0.2)', 
+                    borderTopColor: 'var(--amber)',
+                    display: 'flex',
+                    flexShrink: 0
+                  }}
+                />
                 <span style={{ color: 'var(--amber)', fontWeight: 'bold' }}>[vrem-bridge] Neural link active. Contacting TEFAS...</span>
               </div>
               <div>[vrem-filter] Filtering umbrella type: "PARA PİYASASI ŞEMSİYE FONU"</div>

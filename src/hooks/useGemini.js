@@ -38,7 +38,8 @@ KRİTİK EMİRLER:
    Örnek Seçenekler:
    - Karşılama veya genel sohbet ise: '[OPTIONS: Günün En Çok Kazandıran PPF'si | İstersen sana vizyonumdan bahsedebilirim]'
    - PPF sorulduysa: '[OPTIONS: PPF Nasıl Satın Alınır? | Bütçemi Analiz Et]'
-   - Alakasız bir soru yanıtladıysan: '[OPTIONS: Bütçe Durumuma Bakalım mı? | İstersen sana vizyonumdan bahsedebilirim]`;
+   - Alakasız bir soru yanıtladıysan: '[OPTIONS: Bütçe Durumuma Bakalım mı? | İstersen sana vizyonumdan bahsedebilirim]'
+9. DİL VE ZAMİR UYUMU (KRİTİK TÜRKÇE KURALI): Kullanıcının parasından bahsederken asla kendi paranmış gibi birinci tekil şahıs possessive ("param", "paramın", "paramı") kelimelerini kullanma! Bu çok vahim bir dil hatasıdır. Danışman olarak her zaman ikinci şahıs possessive ("senin paran", "paranın değeri", "paranı korumak") ifadelerini kullan. Örnek: "Paramın değerini korumak..." yerine KESİNLİKLE "Paranın değerini korumak en büyük önceliğimiz." de.`;
 
 export function useGemini() {
   const [messages, setMessages] = useState([]);
