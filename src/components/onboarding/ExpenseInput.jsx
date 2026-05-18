@@ -44,6 +44,7 @@ export default function ExpenseInput({ onComplete }) {
   const [showAria, setShowAria] = useState(() => localStorage.getItem("insomni_hide_aria") !== "true");
   const [showTip, setShowTip] = useState(false);
   const [showPdfList, setShowPdfList] = useState(false);
+  const [dragHover, setDragHover] = useState(false);
 
   useEffect(() => {
     const sync = () => {
@@ -146,18 +147,20 @@ export default function ExpenseInput({ onComplete }) {
                           onClick={() => setShowPdfList(!showPdfList)}
                           style={{ 
                             width: '100%', 
-                            background: 'rgba(255, 255, 255, 0.02)', 
-                            border: '1px solid rgba(255, 255, 255, 0.05)', 
-                            borderRadius: 8, 
-                            padding: '10px 14px', 
+                            background: 'rgba(129, 140, 248, 0.03)', 
+                            border: '1px solid rgba(129, 140, 248, 0.2)', 
+                            borderBottom: showPdfList ? 'none' : '1px solid rgba(129, 140, 248, 0.2)',
+                            borderRadius: showPdfList ? '8px 8px 0 0' : '8px', 
+                            padding: '12px 16px', 
                             display: 'flex', 
                             justifyContent: 'space-between', 
                             alignItems: 'center', 
                             cursor: 'pointer',
-                            color: 'var(--text1)',
-                            fontWeight: 700,
+                            color: 'var(--accent)',
+                            fontWeight: 800,
                             fontSize: '12px',
-                            textAlign: 'left'
+                            textAlign: 'left',
+                            transition: 'all 0.2s ease'
                           }}
                         >
                           <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -177,11 +180,14 @@ export default function ExpenseInput({ onComplete }) {
                               transition={{ duration: 0.15 }}
                               style={{ 
                                 overflow: 'hidden', 
-                                background: 'rgba(0,0,0,0.15)', 
+                                background: 'rgba(129, 140, 248, 0.01)', 
+                                backdropFilter: 'blur(12px)',
+                                WebkitBackdropFilter: 'blur(12px)',
                                 borderRadius: '0 0 8px 8px', 
-                                border: '1px solid rgba(255, 255, 255, 0.03)',
+                                border: '1px solid rgba(129, 140, 248, 0.2)',
                                 borderTop: 'none',
-                                padding: 12 
+                                padding: '16px',
+                                boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03)'
                               }}
                             >
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 16px' }}>
@@ -227,7 +233,31 @@ export default function ExpenseInput({ onComplete }) {
                 )}
               </AnimatePresence>
             </div>
-            <div onDragOver={e => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={e => { e.preventDefault(); setDragOver(false); handlePdfUpload(e.dataTransfer.files[0]); }} onClick={() => { if (!scanning) document.getElementById('pdfInput').click(); }} style={{ border: '2px dashed var(--glass-border)', borderRadius: 16, padding: '24px', textAlign: 'center', cursor: 'pointer', marginBottom: 24, background: dragOver ? 'rgba(129,140,248,0.1)' : 'rgba(0,0,0,0.2)' }}>
+            <div 
+              onDragOver={e => { e.preventDefault(); setDragOver(true); }} 
+              onDragLeave={() => setDragOver(false)} 
+              onDrop={e => { e.preventDefault(); setDragOver(false); handlePdfUpload(e.dataTransfer.files[0]); }} 
+              onMouseEnter={() => setDragHover(true)}
+              onMouseLeave={() => setDragHover(false)}
+              onClick={() => { if (!scanning) document.getElementById('pdfInput').click(); }} 
+              style={{ 
+                border: dragOver || dragHover ? '2px dashed var(--accent)' : '2px dashed rgba(129, 140, 248, 0.2)', 
+                borderRadius: 16, 
+                padding: '36px 24px', 
+                textAlign: 'center', 
+                cursor: 'pointer', 
+                marginBottom: 24, 
+                background: dragOver 
+                  ? 'rgba(129, 140, 248, 0.08)' 
+                  : (dragHover ? 'rgba(129, 140, 248, 0.04)' : 'rgba(255, 255, 255, 0.01)'),
+                boxShadow: dragOver || dragHover 
+                  ? '0 0 20px rgba(129, 140, 248, 0.08), inset 0 0 12px rgba(129, 140, 248, 0.02)' 
+                  : 'inset 0 0 12px rgba(255, 255, 255, 0.01)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
               <input id="pdfInput" type="file" accept=".pdf" style={{ display: 'none' }} onChange={e => handlePdfUpload(e.target.files[0])} />
               {scanning ? (
                 <div>
