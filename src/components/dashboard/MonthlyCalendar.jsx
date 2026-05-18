@@ -121,7 +121,7 @@ export default function MonthlyCalendar({ expenses = [], salaryDay = 1, income =
       // If the expense date is a simple day number, show it on every month's that day
       const isSimpleDay = !e.date.toString().includes('-') && !e.date.toString().includes('T');
       if (isSimpleDay) {
-        return expD === day;
+        return expD === day && currentMonth === 4 && currentYear === 2026;
       }
       return expD === day && expM === currentMonth && expY === currentYear;
     });

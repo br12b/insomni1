@@ -160,8 +160,9 @@ export default function Calendar() {
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 40px 20px 40px' }}>
         <div style={{ marginBottom: 40, marginTop: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h1 style={{ fontSize: 38, fontWeight: 950, margin: 0, letterSpacing: '-0.04em', color: '#1e293b' }}>Financial <span style={{ color: '#6366f1' }}>Journal</span></h1>
-            <p style={{ color: '#94a3b8', fontWeight: 700, fontSize: 13, letterSpacing: '0.05em' }}>{lang === 'tr' ? 'VERİ ANALİTİĞİ VE MATRİS ANALİZİ' : 'DATA ANALYTICS & MATRIX ANALYSIS'}</p>
+            <h1 style={{ fontSize: 38, fontWeight: 950, margin: 0, letterSpacing: '-0.04em', color: '#1e293b' }}>
+              {lang === 'tr' ? <>Finansal <span style={{ color: '#6366f1' }}>Takvim</span></> : <>Financial <span style={{ color: '#6366f1' }}>Calendar</span></>}
+            </h1>
           </div>
           <div className="glass" style={{ padding: '12px 28px', borderRadius: 100, display: 'flex', alignItems: 'center', gap: 24, border: '1px solid #f1f5f9', background: '#fff' }}>
             <ChevronLeft size={18} color="#64748b" style={{ cursor: 'pointer' }} onClick={prevMonth} />
