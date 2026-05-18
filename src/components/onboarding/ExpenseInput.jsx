@@ -43,6 +43,7 @@ export default function ExpenseInput({ onComplete }) {
 
   const [showAria, setShowAria] = useState(() => localStorage.getItem("insomni_hide_aria") !== "true");
   const [showTip, setShowTip] = useState(false);
+  const [showPdfList, setShowPdfList] = useState(false);
 
   useEffect(() => {
     const sync = () => {
@@ -139,22 +140,67 @@ export default function ExpenseInput({ onComplete }) {
                     </p>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 12 }}>
-                      <div>
-                        <strong>📥 {lang === 'tr' ? 'Yöntem A: Hazır Örnek Türkçe PDF İndirin' : 'Method A: Download Sample Turkish PDF'}</strong>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 16px', marginTop: 8 }}>
-                          <a href="/samples/Ekstre_kamil%20%C3%B6zkundura.pdf" download style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
-                            📄 Kamil Özkundura Ekstresi
-                          </a>
-                          <a href="/samples/Ekstre_kemal%20ozbegen.pdf" download style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
-                            📄 Kemal Özbeğen Ekstresi
-                          </a>
-                          <a href="/samples/Ekstre_sami%20soylu.pdf" download style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
-                            📄 Sami Soylu Ekstresi
-                          </a>
-                          <a href="/samples/Ekstre_selami%20ozsahiner.pdf" download style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
-                            📄 Selami Özşahiner Ekstresi
-                          </a>
-                        </div>
+<div style={{ marginTop: 12 }}>
+                        <button 
+                          type="button"
+                          onClick={() => setShowPdfList(!showPdfList)}
+                          style={{ 
+                            width: '100%', 
+                            background: 'rgba(255, 255, 255, 0.02)', 
+                            border: '1px solid rgba(255, 255, 255, 0.05)', 
+                            borderRadius: 8, 
+                            padding: '10px 14px', 
+                            display: 'flex', 
+                            justifyContent: 'space-between', 
+                            alignItems: 'center', 
+                            cursor: 'pointer',
+                            color: 'var(--text1)',
+                            fontWeight: 700,
+                            fontSize: '12px',
+                            textAlign: 'left'
+                          }}
+                        >
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            📥 {lang === 'tr' ? 'Yöntem A: Örnek PDF Dosyalarını İndir (4 Adet)' : 'Method A: Download Sample PDFs (4 files)'}
+                          </span>
+                          <span style={{ fontSize: '9px', opacity: 0.8 }}>
+                            {showPdfList ? '▲' : '▼'}
+                          </span>
+                        </button>
+
+                        <AnimatePresence>
+                          {showPdfList && (
+                            <motion.div 
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.15 }}
+                              style={{ 
+                                overflow: 'hidden', 
+                                background: 'rgba(0,0,0,0.15)', 
+                                borderRadius: '0 0 8px 8px', 
+                                border: '1px solid rgba(255, 255, 255, 0.03)',
+                                borderTop: 'none',
+                                padding: 12 
+                              }}
+                            >
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 16px' }}>
+                                <a href="/samples/Ekstre_kamil%20%C3%B6zkundura.pdf" download="Banka_Ekstresi_Ornek_1.pdf" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
+                                  📄 {lang === 'tr' ? 'Örnek Ekstre No 1' : 'Sample Statement No 1'}
+                                </a>
+                                <a href="/samples/Ekstre_kemal%20ozbegen.pdf" download="Banka_Ekstresi_Ornek_2.pdf" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
+                                  📄 {lang === 'tr' ? 'Örnek Ekstre No 2' : 'Sample Statement No 2'}
+                                </a>
+                                <a href="/samples/Ekstre_sami%20soylu.pdf" download="Banka_Ekstresi_Ornek_3.pdf" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
+                                  📄 {lang === 'tr' ? 'Örnek Ekstre No 3' : 'Sample Statement No 3'}
+                                </a>
+                                <a href="/samples/Ekstre_selami%20ozsahiner.pdf" download="Banka_Ekstresi_Ornek_4.pdf" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
+                                  📄 {lang === 'tr' ? 'Örnek Ekstre No 4' : 'Sample Statement No 4'}
+                                </a>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
 
                       <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 10 }}>
