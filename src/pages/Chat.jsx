@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MessageSquare, Sparkles, Shield, Zap } from 'lucide-react';
 import AIChat from '../components/dashboard/AIChat';
@@ -6,6 +6,23 @@ import { useLanguage } from '../context/LanguageContext';
 
 export default function Chat({ salaryData, expensesData }) {
   const { lang, t } = useLanguage();
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    const handleTyping = (e) => {
+      setIsTyping(e.detail.isTyping);
+    };
+    window.addEventListener('rem_typing_change', handleTyping);
+    return () => window.removeEventListener('rem_typing_change', handleTyping);
+  }, []);
+
+  const topPPFs = [
+    { code: 'TP2', name: 'Tera Portföy Para Piyasası', yield: '%3.91' },
+    { code: 'PNU', name: 'Pusula Portföy İkinci P.P.', yield: '%3.90' },
+    { code: 'PRY', name: 'Pusula Portföy Para Piyasası', yield: '%3.89' },
+    { code: 'MPL', name: 'MT Portföy Para Piyasası', yield: '%3.81' },
+    { code: 'PPT', name: 'Atlas Portföy Para Piyasası', yield: '%3.67' }
+  ];
 
   const hasData = salaryData && expensesData && expensesData.length > 0;
 
@@ -73,6 +90,110 @@ export default function Chat({ salaryData, expensesData }) {
             ) : (
               <div style={{ fontSize: 12, color: 'var(--text2)', textAlign: 'center', padding: '10px 0' }}>
                 {lang === 'tr' ? 'Henüz bir finansal analiz yapılmadı.' : 'No financial analysis performed yet.'}
+              </div>
+            )}
+          </div>
+
+          {/* V.R.E.M - TEFAS Analiz Ajanı (Subagent) */}
+          <div 
+            className="glass" 
+            style={{ 
+              padding: 20, 
+              border: isTyping ? '1px solid var(--accent)' : '1px solid var(--glass-border)', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 14,
+              transition: 'all 0.3s ease',
+              background: 'var(--glass)',
+              backdropFilter: 'blur(24px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+              boxShadow: isTyping ? '0 0 15px var(--accent-dim)' : 'var(--shadow)'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ 
+                  width: 8, 
+                  height: 8, 
+                  borderRadius: '50%', 
+                  background: isTyping ? 'var(--amber)' : 'var(--green)', 
+                  boxShadow: isTyping ? '0 0 8px var(--amber)' : '0 0 8px var(--green)',
+                  animation: isTyping ? 'blink 1.2s infinite' : 'none'
+                }} />
+                <span style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', color: 'var(--text1)', letterSpacing: '0.04em' }}>
+                  V.R.E.M: TEFAS Analiz Ajanı
+                </span>
+              </div>
+              <span style={{ fontSize: 9, background: 'var(--accent-dim)', color: 'var(--accent)', fontWeight: 700, padding: '2px 6px', borderRadius: 4 }}>
+                SUBAGENT
+              </span>
+            </div>
+
+            {isTyping ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 0', gap: 10 }}>
+                <div style={{ 
+                  width: 24, 
+                  height: 24, 
+                  borderRadius: '50%', 
+                  border: '2px solid var(--accent-dim)', 
+                  borderTopColor: 'var(--accent)', 
+                  animation: 'spin 1s linear infinite' 
+                }} />
+                <span style={{ fontSize: 11, color: 'var(--text2)', fontStyle: 'italic' }}>
+                  TEFAS Canlı Verileri Sorgulanıyor...
+                </span>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <span style={{ fontSize: 10, color: 'var(--text2)', fontWeight: 600 }}>
+                  Günün En Çok Kazandıran PPF'leri (1 Aylık Getiri)
+                </span>
+                
+                {/* PPF Table */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {topPPFs.map((ppf, idx) => (
+                    <div 
+                      key={ppf.code}
+                      style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between', 
+                        padding: '8px 10px', 
+                        background: 'rgba(255,255,255,0.015)', 
+                        border: '1px solid var(--glass-border)', 
+                        borderRadius: 8,
+                        fontSize: 11
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontWeight: 800, color: 'var(--accent)', fontFamily: 'var(--mono)', fontSize: 10, background: 'var(--accent-dim)', padding: '2px 4px', borderRadius: 4 }}>
+                          {ppf.code}
+                        </span>
+                        <span style={{ color: 'var(--text1)', fontWeight: 500, fontSize: 10 }}>
+                          {ppf.name}
+                        </span>
+                      </div>
+                      <span style={{ fontWeight: 700, color: 'var(--green)', fontFamily: 'var(--mono)' }}>
+                        {ppf.yield}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 6, 
+                  fontSize: 8, 
+                  color: 'var(--text3)', 
+                  fontWeight: 700, 
+                  textTransform: 'uppercase', 
+                  marginTop: 4, 
+                  borderTop: '1px dashed var(--glass-border)', 
+                  paddingTop: 8 
+                }}>
+                  <span>Filtre: "PARA PİYASASI ŞEMSİYE FONU"</span>
+                </div>
               </div>
             )}
           </div>
