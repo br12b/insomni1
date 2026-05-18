@@ -49,54 +49,57 @@ export default function Chat({ salaryData, expensesData }) {
             </div>
           </div>
 
-          <div className="glass" style={{ padding: 20, border: hasData ? '1px solid var(--accent-dim)' : '1px dashed var(--glass-border)', opacity: hasData ? 1 : 0.6 }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text2)', textTransform: 'uppercase', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Zap size={12}/> {hasData ? 'Analysis Context' : 'Veri Bekleniyor'}
-            </div>
-            {hasData ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                   <span style={{ color: 'var(--text2)' }}>Income:</span>
-                   <span style={{ fontWeight: 700 }}>{salaryData?.income} {salaryData?.currency}</span>
-                 </div>
-                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                   <span style={{ color: 'var(--text2)' }}>Expenses:</span>
-                   <span style={{ fontWeight: 700, color: '#f87171' }}>{totalExpense.toLocaleString()} {salaryData?.currency}</span>
-                 </div>
-                 <div style={{ height: 1, background: 'var(--glass-border)' }} />
-                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                   <span style={{ color: 'var(--text2)' }}>Net Savings:</span>
-                   <span style={{ fontWeight: 700, color: 'var(--green)' }}>{netBalance.toLocaleString()} {salaryData?.currency}</span>
-                 </div>
-              </div>
-            ) : (
-              <div style={{ fontSize: 12, color: 'var(--text2)', textAlign: 'center', padding: '10px 0' }}>
-                {lang === 'tr' ? 'Henüz bir finansal analiz yapılmadı.' : 'No financial analysis performed yet.'}
-              </div>
-            )}
-          </div>
 
-          <div className="glass" style={{ padding: 20, flex: 1, display: 'flex', flexDirection: 'column', gap: 16, overflowY: 'auto' }}>
+
+          <div className="glass" style={{ padding: 24, flex: 1, display: 'flex', flexDirection: 'column', gap: 20, overflowY: 'auto' }}>
             <div className="glass" style={{ padding: 20, border: '1px solid var(--accent-dim)', background: 'linear-gradient(to bottom right, rgba(129,140,248,0.1), transparent)' }}>
-              <h3 style={{ fontSize: 14, fontWeight: 900, color: 'var(--accent)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 }}>Our Vision</h3>
+              <h3 style={{ fontSize: 14, fontWeight: 900, color: 'var(--accent)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 }}>
+                {lang === 'tr' ? 'Vizyonumuz' : 'Our Vision'}
+              </h3>
               <p style={{ fontSize: 12, color: 'var(--text1)', lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
-                "Insomni, atıl nakdin sadece bir rakam değil, kaçırılmış bir gelecek olduğu inancıyla doğdu. R.E.M ile amacımız, finansal verilerinizdeki her bir saniyeyi değere dönüştürmek ve size paranın gerçek zamanlı maliyetini göstererek finansal özgürlüğünüzü optimize etmektir."
+                {lang === 'tr'
+                  ? '"Insomni, atıl nakdin sadece bir rakam değil, kaçırılmış bir gelecek olduğu inancıyla doğdu. R.E.M ile amacımız, finansal verilerinizdeki her bir saniyeyi değere dönüştürmek, size paranın gerçek zamanlı maliyetini göstererek finansal özgürlüğünüzü optimize etmek ve atıl bakiyelerinizi otonom olarak korumaktır. Unutmayın, hayatınızdaki fırsatları kaçırmayın!"'
+                  : '"Insomni was born from the belief that idle cash is not just a number, but a missed future. Our mission with R.E.M is to transform every second of your financial data into value, optimizing your financial freedom by showing the real-time cost of money and autonomously protecting your idle balances. Remember, don\'t miss the opportunities in your life!"'}
               </p>
             </div>
 
-            <h3 style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>AI Capabilities</h3>
+            <h3 style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>
+              {lang === 'tr' ? 'Yapay Zeka Yetenekleri' : 'AI Capabilities'}
+            </h3>
+            
             <div style={{ display: 'flex', gap: 10 }}>
-              <Sparkles size={16} color="var(--accent)" />
+              <Zap size={16} color="var(--accent)" style={{ flexShrink: 0, marginTop: 2 }} />
               <div style={{ fontSize: 12 }}>
-                <strong>Scenario Simulation</strong>
-                <p style={{ margin: '4px 0 0 0', color: 'var(--text2)' }}>R.E.M can simulate your expenses based on your savings goals.</p>
+                <strong>{lang === 'tr' ? 'V.R.E.M Canlı Subagent' : 'Subagent V.R.E.M'}</strong>
+                <p style={{ margin: '4px 0 0 0', color: 'var(--text2)', lineHeight: 1.4 }}>
+                  {lang === 'tr' 
+                    ? 'Canlı TEFAS verilerine anında erişerek atıl nakdiniz için en kazançlı para piyasası fonlarını sorgular.' 
+                    : 'Instantly scans live TEFAS market data to secure your idle cash in top-performing money market funds.'}
+                </p>
               </div>
             </div>
+
             <div style={{ display: 'flex', gap: 10 }}>
-              <Shield size={16} color="var(--accent)" />
+              <Sparkles size={16} color="var(--accent)" style={{ flexShrink: 0, marginTop: 2 }} />
               <div style={{ fontSize: 12 }}>
-                <strong>Goal Planning</strong>
-                <p style={{ margin: '4px 0 0 0', color: 'var(--text2)' }}>Set a target like "iPad" and ask for a daily saving plan.</p>
+                <strong>{lang === 'tr' ? 'Senaryo Simülasyonu' : 'Scenario Simulation'}</strong>
+                <p style={{ margin: '4px 0 0 0', color: 'var(--text2)', lineHeight: 1.4 }}>
+                  {lang === 'tr' 
+                    ? 'Birikim hedeflerinize ve gelecekteki harcama planlarınıza göre bütçe simülasyonları gerçekleştirir.'
+                    : 'R.E.M can simulate your expenses based on your savings and future financial goals.'}
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 10 }}>
+              <Shield size={16} color="var(--accent)" style={{ flexShrink: 0, marginTop: 2 }} />
+              <div style={{ fontSize: 12 }}>
+                <strong>{lang === 'tr' ? 'Hedef ve Planlama' : 'Goal Planning'}</strong>
+                <p style={{ margin: '4px 0 0 0', color: 'var(--text2)', lineHeight: 1.4 }}>
+                  {lang === 'tr'
+                    ? '"iPad almak istiyorum" gibi bir hedef girin, size günlük özel bir tasarruf planı sunsun.'
+                    : 'Set a target like "iPad" and ask R.E.M for a detailed daily saving strategy.'}
+                </p>
               </div>
             </div>
           </div>

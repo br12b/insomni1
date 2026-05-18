@@ -150,13 +150,7 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
             {lang === 'tr' ? 'R.E.M harcamalarını analiz etti ve sana özel fırsatları çıkardı.' : 'R.E.M analyzed your expenses and found tailored opportunities.'}
           </p>
         </div>
-        <div className="glass" style={{ padding: '15px 25px', display: 'flex', alignItems: 'center', gap: 15, border: '1px solid var(--accent-dim)' }}>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 10, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: 1 }}>{lang === 'tr' ? 'Verimlilik Puanı' : 'Efficiency Score'}</div>
-            <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--accent)' }}>%{optimizationScore}</div>
-          </div>
-          <div style={{ width: 44, height: 44, borderRadius: '50%', border: '4px solid var(--bg2)', borderTopColor: 'var(--accent)', transform: 'rotate(45deg)' }} />
-        </div>
+
       </motion.div>
 
       <motion.div variants={containerVariants} initial="hidden" animate="show"
