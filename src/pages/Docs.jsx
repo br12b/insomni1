@@ -141,12 +141,12 @@ export default function Docs() {
               <motion.div variants={itemVariants} className="glass" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <Brain size={18} color="var(--accent)" />
-                  <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0 }}>R.E.M AI Chat</h3>
+                  <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0 }}>R.E.M AI Chat + V.R.E.M</h3>
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text2)', margin: 0, lineHeight: 1.5 }}>
                   {lang === 'tr'
-                    ? 'Maaş ve harcama verilerini canlı okuyan, otonom Google Gemini motoruyla sana dostça ve bilge finansal tavsiyeler üreten yapay zeka yoldaşı.'
-                    : 'A context-aware financial companion powered by Google Gemini that analyzes your active budget and guides you with wise advice.'}
+                    ? `Maaş ve harcama verilerini okuyarak finansal tavsiyeler üreten yapay zeka yoldaşı. Özel subagent'ı V.R.E.M (Veri Raporlama ve Entegrasyon Modülü) ile entegre çalışarak TEFAS canlı para piyasası fonu (PPF) verilerini anlık olarak çeker, süzer ve en çok kazandıran fırsatları sohbet içinden taratıp listeler.`
+                    : `A context-aware financial companion powered by Google Gemini. Integrates with its specialized subagent V.R.E.M (Data Reporting and Integration Module) to fetch, filter, and display live TEFAS money market fund (PPF) yields directly inside the chat.`}
                 </p>
               </motion.div>
 
