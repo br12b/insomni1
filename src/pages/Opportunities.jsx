@@ -186,17 +186,7 @@ export default function Opportunities({ expenses = [], salaryData = null }) {
           lang={lang}
         />
 
-        <OpportunityCard 
-          icon={Clock}
-          color="var(--green)"
-          title={lang === 'tr' ? 'Ödeme Zamanlaması' : 'Payment Timing'}
-          desc={lang === 'tr'
-            ? `Ödemelerini maaş gününden sonraya kaydırarak nakit akışını iyileştirebilir ve ek faiz geliri kazanabilirsin.`
-            : `Shift your payments to after payday to improve cash flow and earn extra interest income.`}
-          value={lang === 'tr' ? `+₺${timing.totalMonthlyGain}/ay` : `+₺${timing.totalMonthlyGain}/mo`}
-          action={lang === 'tr' ? 'Optimize Et' : 'Optimize Now'}
-          lang={lang}
-        />
+
       </motion.div>
 
       {/* Dynamic Cashback Feed */}
