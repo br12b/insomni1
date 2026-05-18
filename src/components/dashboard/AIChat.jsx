@@ -45,7 +45,7 @@ function ThinkingStep({ step, index }) {
 }
 
 // // Tek bir mesaj balonu ile iç içe geçmiş V.R.E.M Subagent konsolu (PDF indir yok, sıfırla yok!)
-function MessageBubble({ msg, onSelectOption, isLast }) {
+function MessageBubble({ msg, onSelectOption, isLast, msgIndex, allMessages }) {
   const { lang } = useLanguage();
   const isUser = msg.role === 'user';
   
@@ -61,12 +61,17 @@ function MessageBubble({ msg, onSelectOption, isLast }) {
     }
   }
 
-  // V.R.E.M tetikleyici kontrolü
-  const showVremSubagent = !isUser && displayContent && (
-    displayContent.toLowerCase().includes('v.r.e.m') || 
-    displayContent.toLowerCase().includes('tefas') ||
-    displayContent.toLowerCase().includes('para piyasası')
-  );
+  // Find the index of the first model message that triggers V.R.E.M
+  const firstVremIndex = allMessages ? allMessages.findIndex(m => 
+    m.role === 'model' && m.content && (
+      m.content.toLowerCase().includes('v.r.e.m') || 
+      m.content.toLowerCase().includes('tefas') ||
+      m.content.toLowerCase().includes('para piyasası')
+    )
+  ) : -1;
+
+  // Render V.R.E.M subagent exactly once on the first triggered message in the chat history
+  const showVremSubagent = !isUser && displayContent && (msgIndex === firstVremIndex);
 
   const [subagentStage, setSubagentStage] = useState('idle'); // 'idle' -> 'loading' -> 'done'
   const [topPPFs, setTopPPFs] = useState([
@@ -456,6 +461,8 @@ export default function AIChat({ financialData }) {
               msg={msg} 
               onSelectOption={handleSend} 
               isLast={i === messages.length - 1 && !isTyping} 
+              msgIndex={i}
+              allMessages={messages}
             />
           ))}
         </AnimatePresence>
