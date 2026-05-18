@@ -139,13 +139,19 @@ const [showTip, setShowTip] = useState(false);
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 12 }}>
                       <div>
-                        <strong>📥 {lang === 'tr' ? 'Yöntem A: Hazır Örnek PDF İndirin' : 'Method A: Download Sample PDF'}</strong>
-                        <div style={{ display: 'flex', gap: 12, marginTop: 6, flexWrap: 'wrap' }}>
-                          <a href="/samples/Banka_Ekstresi_Mayis_2026.pdf" download style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
-                            📄 Banka_Ekstresi_Mayis_2026.pdf
+                        <strong>📥 {lang === 'tr' ? 'Yöntem A: Hazır Örnek Türkçe PDF İndirin' : 'Method A: Download Sample Turkish PDF'}</strong>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 16px', marginTop: 8 }}>
+                          <a href="/samples/Ekstre_kamil%20%C3%B6zkundura.pdf" download style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
+                            📄 Kamil Özkundura Ekstresi
                           </a>
-                          <a href="/samples/Ekstre_senpatrick.pdf" download style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
-                            📄 Ekstre_senpatrick.pdf
+                          <a href="/samples/Ekstre_kemal%20ozbegen.pdf" download style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
+                            📄 Kemal Özbeğen Ekstresi
+                          </a>
+                          <a href="/samples/Ekstre_sami%20soylu.pdf" download style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
+                            📄 Sami Soylu Ekstresi
+                          </a>
+                          <a href="/samples/Ekstre_selami%20ozsahiner.pdf" download style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
+                            📄 Selami Özşahiner Ekstresi
                           </a>
                         </div>
                       </div>
