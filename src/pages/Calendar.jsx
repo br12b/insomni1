@@ -56,9 +56,32 @@ export default function Calendar() {
   };
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('insomni_synced_txs') || '[]');
-    setSyncedData(Array.isArray(data) ? data : []);
-  }, []);
+    // 1. Load R.E.M Synced Transactions
+    const synced = JSON.parse(localStorage.getItem('insomni_synced_txs') || '[]');
+    
+    // 2. Load User Expenses added via Dashboard
+    const userExpenses = JSON.parse(localStorage.getItem('insomni_expenses') || '[]');
+    
+    // 3. Map user expenses to the calendar schema
+    const mappedUserExpenses = userExpenses.map(e => ({
+      id: e.id,
+      clean: e.name,
+      amount: `-${e.amount}`,
+      day: parseInt(e.date) || 15,
+      date: e.date, // simple day or full ISO
+      category: e.category,
+      type: 'TRANSACTION',
+      source: lang === 'tr' ? 'BANKA GATEWAY' : 'BANK GATEWAY',
+      color: '#6366f1',
+      icon: 'ShoppingBag'
+    }));
+
+    const combined = [
+      ...synced,
+      ...mappedUserExpenses
+    ];
+    setSyncedData(Array.isArray(combined) ? combined : []);
+  }, [lang]);
 
   const parseCurrency = (str) => {
     if (!str) return 0;
@@ -68,6 +91,11 @@ export default function Calendar() {
 
   const getExpenseMonth = (item) => {
     if (item.date) {
+      const strVal = item.date.toString().trim();
+      const num = parseInt(strVal);
+      if (!isNaN(num) && num >= 1 && num <= 31 && !strVal.includes('-') && !strVal.includes('T')) {
+        return 4; // May default (active analysis month)
+      }
       const p = new Date(item.date);
       if (!isNaN(p.getTime())) return p.getMonth();
     }
@@ -76,6 +104,11 @@ export default function Calendar() {
 
   const getExpenseYear = (item) => {
     if (item.date) {
+      const strVal = item.date.toString().trim();
+      const num = parseInt(strVal);
+      if (!isNaN(num) && num >= 1 && num <= 31 && !strVal.includes('-') && !strVal.includes('T')) {
+        return 2026; // 2026 default (active analysis year)
+      }
       const p = new Date(item.date);
       if (!isNaN(p.getTime())) return p.getFullYear();
     }
@@ -98,7 +131,8 @@ export default function Calendar() {
       
       const isSimpleDay = !d.date?.toString().includes('-') && !d.date?.toString().includes('T');
       if (isSimpleDay) {
-        return itemD === day;
+        // Bound simple days strictly to May 2026 so they don't clone across other months!
+        return itemD === day && currentMonth === 4 && currentYear === 2026;
       }
       return itemD === day && itemM === currentMonth && itemY === currentYear;
     });
