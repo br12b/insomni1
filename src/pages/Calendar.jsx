@@ -7,6 +7,7 @@ import {
   Landmark, Radio, FileText, ArrowUpCircle, ArrowDownCircle, TrendingUp, TrendingDown, 
   Target, Sparkles, Zap, ShieldCheck, Globe
 } from 'lucide-react';
+import { getSector } from '../utils/sectors';
 
 const IconMap = ({ name, color, type }) => {
   const props = { color, size: 18 };
@@ -72,18 +73,21 @@ export default function Calendar({ financialData }) {
     const userExpenses = financialData?.expensesData || [];
     
     // 3. Map user expenses to the calendar schema
-    const mappedUserExpenses = userExpenses.map(e => ({
-      id: e.id,
-      clean: e.name,
-      amount: `-${e.amount}`,
-      day: parseInt(e.date) || 15,
-      date: e.date, // simple day or full ISO
-      category: e.category,
-      type: 'TRANSACTION',
-      source: lang === 'tr' ? 'BANKA GATEWAY' : 'BANK GATEWAY',
-      color: '#6366f1',
-      icon: 'ShoppingBag'
-    }));
+    const mappedUserExpenses = userExpenses.map(e => {
+      const sector = getSector(e.name, lang);
+      return {
+        id: e.id,
+        clean: e.name,
+        amount: `-${e.amount}`,
+        day: parseInt(e.date) || 15,
+        date: e.date, // simple day or full ISO
+        category: sector.name, // Display Sector name in category
+        type: 'TRANSACTION',
+        source: lang === 'tr' ? 'BANKA GATEWAY' : 'BANK GATEWAY',
+        color: sector.color, // Display Sector color
+        icon: 'ShoppingBag'
+      };
+    });
 
     const combined = [
       ...uniqueSynced,
@@ -216,9 +220,28 @@ export default function Calendar({ financialData }) {
                 const isSelected = d === selectedDay;
                 return (
                   <motion.div key={d} onClick={() => setSelectedDay(d)} whileHover={{ scale: 1.05 }}
-                    style={{ aspectRatio: '1/1', borderRadius: 20, border: isSelected ? '2px solid #6366f1' : '1px solid #f1f5f9', background: isSelected ? '#6366f108' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', cursor: 'pointer' }}>
+                    style={{ 
+                      aspectRatio: '1/1', 
+                      borderRadius: 20, 
+                      border: isSelected ? '2px solid #6366f1' : (data.expense > 0 ? '1px solid rgba(239, 68, 68, 0.2)' : '1px solid #f1f5f9'), 
+                      background: isSelected ? '#6366f108' : (data.expense > 0 ? 'rgba(239, 68, 68, 0.01)' : '#fff'), 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      position: 'relative', 
+                      cursor: 'pointer' 
+                    }}>
                     <span style={{ fontSize: 18, fontWeight: 950, color: isSelected ? '#6366f1' : '#1e293b' }}>{d}</span>
-                    <div style={{ position: 'absolute', bottom: 8, display: 'flex', gap: 3 }}>
+                    
+                    {/* O GÜN NE KADAR HARCAMA YAPILDIĞI KIRMIZI VE EKSİ OLARAK GÖSTERİLSİN */}
+                    {data.expense > 0 && (
+                      <span style={{ fontSize: 9, fontWeight: 900, color: '#ef4444', marginTop: 1, fontFamily: 'var(--mono)' }}>
+                        -{t.currency}{data.expense.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}
+                      </span>
+                    )}
+
+                    <div style={{ position: 'absolute', bottom: 6, display: 'flex', gap: 3 }}>
                       {data.expense > 0 && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#ef4444' }} />}
                       {data.income > 0 && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#10b981' }} />}
                     </div>
@@ -243,21 +266,44 @@ export default function Calendar({ financialData }) {
                       <div style={{ fontSize: 22, fontWeight: 950, color: '#064e3b' }}>{t.currency || '₺'}{selectedData.income.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}</div>
                    </div>
                    <div style={{ padding: 20, borderRadius: 24, background: '#ef444405', border: '1px solid #ef444415' }}>
-                      <div style={{ fontSize: 10, fontWeight: 900, color: '#ef4444', marginBottom: 6 }}>{lang === 'tr' ? 'GİDER' : 'GİDER'}</div>
+                      <div style={{ fontSize: 10, fontWeight: 900, color: '#ef4444', marginBottom: 6 }}>{lang === 'tr' ? 'GİDER' : 'EXPENSE'}</div>
                       <div style={{ fontSize: 22, fontWeight: 950, color: '#7f1d1d' }}>-{t.currency || '₺'}{selectedData.expense.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}</div>
                    </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                   {selectedData.items.map((item, i) => (
-                     <div key={i} style={{ padding: 18, borderRadius: 20, background: '#f8fafc', border: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                           <div style={{ width: 44, height: 44, borderRadius: 12, background: item.type === 'BALANCE' ? '#10b98110' : `${item.color}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconMap name={item.icon} color={item.type === 'BALANCE' ? '#10b981' : item.color} type={item.type} /></div>
-                           <div><div style={{ fontSize: 16, fontWeight: 950, color: '#1e293b' }}>{item.clean}</div><div style={{ fontSize: 10, fontWeight: 800, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>{item.type === 'BALANCE' ? <ShieldCheck size={10} color="#10b981"/> : <SourceIcon source={item.source} />} {item.source === 'BANKA GATEWAY' || item.source === 'BANK GATEWAY' ? (lang === 'tr' ? 'BANKA GATEWAY' : 'BANK GATEWAY') : (lang === 'tr' ? 'OTONOM KÖPRÜ' : 'AUTONOMOUS BRIDGE')}</div></div>
-                        </div>
-                        <div style={{ fontSize: 18, fontWeight: 950, color: item.type === 'BALANCE' ? '#10b981' : '#ef4444' }}>{item.amount}</div>
-                     </div>
-                   ))}
+                   {selectedData.items.map((item, i) => {
+                     const sector = getSector(item.clean, lang);
+                     return (
+                       <div key={i} style={{ padding: 18, borderRadius: 20, background: '#f8fafc', border: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                             {/* Render Sector Emoji inside dynamic colored glass badge */}
+                             <div style={{ 
+                               width: 44, 
+                               height: 44, 
+                               borderRadius: 12, 
+                               background: item.type === 'BALANCE' ? '#10b98110' : `${sector.color}15`, 
+                               display: 'flex', 
+                               alignItems: 'center', 
+                               justifyContent: 'center',
+                               fontSize: 20,
+                               border: item.type === 'BALANCE' ? '1px solid #10b98125' : `1px solid ${sector.color}25`
+                             }}>
+                               {item.type === 'BALANCE' ? '💰' : sector.icon}
+                             </div>
+                             <div>
+                               <div style={{ fontSize: 16, fontWeight: 950, color: '#1e293b' }}>{item.clean}</div>
+                               <div style={{ fontSize: 10, fontWeight: 800, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                 <span style={{ color: item.type === 'BALANCE' ? '#10b981' : sector.color, fontWeight: 900 }}>
+                                   {item.type === 'BALANCE' ? item.category : sector.name}
+                                 </span> • <SourceIcon source={item.source} /> {item.source}
+                               </div>
+                             </div>
+                          </div>
+                          <div style={{ fontSize: 18, fontWeight: 950, color: item.type === 'BALANCE' ? '#10b981' : '#ef4444' }}>{item.amount}</div>
+                       </div>
+                     );
+                   })}
                 </div>
               </motion.div>
             </AnimatePresence>

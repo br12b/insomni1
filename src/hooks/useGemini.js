@@ -1,19 +1,21 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import seededPPFs from "../utils/seededPPFs.json";
-import { useState, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from 'react';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { executeTool } from '../utils/toolExecutor';
+import seededPPFs from '../utils/seededPPFs.json';
+import userProfile from '../utils/userProfile.json';
 
-// Multi-key support parsing from single comma-separated variable VITE_GEMINI_API_KEYS
-const API_KEYS_STR = import.meta.env.VITE_GEMINI_API_KEYS || import.meta.env.VITE_GEMINI_API_KEY || "";
-const API_KEYS = API_KEYS_STR ? API_KEYS_STR.split(",").map(k => k.trim()).filter(Boolean) : [];
+const API_KEYS = (() => {
+  const keysStr = import.meta.env.VITE_GEMINI_API_KEYS || import.meta.env.VITE_GEMINI_API_KEY || '';
+  return keysStr.split(',').map(k => k.trim()).filter(Boolean);
+})();
 
-// API Key rotation active index tracked at module level
 let activeKeyIndex = 0;
 
 const TOOL_DECLARATIONS = [
   { 
     name: "simulateExpenseRemoval", 
-    description: "Kullanici dogrudan bir harcamanin bütçeden cikarilmasini simüle etmek istediginde cagrilir. Harcamanin adini parametre olarak alir.", 
-    parameters: { type: "OBJECT", properties: { expense_name: { type: "STRING", description: "Kaldirilacak harcamanin tam adi" } }, required: ["expense_name"] } 
+    description: "Kullanici bazi gereksiz harcamalarini (örnegin Netflix, sigara vb.) iptal ettiginde veya kistiginda elde edecegi potansiyel tasarrufu ve bunun yillik birikim getirisini hesaplar.", 
+    parameters: { type: "OBJECT", properties: { monthly_saving_amount: { type: "NUMBER", description: "Aylik tasarruf edilecek net tutar (TL cinsinden)" }, expense_name: { type: "STRING", description: "Kisilacak harcamanin adi (örnegin 'Netflix')" } }, required: ["monthly_saving_amount", "expense_name"] } 
   },
   { 
     name: "calculateGoalTimeline", 
@@ -50,7 +52,13 @@ Kullanıcı senin adını, REM uykusunu veya Insomni'nin ne anlama geldiğini so
 - Sen kuru bir finansçı değil, insan psikolojisini ve tüketim krizlerini çok iyi bilen bilge bir finans asistanı ve dostsun.
 - YEMEK / SİPARİŞ KRİZLERİ: Kullanıcı açlıktan sipariş verme krizine girdiğinde ya da yemek harcamalarını kısmak istediğinde, sadece "dışarıdan söyleme" demek yerine ona son derece esprili, eğlenceli ve pratik "Kurtarıcı Tarifler" ver! (Örn: "Buzdolabı Yağması Çırpılmış Yumurta", "Pörşümüş Kabak Mücveri" veya sıfır maliyetli yaratıcı hızlı gurme atıştırmalıklar). Bunları eğlenceli bir şef gibi anlat!
 - OYUN / DİJİTAL HARCAMALAR: Kullanıcı oyun harcamalarından veya Steam'den bahsettiğinde jenerik tavsiyeler vermek yerine oyuncuların bütçe dostu gerçek platformlarını öner! (Örn: Eneba, Humble Bundle, Xbox Game Pass, Voidu, ByNoGame, Kabasakal veya Epic Games ücretsiz oyun fırsatları).
-- Dürtüsel harcama alışkanlıklarını ("dopamin tuzakları", "FOMO", "istek/ihtiyaç kafa karışıklığı") esprili ama bilimsel pratik kural ve gerçekçi alternatiflerle yönet.`;
+- Dürtüsel harcama alışkanlıklarını ("dopamin tuzakları", "FOMO", "istek/ihtiyaç kafa karışıklığı") esprili ama bilimsel pratik kural ve gerçekçi alternatiflerle yönet.
+14. KULLANICI FİNANSAL KİMLİĞİ & PERSONASI (HAYATİ):
+Kullanıcının belirlenmiş bir finansal kimliği/personası ve sektör skorları (0-5) sana iletilecektir (örneğin: "Dopamin Canavarı Oyuncu" 🎮, "Gurme Kaşif" 🍔, vb.). Kullanıcıyla konuşurken bu kimliğini mutlaka bil, ona göre hitap et veya şakalar yap!
+- Oyuncu ise: Steam, Eneba, ByNoGame, Kabasakal gibi oyun harcamalarından bahset, oyun terimleriyle konuş!
+- Gurme ise: Yemek krizleri ve sipariş harcamaları üzerinden tatlı şakalar yapıp pratik kurtarıcı tariflerini öne çıkar!
+- Tasarruf Şampiyonu ise: Onun tasarruflu yapısını tebrik et, atıl nakdini V.R.E.M ile en iyi şekilde değerlendirmesi için onu yüreklendir!
+Kullanıcının kimliğine son derece sadık ve akıllıca yaklaş!`;
 
 export function useGemini() {
   const [messages, setMessages] = useState([]);
@@ -59,73 +67,51 @@ export function useGemini() {
   const [activeModel, setActiveModel] = useState("3.1");
   const financialDataRef = useRef(null);
 
-  const executeTool = async (call, fd) => {
-    const { name, args } = call;
-    const income = parseFloat(fd?.salary?.income || 0);
-    const totalExp = fd?.totalExpense || 0;
-    const netSavings = income - totalExp;
-
-    if (name === "simulateExpenseRemoval") {
-      const expName = args.expense_name || "";
-      const exps = fd?.expenses || [];
-      const found = exps.find(e => e.name.toLowerCase().includes(expName.toLowerCase()));
-      if (found) {
-        const amt = parseFloat(found.amount || 0);
-        return { success: true, removedExpense: found.name, savedAmount: amt, newNetSavings: netSavings + amt };
-      }
-      return { success: false, error: "Harcama bulunamadi." };
-    }
-    else if (name === "calculateGoalTimeline") {
-      const goal = args.goal_amount || 0;
-      if (netSavings <= 0) return { error: "Aylik net tasarruf yok veya negatif." };
-      const months = Math.ceil(goal / netSavings);
-      return { goalAmount: goal, currentMonthlySavings: netSavings, monthsRequired: months };
-    }
-    return { error: "Bilinmeyen arac." };
+  const checkKeywords = (str, list) => {
+    return list.some(word => str.includes(word));
   };
 
-  const sendMessage = useCallback(async (userPrompt, financialData) => {
-    if (!userPrompt.trim()) return;
-    if (financialData) financialDataRef.current = financialData;
+  const sendMessage = async (userPrompt, financialData) => {
+    if (!userPrompt) return;
+    
+    financialDataRef.current = financialData;
+    setIsTyping(true); window.dispatchEvent(new CustomEvent('rem_typing_change', { detail: { isTyping: true } }));
 
     setMessages(prev => [...prev, { role: "user", content: userPrompt }]);
-    setIsTyping(true); window.dispatchEvent(new CustomEvent('rem_typing_change', { detail: { isTyping: true } }));
-    setThinkingSteps([]);
-
-    // 1. DÜŞÜNME BALONLARINI SORUYA GÖRE KATEGORİZE VE DİNAMİK OLARAK ANİME ETME
-    const promptLower = userPrompt.toLowerCase();
-    
-    const checkKeywords = (str, keywords) => {
-      return keywords.some(kw => str.includes(kw));
-    };
 
     const tickerSteps = {
-      default: [
-        "Bütçe Verileri Analiz Ediliyor...",
-        "R.E.M Finansal Yol Haritası Hazırlanıyor..."
-      ],
-      behavioral: [
-        "Dürtüsel Harcama Psikolojisi İnceleniyor...",
-        "Davranışsal Finans Rehberi Hazırlanıyor..."
-      ],
-      invest: [
-        "Atıl Nakit Getiri Fırsatları Taranıyor...",
-        "Fon ve PPF İncelemesi Yapılıyor..."
+      greeting: [
+        "Bağlantı kuruluyor...",
+        "R.E.M selamlamayı hazırlıyor..."
       ],
       expense: [
-        "Harcama Kalıpları & Fırsatlar Taranıyor...",
-        "Bilinçli Tüketim & Cashback Yolları Modelleniyor..."
+        "Harcamalar analiz ediliyor...",
+        "Kategori dağılımı kontrol ediliyor...",
+        "Tasarruf noktaları belirleniyor..."
+      ],
+      behavioral: [
+        "Harcama dürtüsü tespit edildi...",
+        "Dopamin seviyeleri simüle ediliyor...",
+        "Bilinçli harcama önerileri taranıyor..."
+      ],
+      invest: [
+        "V.R.E.M motoru ateşleniyor...",
+        "Canlı TEFAS verileri taranıyor...",
+        "Aktif nema fırsatları sıralanıyor..."
       ],
       goal: [
-        "Finansal Hedef Zaman Çizelgesi Hesaplanıyor...",
-        "Gelecek Projeksiyonları Modelleniyor..."
+        "Hedef büyüklüğü hesaplanıyor...",
+        "Aylık atıl nakit gücü ölçülüyor...",
+        "Tahmini varış çizgisi çiziliyor..."
       ],
-      greeting: [
-        "R.E.M Dostane Bağlantı Kuruluyor...",
-        "Sohbet Akışı Hazırlanıyor..."
+      default: [
+        "Finansal durum inceleniyor...",
+        "Sektör bazlı veriler kontrol ediliyor...",
+        "REM Sync senkronizasyonu yapılıyor..."
       ]
     };
 
+    const promptLower = userPrompt.toLowerCase();
     let category = "default";
     
     // Check keywords with high accuracy
@@ -162,6 +148,13 @@ export function useGemini() {
     if (fd) {
       const exps = (fd.expenses || []).map(e => `${e.name}: ${e.amount} TL`).join(", ");
       dataSummary = `MAAŞ: ${fd.salary?.income || 0}, TOPLAM GİDER: ${fd.totalExpense || 0}, DETAYLI HARCAMALAR: [${exps}]`;
+      
+      // Dynamic profile integration: fallback to userProfile.json template saved by python profiling script
+      const activePersona = fd.persona || userProfile?.persona || "Dengeli Harcamacı ⚖️";
+      const activeRatings = fd.ratings || userProfile?.ratings || { gaming: 3, food: 3, housing: 3, transport: 3, bills: 3, finance: 3 };
+      
+      dataSummary += `, KULLANICI FİNANSAL PERSONASI: ${activePersona}`;
+      dataSummary += `, KULLANICI SEKTÖR SKORLARI (0-5 Arası): ${JSON.stringify(activeRatings)}`;
     }
 
     let tefasSummary = "TEFAS CANLI PPF VERİSİ ALINAMADI";
@@ -248,60 +241,43 @@ export function useGemini() {
         success = true;
         clearInterval(tickerInterval);
       } catch (err) {
-        console.warn(`API Key Index ${activeKeyIndex} with model ${currentModel} failed:`, err);
+        console.error("API Key failed:", activeKeyIndex, err);
+        // Failover key shifting
+        activeKeyIndex = (activeKeyIndex + 1) % API_KEYS.length;
+        keysTried++;
         
-        // 1. DÜŞÜŞ KADEMESİ: Eğer 3.1 ile hata alırsak, AYNI anahtarda önce 2.5'e düşüp tekrar deneriz!
+        // Failover model shifting if Gemini 1.5 Pro key limit is encountered
         if (currentModel === "gemini-3.1-flash-lite") {
-          currentModel = "gemini-2.5-flash";
-          setActiveModel("2.5");
-          
-          setThinkingSteps(prev => [
-            ...prev.map(s => s.status === 'running' ? { ...s, status: 'done' } : s),
-            { status: 'running', label: "Switched to 2.5 (Aynı Sunucuda Model Düşürülüyor...)" }
-          ]);
-          await new Promise(r => setTimeout(r, 800));
-          continue; // Döngüyü kırmadan AYNI anahtarla (activeKeyIndex artmadan) yeni modelle tekrar dene!
+          currentModel = "gemini-2.5-pro";
         } else {
-          // 2. KADEME: Eğer zaten 2.5'teydik ve yine hata aldıysak, şimdi sıradaki YEDEK anahtara geçiyoruz!
-          activeKeyIndex = (activeKeyIndex + 1) % API_KEYS.length;
-          keysTried++;
-          
-          if (keysTried >= totalKeys) {
-            clearInterval(tickerInterval);
-            let errorMsg = "Tüm API anahtarların denendi fakat limit aşımı veya başka bir hata nedeniyle yanıt alınamadı usta. Lütfen daha sonra tekrar dener misin?";
-            const errMsgLower = (err && err.message) ? err.message.toLowerCase() : "";
-            if (errMsgLower.includes("expired") || errMsgLower.includes("invalid") || errMsgLower.includes("key_invalid") || errMsgLower.includes("api key")) {
-              errorMsg = "⚠️ GEMINI API ANAHTARI HATASI:\n\nKullandığın API anahtarının süresi dolmuş veya geçersiz görünüyor usta!\n\nLütfen Google AI Studio (https://aistudio.google.com/) üzerinden yeni ve ücretsiz bir anahtar alarak .env dosyasındaki VITE_GEMINI_API_KEY değerini güncelleyebilir misin?";
-            }
-            setMessages(prev => [...prev, { role: "model", content: errorMsg }]);
-            setIsTyping(false); window.dispatchEvent(new CustomEvent('rem_typing_change', { detail: { isTyping: false } }));
-            setThinkingSteps([]);
-            return;
-          }
-
-          setThinkingSteps(prev => [
-            ...prev.map(s => s.status === 'running' ? { ...s, status: 'done' } : s),
-            { status: 'running', label: "Yedek Sunucuya Geçiliyor (Limit Bypass)..." }
-          ]);
-          await new Promise(r => setTimeout(r, 1000));
+          currentModel = "gemini-3.1-flash-lite";
         }
       }
     }
 
     clearInterval(tickerInterval);
-    setThinkingSteps(prev => prev.map(s => ({ ...s, status: 'done' })));
-    
-    // Construct final thinking steps from what actually completed in UI
-    const finalStepsUI = [];
-    setThinkingSteps(prev => {
-      prev.forEach(s => finalStepsUI.push({ status: 'done', label: s.label }));
-      return [];
-    });
 
-    setMessages(prev => [...prev, { role: "model", content: responseText, thinkingSteps: finalStepsUI }]);
+    if (success) {
+      setMessages(prev => [...prev, { role: "model", content: responseText, thinkingSteps: finalThinkingSteps }]);
+    } else {
+      setMessages(prev => [...prev, { role: "model", content: "Üzgünüm usta, tüm Gemini API anahtarları kota/bağlantı hatası verdi. Lütfen daha sonra dene!" }]);
+    }
+    
     setIsTyping(false); window.dispatchEvent(new CustomEvent('rem_typing_change', { detail: { isTyping: false } }));
     setThinkingSteps([]);
-  }, [messages]);
+  };
 
-  return { messages, sendMessage, isTyping, thinkingSteps, activeModel, isAvailable: API_KEYS.length > 0 };
+  const clearChat = () => {
+    setMessages([]);
+  };
+
+  return {
+    messages,
+    sendMessage,
+    clearChat,
+    isTyping,
+    thinkingSteps,
+    isAvailable: API_KEYS.length > 0,
+    activeModel
+  };
 }

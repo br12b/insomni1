@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { parseAmount } from '../../lib/calculations';
 import { useLanguage } from '../../context/LanguageContext';
+import { getSector } from '../../utils/sectors';
 
 // Secure date parser that matches numbers, strings, and full ISO dates
 const getExpenseDay = (dateVal) => {
@@ -48,16 +49,32 @@ const getExpenseYear = (dateVal) => {
 };
 
 function ExpBadge({ exp, onDragStart, lang, currency }) {
-  const isSub = exp.type === 'subscription';
+  const sector = getSector(exp.name, lang);
   return (
     <div draggable onDragStart={e => { e.dataTransfer.setData('expId', exp.id); onDragStart?.(exp.id); }}
-      style={{ display: 'inline-flex', padding: '2px 7px', borderRadius: 8,
-        background: isSub ? 'var(--accent-dim)' : 'var(--green-dim)',
-        color: isSub ? 'var(--accent)' : 'var(--green)',
-        fontSize: 10, fontWeight: 600, cursor: 'grab', userSelect: 'none', marginTop: 3,
-        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}
-      title={exp.name + ': ' + currency + parseAmount(exp.amount).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}>
-      {exp.name.length > 9 ? exp.name.slice(0,9) + '..' : exp.name}
+      style={{ 
+        display: 'inline-flex', 
+        alignItems: 'center', 
+        gap: 4, 
+        padding: '3px 8px', 
+        borderRadius: 8,
+        background: `${sector.color}15`,
+        color: sector.color,
+        border: `1px solid ${sector.color}35`,
+        fontSize: 10, 
+        fontWeight: 700, 
+        cursor: 'grab', 
+        userSelect: 'none', 
+        marginTop: 3,
+        overflow: 'hidden', 
+        textOverflow: 'ellipsis', 
+        whiteSpace: 'nowrap', 
+        maxWidth: '100%',
+        boxShadow: `0 2px 6px ${sector.color}08`
+      }}
+      title={exp.name + ' (' + sector.name + '): ' + currency + parseAmount(exp.amount).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}>
+      <span style={{ fontSize: 10 }}>{sector.icon}</span>
+      <span>{exp.name.length > 9 ? exp.name.slice(0,9) + '..' : exp.name}</span>
     </div>
   );
 }
@@ -131,7 +148,7 @@ export default function MonthlyCalendar({ expenses = [], salaryDay = 1, income =
 
     const dayTotal = dayExps.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
     runningBalance -= dayTotal;
-    return { day, balance: runningBalance, isNegative: runningBalance < 0, dayExps };
+    return { day, balance: runningBalance, dayTotal, isNegative: runningBalance < 0, dayExps };
   });
 
   const handleDrop = useCallback((e, day) => {
@@ -218,6 +235,7 @@ export default function MonthlyCalendar({ expenses = [], salaryDay = 1, income =
           const isSuccess = dropSuccess === d.day;
           
           const isToday = currentYear === 2026 && currentMonth === 4 && d.day === 18;
+          const hasExpenses = d.dayTotal > 0;
 
           return (
             <motion.div key={d.day}
@@ -232,10 +250,10 @@ export default function MonthlyCalendar({ expenses = [], salaryDay = 1, income =
                 minHeight: 92,
                 border: isToday
                   ? '2px solid var(--accent)'
-                  : (isDropping ? '1.5px solid var(--accent)' : isSuccess ? '1.5px solid var(--green)' : '1px solid var(--glass-border)'),
+                  : (isDropping ? '1.5px solid var(--accent)' : isSuccess ? '1.5px solid var(--green)' : hasExpenses ? '1px solid rgba(239, 68, 68, 0.2)' : '1px solid var(--glass-border)'),
                 background: isDropping 
                   ? 'var(--accent-dim)' 
-                  : (isSalary ? 'var(--green-dim)' : d.isNegative ? 'var(--red-dim)' : 'rgba(255, 255, 255, 0.02)'),
+                  : (isSalary ? 'var(--green-dim)' : hasExpenses ? 'rgba(239, 68, 68, 0.02)' : 'rgba(255, 255, 255, 0.02)'),
                 boxShadow: isToday ? '0 0 15px rgba(129, 140, 248, 0.15)' : 'none',
                 overflow: 'hidden', 
                 transition: 'border-color 0.15s, background 0.15s',
@@ -248,8 +266,9 @@ export default function MonthlyCalendar({ expenses = [], salaryDay = 1, income =
                 {isSalary && <span style={{ fontSize: 8, color: 'var(--green)', fontWeight: 700 }}>{lang === 'tr' ? 'MAAŞ' : 'PAYDAY'}</span>}
               </div>
               
-              <div style={{ fontFamily: 'var(--mono)', fontSize: 11, fontWeight: 700, color: d.isNegative ? 'var(--red)' : 'var(--text0)', marginBottom: 2 }}>
-                {d.isNegative ? '-' : ''}{t.currency}{Math.abs(d.balance).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}
+              {/* O GÜN NE KADAR HARCAMA YAPILDIĞI KIRMIZI OLARAK GÖSTERİLSİN */}
+              <div style={{ fontFamily: 'var(--mono)', fontSize: 11, fontWeight: 800, color: '#ef4444', marginBottom: 2 }}>
+                {hasExpenses ? `-${t.currency}${d.dayTotal.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}` : ''}
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'flex-start' }}>

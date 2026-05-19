@@ -2,6 +2,7 @@ import os
 import sys
 import random
 import datetime
+import json
 
 # KUTUPHANE KONTROLU
 try:
@@ -13,36 +14,83 @@ except ImportError:
 class BankStatement(FPDF):
     def header(self):
         self.set_font('helvetica', 'B', 20)
-        self.set_text_color(16, 185, 129)
+        self.set_text_color(129, 140, 248) # Premium Indigo color
         self.cell(0, 10, 'CASHEDGE PRIVATE BANKING', ln=True, align='L')
         self.set_font('helvetica', '', 10)
-        self.set_text_color(100)
-        self.cell(0, 5, 'Customized Statement Simulation Engine v2.0', ln=True)
+        self.set_text_color(156, 163, 175)
+        self.cell(0, 5, 'Autonomous Identity Profiling & Statement Engine v3.0', ln=True)
         self.ln(10)
 
 def get_user_config():
-    print("\n" + "="*50)
-    print("      CASHEDGE EKSTRE OZELLESTIRME PANELI")
-    print("="*50)
+    print("\n" + "="*60)
+    print("      CASHEDGE PREMIUM FİNANSAL KİMLİK & EKSTRE PANELİ")
+    print("="*60)
     
-    name = input("Musteri Adi (Varsayilan: Emre): ") or "Emre"
+    name = input("Müşteri Adı (Varsayılan: Emre): ") or "Emre"
     
-    print("\n[1] Harcama Seviyesi:")
-    print("    1. Cimri (Dusuk Giderler)")
-    print("    2. Normal (Standart)")
-    print("    3. Savurgan (Yuksek Giderler)")
-    lvl = input("Seciminiz (1-3): ") or "2"
+    print("\nLütfen aşağıdaki sektörlerdeki harcama eğiliminizi")
+    print("0 (Hiç/Çok Düşük) ile 5 (Çok Yüksek) arasında puanlayın:")
     
-    print("\n[2] Harcama Odak Noktasi:")
-    print("    1. Dengeli")
-    print("    2. Abonelik Agirlikli (Netflix, Spotify, Cloud...)")
-    print("    3. Yasam/Market Agirlikli")
-    focus = input("Seciminiz (1-3): ") or "1"
+    sectors = [
+        ("gaming", "Oyun / Dijital Eğlence (Steam, Eneba, Voidu...)"),
+        ("food", "Gıda / Market / Dışarıda Yemek (Getir, Starbucks...)"),
+        ("housing", "Barınma / Kira / Aidat / Ev Eşyası (Kira, IKEA...)"),
+        ("transport", "Ulaşım / Yakıt / Seyahat (Shell, Uber, Otobüs...)"),
+        ("bills", "Faturalar / Dijital Abonelikler (Turkcell, Netflix...)")
+    ]
+    
+    ratings = {}
+    for sid, label in sectors:
+        while True:
+            try:
+                val = input(f" - {label} [0-5]: ")
+                if not val:
+                    val = "3"
+                num = int(val)
+                if 0 <= num <= 5:
+                    ratings[sid] = num
+                    break
+                else:
+                    print("Lütfen 0 ile 5 arasında bir tam sayı girin.")
+            except ValueError:
+                print("Geçersiz giriş. Lütfen bir sayı girin.")
+                
+    # Persona Hesaplama
+    gaming = ratings["gaming"]
+    food = ratings["food"]
+    housing = ratings["housing"]
+    transport = ratings["transport"]
+    bills = ratings["bills"]
+    
+    scores_dict = {
+        "Dopamin Canavarı Oyuncu 🎮": gaming,
+        "Gurme Kaşif 🍔": food,
+        "Konfor Odaklı Ev Kuşu 🏠": housing,
+        "Gezgin Ruh 🚗": transport,
+        "Dijital Abonelik Gurusu 📄": bills
+    }
+    
+    # En yüksek skoru bul
+    highest_persona = max(scores_dict, key=scores_dict.get)
+    highest_score = scores_dict[highest_persona]
+    
+    total_score = sum(ratings.values())
+    
+    if highest_score >= 4:
+        persona = highest_persona
+    elif total_score <= 8:
+        persona = "Tasarruf Şampiyonu 🏆"
+    else:
+        persona = "Dengeli Harcamacı ⚖️"
+        
+    print("\n" + "-"*60)
+    print(f" ANALİZ BAŞARILI! Finansal Profiliniz: {persona}")
+    print("-"*60)
     
     return {
         "name": name,
-        "level": int(lvl),
-        "focus": int(focus)
+        "ratings": ratings,
+        "persona": persona
     }
 
 def generate_custom_pdf():
@@ -52,32 +100,71 @@ def generate_custom_pdf():
         pdf = BankStatement()
         pdf.add_page()
         
-        # Seviye carpanlari
-        multiplier = 0.5 if config["level"] == 1 else (2.5 if config["level"] == 3 else 1.0)
-        
-        # Veri Havuzu
+        # Zenginleştirilmiş Geniş Platform Veri Havuzu (Borç sektörü tamamen kaldırıldı)
         merchants = {
-            "fixed": [("Kira Odemesi", 20000), ("Site Aidati", 1800), ("Turkcell Fatura", 700)],
-            "subs": [("Netflix", 229), ("Spotify", 99), ("YouTube Prem", 110), ("Disney+", 150), ("iCloud", 60), ("ChatGPT Plus", 680)],
-            "var": [("Migros", 2500), ("Starbucks", 200), ("Shell Fuel", 3500), ("Trendyol", 4500), ("GetirYemek", 550)]
+            "gaming": [
+                ("Steam Games", 450), ("Eneba Key Market", 350), ("ByNoGame Pin", 250), 
+                ("Voidu Game Store", 500), ("Kabasakal Online", 150), ("Epic Games Purchases", 300), 
+                ("Humble Bundle Subscription", 220), ("Razer Gold Pin", 180), 
+                ("Xbox Game Pass", 209), ("PlayStation Network", 400)
+            ],
+            "food": [
+                ("Migros Sanal Market", 1200), ("Starbucks Coffee", 180), ("GetirYemek", 380), 
+                ("Yemeksepeti Siparis", 420), ("Trendyol Yemek", 350), ("CarrefourSA Market", 950), 
+                ("Kahve Dunyasi", 120), ("Burger King", 280), ("Macrocenter Gourmet", 850), 
+                ("A101 Market", 450)
+            ],
+            "housing": [
+                ("Sahibinden Kira Odemesi", 18000), ("Emlak Vergisi Odemesi", 2400), ("Site Aidati", 1500), 
+                ("Deprem Sigortasi DASK", 900), ("IKEA Ev Esyasi", 3500), ("Evidea Mobilya", 2800), 
+                ("Koctas Yapi Market", 1400)
+            ],
+            "transport": [
+                ("Shell Akaryakit", 2800), ("BP Fuel Station", 2200), ("Uber Yolculuk", 450), 
+                ("BiTaksi", 180), ("Istanbulkart Yukleme", 300), ("OGS/HGS Gecisi", 250), 
+                ("Otogar Otobus Bileti", 600)
+            ],
+            "bills": [
+                ("Turkcell Fatura Odemesi", 650), ("Netflix Premium", 229), ("Spotify Duo", 129), 
+                ("YouTube Premium", 110), ("Disney+ Monthly", 150), ("iCloud Saklama Alani", 60), 
+                ("ChatGPT Plus", 680), ("Amazon Prime", 39), ("TurkNet Internet", 399), 
+                ("ENERJISA Elektrik", 850)
+            ]
         }
 
-        # Odak noktasina gore adet belirleme
-        counts = {"fixed": 3, "subs": 3, "var": 6}
-        if config["focus"] == 2: counts["subs"] = 10; counts["var"] = 3
-        if config["focus"] == 3: counts["var"] = 15; counts["subs"] = 2
-
         statement = []
-        
-        # Giderleri Uret
-        for key, count in counts.items():
-            for _ in range(count):
-                item = random.choice(merchants[key])
-                price = int(item[1] * multiplier * random.uniform(0.8, 1.2))
+        ratings = config["ratings"]
+        persona = config["persona"]
+
+        # Sektör puanlarına göre işlem adetlerini ve miktarlarını ayarla
+        for sec_id, score in ratings.items():
+            # Eğer o sektörün puanı yüksekse veya o persona ise adetleri artır
+            base_count = score
+            if (sec_id == "gaming" and "Oyuncu" in persona) or \
+               (sec_id == "food" and "Gurme" in persona) or \
+               (sec_id == "housing" and "Ev Kuşu" in persona) or \
+               (sec_id == "transport" and "Gezgin" in persona) or \
+               (sec_id == "bills" and "Abonelik" in persona):
+                base_count += 3 # Ekstra harcama ekle
+                
+            if "Tasarruf" in persona:
+                base_count = max(1, base_count - 1)
+
+            available_merchants = merchants.get(sec_id, [])
+            count = min(base_count, len(available_merchants))
+            
+            selected = random.sample(available_merchants, count)
+            for item in selected:
+                # Skor yüksekse harcama tutarında rastgele artış yap
+                multiplier = 1.0 + (score * 0.15) + (random.uniform(-0.15, 0.15))
+                if "Tasarruf" in persona:
+                    multiplier *= 0.65
+                price = int(item[1] * multiplier)
+                
                 statement.append({
                     "date": f"{random.randint(1, 28):02d}.05.2026",
                     "name": item[0],
-                    "cat": key.capitalize(),
+                    "cat": sec_id.capitalize(),
                     "price": price
                 })
 
@@ -85,7 +172,7 @@ def generate_custom_pdf():
 
         # PDF TABLO CIZIMI
         pdf.set_font('helvetica', 'B', 11)
-        pdf.cell(0, 10, f"Sayin {config['name'].upper()}, Ayin Finansal Ozeti:", ln=True)
+        pdf.cell(0, 10, f"Sayin {config['name'].upper()}, Ayin Finansal Ozeti ({persona}):", ln=True)
         pdf.ln(5)
 
         pdf.set_fill_color(240, 240, 240)
@@ -106,14 +193,38 @@ def generate_custom_pdf():
 
         pdf.ln(5)
         pdf.set_font('helvetica', 'B', 12)
-        pdf.cell(150, 10, 'TOPLAM HARCAMA:', 0, 0, 'R')
-        pdf.set_text_color(200, 0, 0)
+        pdf.cell(150, 10, 'TOPLAM GIDER:', 0, 0, 'R')
+        pdf.set_text_color(220, 38, 38)
         pdf.cell(40, 10, f"{total:,} TL", 0, 1, 'R')
 
         filename = f"Ekstre_{config['name']}.pdf"
         pdf.output(filename)
         print(f"\n[Neo AI]: {filename} basariyla uretildi.")
-        os.startfile(filename)
+        
+        # PROJE WORKSPACE'İNDEKİ userProfile.json DOSYASINI GUNCELLE!
+        profile_path = r"c:\Users\emreb\.gemini\antigravity\brain\842cf0eb-2136-462f-81ea-3f80fd642547\cashedge-v2\src\utils\userProfile.json"
+        
+        profile_data = {
+            "name": config["name"],
+            "persona": persona,
+            "ratings": ratings,
+            "generatedExpenses": [
+                {
+                    "name": x["name"],
+                    "amount": x["price"],
+                    "date": int(x["date"].split(".")[0]),
+                    "category": x["cat"]
+                }
+                for x in statement
+            ]
+        }
+        
+        with open(profile_path, "w", encoding="utf-8") as f:
+            json.dump(profile_data, f, ensure_ascii=False, indent=2)
+        print("[Neo AI]: Proje workspace'indeki 'userProfile.json' başarıyla güncellendi!")
+
+        if sys.platform.startswith('win'):
+            os.startfile(filename)
 
     except Exception as e:
         print(f"\nHata: {str(e)}")
