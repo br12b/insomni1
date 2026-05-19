@@ -3,6 +3,7 @@ import sys
 import random
 import datetime
 import json
+import webbrowser
 
 # KUTUPHANE KONTROLU
 try:
@@ -11,22 +12,34 @@ except ImportError:
     os.system(f"{sys.executable} -m pip install fpdf2")
     from fpdf import FPDF
 
+# Turkish character to ASCII converter helper to 100% prevent FPDF character range crashes!
+def to_ascii(text):
+    mapping = {
+        'ı': 'i', 'ş': 's', 'ğ': 'g', 'ç': 'c', 'ö': 'o', 'ü': 'u',
+        'ı'.upper(): 'I', 'ş'.upper(): 'S', 'ğ'.upper(): 'G', 'ç'.upper(): 'C', 'ö'.upper(): 'O', 'ü'.upper(): 'U',
+        'İ': 'I', 'Ş': 'S', 'Ğ': 'G', 'Ç': 'C', 'Ö': 'O', 'Ü': 'U'
+    }
+    for k, v in mapping.items():
+        text = text.replace(k, v)
+    return text
+
 class BankStatement(FPDF):
     def header(self):
         self.set_font('helvetica', 'B', 20)
         self.set_text_color(129, 140, 248) # Premium Indigo color
-        self.cell(0, 10, 'CASHEDGE PRIVATE BANKING', ln=True, align='L')
+        self.cell(0, 10, 'INSOMNI PRIVATE BANKING', new_x="LMARGIN", new_y="NEXT", align='L')
         self.set_font('helvetica', '', 10)
         self.set_text_color(156, 163, 175)
-        self.cell(0, 5, 'Autonomous Identity Profiling & Statement Engine v3.0', ln=True)
+        self.cell(0, 5, 'Autonomous Identity Profiling & Statement Engine v3.0', new_x="LMARGIN", new_y="NEXT")
         self.ln(10)
 
 def get_user_config():
     print("\n" + "="*60)
-    print("      CASHEDGE PREMIUM FİNANSAL KİMLİK & EKSTRE PANELİ")
+    print("      INSOMNI PREMIUM FİNANSAL KİMLİK & EKSTRE PANELİ")
     print("="*60)
     
-    name = input("Müşteri Adı (Varsayılan: Emre): ") or "Emre"
+    # Varsayılan ifadesi kaldırıldı, doğrudan Müşteri Adı soruluyor
+    name = input("Müşteri Adı: ").strip() or "Emre"
     
     print("\nLütfen aşağıdaki sektörlerdeki harcama eğiliminizi")
     print("0 (Hiç/Çok Düşük) ile 5 (Çok Yüksek) arasında puanlayın:")
@@ -138,7 +151,6 @@ def generate_custom_pdf():
 
         # Sektör puanlarına göre işlem adetlerini ve miktarlarını ayarla
         for sec_id, score in ratings.items():
-            # Eğer o sektörün puanı yüksekse veya o persona ise adetleri artır
             base_count = score
             if (sec_id == "gaming" and "Oyuncu" in persona) or \
                (sec_id == "food" and "Gurme" in persona) or \
@@ -155,7 +167,6 @@ def generate_custom_pdf():
             
             selected = random.sample(available_merchants, count)
             for item in selected:
-                # Skor yüksekse harcama tutarında rastgele artış yap
                 multiplier = 1.0 + (score * 0.15) + (random.uniform(-0.15, 0.15))
                 if "Tasarruf" in persona:
                     multiplier *= 0.65
@@ -170,36 +181,36 @@ def generate_custom_pdf():
 
         statement.sort(key=lambda x: x["date"])
 
-        # PDF TABLO CIZIMI
+        # PDF TABLO CIZIMI (Karakter analizi / Persona PDF içeriğinden tamamen çıkartıldı!)
         pdf.set_font('helvetica', 'B', 11)
-        pdf.cell(0, 10, f"Sayin {config['name'].upper()}, Ayin Finansal Ozeti ({persona}):", ln=True)
+        pdf.cell(0, 10, to_ascii(f"Sayin {config['name'].upper()}, Ayin Finansal Raporu (Mayis 2026):"), new_x="LMARGIN", new_y="NEXT")
         pdf.ln(5)
 
         pdf.set_fill_color(240, 240, 240)
         pdf.set_font('helvetica', 'B', 10)
-        pdf.cell(30, 10, 'Tarih', 1, 0, 'C', True)
-        pdf.cell(80, 10, 'Aciklama', 1, 0, 'L', True)
-        pdf.cell(40, 10, 'Kategori', 1, 0, 'C', True)
-        pdf.cell(40, 10, 'Tutar (TL)', 1, 1, 'R', True)
+        pdf.cell(30, 10, to_ascii('Tarih'), 1, 0, 'C', True)
+        pdf.cell(80, 10, to_ascii('Aciklama'), 1, 0, 'L', True)
+        pdf.cell(40, 10, to_ascii('Kategori'), 1, 0, 'C', True)
+        pdf.cell(40, 10, to_ascii('Tutar (TL)'), 1, new_x="LMARGIN", new_y="NEXT", align='R', fill=True)
 
         pdf.set_font('helvetica', '', 9)
         total = 0
         for row in statement:
-            pdf.cell(30, 8, row["date"], 1, 0, 'C')
-            pdf.cell(80, 8, f"  {row['name']}", 1, 0, 'L')
-            pdf.cell(40, 8, row["cat"], 1, 0, 'C')
-            pdf.cell(40, 8, f"{row['price']:,} TL", 1, 1, 'R')
+            pdf.cell(30, 8, to_ascii(row["date"]), 1, 0, 'C')
+            pdf.cell(80, 8, to_ascii(f"  {row['name']}"), 1, 0, 'L')
+            pdf.cell(40, 8, to_ascii(row["cat"]), 1, 0, 'C')
+            pdf.cell(40, 8, to_ascii(f"{row['price']:,} TL"), 1, new_x="LMARGIN", new_y="NEXT", align='R')
             total += row["price"]
 
         pdf.ln(5)
         pdf.set_font('helvetica', 'B', 12)
-        pdf.cell(150, 10, 'TOPLAM GIDER:', 0, 0, 'R')
+        pdf.cell(150, 10, to_ascii('TOPLAM GIDER:'), 0, 0, 'R')
         pdf.set_text_color(220, 38, 38)
-        pdf.cell(40, 10, f"{total:,} TL", 0, 1, 'R')
+        pdf.cell(40, 10, to_ascii(f"{total:,} TL"), 0, new_x="LMARGIN", new_y="NEXT", align='R')
 
         filename = f"Ekstre_{config['name']}.pdf"
         pdf.output(filename)
-        print(f"\n[Neo AI]: {filename} basariyla uretildi.")
+        print(f"\n[R.E.M AI]: {filename} basariyla uretildi.")
         
         # PROJE WORKSPACE'İNDEKİ userProfile.json DOSYASINI GUNCELLE!
         profile_path = r"c:\Users\emreb\.gemini\antigravity\brain\842cf0eb-2136-462f-81ea-3f80fd642547\cashedge-v2\src\utils\userProfile.json"
@@ -221,10 +232,12 @@ def generate_custom_pdf():
         
         with open(profile_path, "w", encoding="utf-8") as f:
             json.dump(profile_data, f, ensure_ascii=False, indent=2)
-        print("[Neo AI]: Proje workspace'indeki 'userProfile.json' başarıyla güncellendi!")
+        print("[R.E.M AI]: Proje workspace'indeki 'userProfile.json' başarıyla güncellendi!")
 
-        if sys.platform.startswith('win'):
-            os.startfile(filename)
+        # Otomatik tarayıcıda açma mekanizması (webbrowser ile 100% kararlı!)
+        pdf_absolute_path = os.path.abspath(filename)
+        print(f"[R.E.M AI]: PDF tarayıcıda açılıyor: {pdf_absolute_path}")
+        webbrowser.open(f"file:///{pdf_absolute_path.replace(chr(92), '/')}")
 
     except Exception as e:
         print(f"\nHata: {str(e)}")
