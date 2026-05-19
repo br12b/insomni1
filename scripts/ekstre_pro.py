@@ -279,46 +279,8 @@ def generate_custom_pdf():
             json.dump(profile_data, f, ensure_ascii=False, indent=2)
         print("[R.E.M AI]: Proje workspace'indeki 'userProfile.json' başarıyla güncellendi!")
 
-        # PROJE WORKSPACE'İNDEKİ seededPPFs.json DOSYASINI DINAMIK OLARAK GUNCELLE!
-        # Gerçek TEFAS oranlarını gerçekçi dalgalanmalarla (jitter) besler, asla statik/sahte kalmaz!
-        try:
-            ppf_path = r"c:\Users\emreb\.gemini\antigravity\brain\842cf0eb-2136-462f-81ea-3f80fd642547\cashedge-v2\src\utils\seededPPFs.json"
-            
-            # Base authentic TEFAS rates
-            base_funds = [
-                {"code": "KHP", "name": "Kuveyt Türk Paylaşimli Hesap Katilim Para Piyasası", "base": 4.35},
-                {"code": "ZA2", "name": "Kuveyt Türk İki̇nci̇ Sepet Hesap Katilim Para Piyasası", "base": 4.18},
-                {"code": "PSE", "name": "Atlas  Serbest Fon Para Piyasası", "base": 4.06},
-                {"code": "MT2", "name": "Mt  Serbest Fon Para Piyasası", "base": 4.03},
-                {"code": "PNU", "name": "Pusula İki̇nci̇ Para Piyasası", "base": 4.02}
-            ]
-            
-            today_str = datetime.date.today().strftime("%Y-%m-%d")
-            
-            updated_data = []
-            for f_item in base_funds:
-                # Apply tiny realistic daily interest rate fluctuations (-0.05% to +0.05%)
-                jitter = random.uniform(-0.05, 0.05)
-                live_yield = max(3.5, f_item["base"] + jitter)
-                updated_data.append({
-                    "code": f_item["code"],
-                    "name": f_item["name"],
-                    "yield": f"%{live_yield:.2f}"
-                })
-            
-            ppf_payload = {
-                "updatedAt": today_str,
-                "data": updated_data
-            }
-            
-            with open(ppf_path, "w", encoding="utf-8") as ppf_f:
-                json.dump(ppf_payload, ppf_f, ensure_ascii=False, indent=2)
-            print(f"[R.E.M AI]: TEFAS Para Piyasası Fonları bugünün tarihiyle ({today_str}) ve güncel dalgalanmalarla senkronize edildi!")
-        except Exception as ppf_err:
-            pass
-
-
         # Otomatik yerel HTTP sunucusu başlatma (tarayıcının file:// indirme engelini tamamen aşar!)
+
         port = 8085
         httpd = None
         while True:
