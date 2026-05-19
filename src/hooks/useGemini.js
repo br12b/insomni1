@@ -40,7 +40,130 @@ KRİTİK EMİRLER:
    - Alakasız veya dertleşme konusuysa: '[OPTIONS: Biraz dertleşelim | Bana vizyonundan bahset]'
    - Harcamalar girildiyse veya bütçe analiz edilecekse: '[OPTIONS: Harcamalarımı incele | Tasarruf ipuçları ver]'
 9. DİL VE ZAMİR UYUMU (KRİTİK TÜRKÇE KURALI): Kullanıcının parasından bahsederken asla kendi paranmış gibi birinci tekil şahıs possessive ("param", "paramın", "paramı") kelimelerini kullanma! Her zaman ikinci şahıs possessive ("senin paran", "paranın değeri", "paranı korumak") ifadelerini kullan.
-11. DASHBOARD VE HARCAMA CONTEXT UYUMU: Kullanıcı bütçesini analiz etmeni istediğinde ya da harcamalarını girdiğinde, bunu hemen fark et ve doğrudan "Harcamalarına şöyle bir göz attım. Toplamda X TL harcaman var..." diyerek doğal bir şekilde analize başla. Kesinlikle sanki verileri ilk defa görüyormuş gibi yabancı veya şaşkın davranma. Harcama verileri [FİNANSAL VERİ] etiketinden sana otomatik beslenmektedir.`
+11. DASHBOARD VE HARCAMA CONTEXT UYUMU: Kullanıcı bütçesini analiz etmeni istediğinde ya da harcamalarını girdiğinde, bunu hemen fark et ve doğrudan "Harcamalarına şöyle bir göz attım. Toplamda X TL harcaman var..." diyerek doğal bir şekilde analize başla. Kesinlikle sanki verileri ilk defa görüyormuş gibi yabancı veya şaşkın davranma. Harcama verileri [FİNANSAL VERİ] etiketinden sana otomatik beslenmektedir.
+12. INSOMNI, R.E.M VE V.R.E.M İLİŞKİSİ VE METAFORLAR (HAYATİ MARKA BİLGİSİ):
+- Insomni (Uykusuzluk / Insomnia): Projenin adıdır. İnsanların geceleri finansal kaygılar ve bütçe dertleri yüzünden gözüne uyku girmemesinden (uykusuzluktan) esinlenmiştir. Bizim amacımız bu kaygıları yok etmek ve onlara rahat bir uyku uyutmaktır.
+- R.E.M (REM Uykusu / R.E.M Sleep): Senin adındır. Rüyaların görüldüğü derin uyku evresini temsil eder. Kullanıcıların finansal hedeflerine ve rüyalarına ulaşmalarına yardımcı olmak için buradasın.
+- V.R.E.M (Veri Raporlama ve Entegrasyon Modülü): Canlı getiri analizlerini tarayan subagent ajan modülümüzün adıdır. REM uykusu kelime oyunuyla tasarlanmıştır.
+Kullanıcı senin adını, REM uykusunu veya Insomni'nin ne anlama geldiğini sorduğunda bu derin, anlamlı ve yaratıcı marka hikayesini heyecan verici, samimi ve gururlu bir dille paylaş. Uykusuz geçen geceleri tatlı rüyalara dönüştürdüğümüzü vurgula!`;
+
+export function useGemini() {
+  const [messages, setMessages] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [thinkingSteps, setThinkingSteps] = useState([]);
+  const [activeModel, setActiveModel] = useState("3.1");
+  const financialDataRef = useRef(null);
+
+  const executeTool = async (call, fd) => {
+    const { name, args } = call;
+    const income = parseFloat(fd?.salary?.income || 0);
+    const totalExp = fd?.totalExpense || 0;
+    const netSavings = income - totalExp;
+
+    if (name === "simulateExpenseRemoval") {
+      const expName = args.expense_name || "";
+      const exps = fd?.expenses || [];
+      const found = exps.find(e => e.name.toLowerCase().includes(expName.toLowerCase()));
+      if (found) {
+        const amt = parseFloat(found.amount || 0);
+        return { success: true, removedExpense: found.name, savedAmount: amt, newNetSavings: netSavings + amt };
+      }
+      return { success: false, error: "Harcama bulunamadi." };
+    }
+    else if (name === "calculateGoalTimeline") {
+      const goal = args.goal_amount || 0;
+      if (netSavings <= 0) return { error: "Aylik net tasarruf yok veya negatif." };
+      const months = Math.ceil(goal / netSavings);
+      return { goalAmount: goal, currentMonthlySavings: netSavings, monthsRequired: months };
+    }
+    return { error: "Bilinmeyen arac." };
+  };
+
+  const sendMessage = useCallback(async (userPrompt, financialData) => {
+    if (!userPrompt.trim()) return;
+    if (financialData) financialDataRef.current = financialData;
+
+    setMessages(prev => [...prev, { role: "user", content: userPrompt }]);
+    setIsTyping(true); window.dispatchEvent(new CustomEvent('rem_typing_change', { detail: { isTyping: true } }));
+    setThinkingSteps([]);
+
+    // 1. DÜŞÜNME BALONLARINI SORUYA GÖRE KATEGORİZE VE DİNAMİK OLARAK ANİME ETME
+    const promptLower = userPrompt.toLowerCase();
+    
+    const checkKeywords = (str, keywords) => {
+      return keywords.some(kw => str.includes(kw));
+    };
+
+    const tickerSteps = {
+      default: [
+        "Finansal Durum Analiz Ediliyor...",
+        "Insomni veri modelleri yükleniyor...",
+        "R.E.M analitik motoru çalıştırılıyor...",
+        "Analiz raporları sentezleniyor...",
+        "Son dokunuşlar yapılıyor..."
+      ],
+      invest: [
+        "Atıl Nakit & Yatırım Fırsatları Taranıyor...",
+        "TEFAS canlı para piyasası verileri çekiliyor...",
+        "V.R.E.M getiri tahminleme motoru çalışıyor...",
+        "En karlı finansal fırsatlar haritalandırılıyor...",
+        "Yatırım simülasyonu tamamlanıyor..."
+      ],
+      expense: [
+        "Gider Yapısı ve Abonelikler İnceleniyor...",
+        "Abonelik harcamaları tek tek filtreleniyor...",
+        "Gereksiz gider kalemleri ve sızıntılar tespit ediliyor...",
+        "Bütçe iyileştirme senaryoları simüle ediliyor...",
+        "Tasarruf taktikleri listeleniyor..."
+      ],
+      goal: [
+        "Finansal Hedef Zaman Çizelgesi Modelleniyor...",
+        "Hedef birikim hızı hesaplanıyor...",
+        "Gelecek nakit akış projeksiyonları çıkarılıyor...",
+        "Bütçe hedeflerine giden yol optimize ediliyor...",
+        "Zaman çizelgesi çiziliyor..."
+      ],
+      greeting: [
+        "Kişisel Finans Asistanı Hazırlanıyor...",
+        "Insomni veri tabanı taranıyor...",
+        "R.E.M derin uyku analiz motoru bağlanıyor...",
+        "Bütçe ve rüyalar sentezleniyor...",
+        "Sohbet akışı kuruluyor..."
+      ]
+    };
+
+    let category = "default";
+    if (checkKeywords(promptLower, ["nakit", "para", "ppf", "faiz", "yatırım", "fon", "tasarruf", "atıl", "kazanç", "gelir", "cash", "invest"])) {
+      category = "invest";
+    } else if (checkKeywords(promptLower, ["gider", "harcama", "fatura", "abonelik", "kıs", "azalt", "masraf", "ödem", "kart", "expense", "bill", "subscription"])) {
+      category = "expense";
+    } else if (checkKeywords(promptLower, ["hedef", "plan", "birikim", "ev", "araba", "tarih", "vade", "süre", "kaç ay", "goal", "plan"])) {
+      category = "goal";
+    } else if (checkKeywords(promptLower, ["selam", "merhaba", "naber", "nasılsın", "kimsin", "hello", "hi"])) {
+      category = "greeting";
+    }
+
+    const stepsList = tickerSteps[category];
+    let stepIndex = 0;
+    
+    setThinkingSteps([{ status: 'running', label: stepsList[0] }]);
+
+    const tickerInterval = setInterval(() => {
+      if (stepIndex < stepsList.length - 1) {
+        stepIndex++;
+        const nextStep = stepsList[stepIndex];
+        setThinkingSteps(prev => {
+          const updated = prev.map(s => s.status === 'running' ? { ...s, status: 'done' } : s);
+          return [...updated, { status: 'running', label: nextStep }];
+        });
+      }
+    }, 1500);
+
+    const fd = financialDataRef.current;
+    let dataSummary = "VERİ YOK";
+    if (fd) {
+      const exps = (fd.expenses || []).map(e => `${e.name}: ${e.amount} TL`).join(", ");
+      dataSummary = `MAAŞ: ${fd.salary?.income || 0}, TOPLAM GİDER: ${fd.totalExpense || 0}, DETAYLI HARCAMALAR: [${exps}]`;
     }
 
     let tefasSummary = "TEFAS CANLI PPF VERİSİ ALINAMADI";
@@ -54,7 +177,7 @@ KRİTİK EMİRLER:
     // API Key loop with auto fallback failover
     let success = false;
     let responseText = "";
-    let finalThinkingSteps = [{ status: 'done', label: analysisStepLabel }];
+    let finalThinkingSteps = [{ status: 'done', label: stepsList[0] }];
     let keysTried = 0;
     const totalKeys = Math.max(1, API_KEYS.length);
     
@@ -63,6 +186,7 @@ KRİTİK EMİRLER:
 
     while (keysTried < totalKeys && !success) {
       if (API_KEYS.length === 0) {
+        clearInterval(tickerInterval);
         setMessages(prev => [...prev, { role: "model", content: "Lütfen Netlify veya Vercel üzerinde VITE_GEMINI_API_KEYS veya VITE_GEMINI_API_KEY tanımla usta!" }]);
         setIsTyping(false); window.dispatchEvent(new CustomEvent('rem_typing_change', { detail: { isTyping: false } }));
         setThinkingSteps([]);
@@ -124,6 +248,7 @@ KRİTİK EMİRLER:
 
         responseText = response.text();
         success = true;
+        clearInterval(tickerInterval);
       } catch (err) {
         console.warn(`API Key Index ${activeKeyIndex} with model ${currentModel} failed:`, err);
         
@@ -144,6 +269,7 @@ KRİTİK EMİRLER:
           keysTried++;
           
           if (keysTried >= totalKeys) {
+            clearInterval(tickerInterval);
             let errorMsg = "Tüm API anahtarların denendi fakat limit aşımı veya başka bir hata nedeniyle yanıt alınamadı usta. Lütfen daha sonra tekrar dener misin?";
             const errMsgLower = (err && err.message) ? err.message.toLowerCase() : "";
             if (errMsgLower.includes("expired") || errMsgLower.includes("invalid") || errMsgLower.includes("key_invalid") || errMsgLower.includes("api key")) {
@@ -164,8 +290,17 @@ KRİTİK EMİRLER:
       }
     }
 
+    clearInterval(tickerInterval);
     setThinkingSteps(prev => prev.map(s => ({ ...s, status: 'done' })));
-    setMessages(prev => [...prev, { role: "model", content: responseText, thinkingSteps: finalThinkingSteps }]);
+    
+    // Construct final thinking steps from what actually completed in UI
+    const finalStepsUI = [];
+    setThinkingSteps(prev => {
+      prev.forEach(s => finalStepsUI.push({ status: 'done', label: s.label }));
+      return [];
+    });
+
+    setMessages(prev => [...prev, { role: "model", content: responseText, thinkingSteps: finalStepsUI }]);
     setIsTyping(false); window.dispatchEvent(new CustomEvent('rem_typing_change', { detail: { isTyping: false } }));
     setThinkingSteps([]);
   }, [messages]);
