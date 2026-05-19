@@ -229,9 +229,16 @@ def generate_custom_pdf():
         pdf.set_text_color(220, 38, 38)
         pdf.cell(40, 10, to_ascii(f"{total:,} TL"), 0, new_x="LMARGIN", new_y="NEXT", align='R')
 
-        filename = f"Ekstre_{config['name']}.pdf"
+        # Generate safe filename to prevent Chromium download-button crashes for local files!
+        safe_name = "".join([c if c.isalnum() else "_" for c in config['name']]).strip("_")
+        while "__" in safe_name:
+            safe_name = safe_name.replace("__", "_")
+        if not safe_name:
+            safe_name = "Musteri"
+        filename = f"Ekstre_{safe_name}.pdf"
         pdf.output(filename)
         print(f"\n[R.E.M AI]: {filename} basariyla uretildi.")
+
         
         # PROJE WORKSPACE'İNDEKİ userProfile.json DOSYASINI GUNCELLE!
         profile_path = r"c:\Users\emreb\.gemini\antigravity\brain\842cf0eb-2136-462f-81ea-3f80fd642547\cashedge-v2\src\utils\userProfile.json"
