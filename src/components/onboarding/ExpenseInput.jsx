@@ -74,6 +74,81 @@ export default function ExpenseInput({ onComplete }) {
     } finally { setScanning(false); }
   };
 
+  const loadDemoProfile = (profileName) => {
+    setScanning(true);
+    setScanPct(0);
+    setScanMsg(lang === 'tr' ? 'Demo profil verileri çözümleniyor...' : 'Decoding demo profile data...');
+    
+    // Simulate real scanning progress of the pre-compiled profile PDFs
+    let pct = 0;
+    const interval = setInterval(() => {
+      pct += 25;
+      setScanPct(pct);
+      if (pct === 25) {
+        setScanMsg(lang === 'tr' ? 'Banka imzası doğrulanıyor...' : 'Verifying bank digital signature...');
+      } else if (pct === 50) {
+        setScanMsg(lang === 'tr' ? 'İşlem geçmişi sınıflandırılıyor...' : 'Classifying transaction logs...');
+      } else if (pct === 75) {
+        setScanMsg(lang === 'tr' ? 'Finansal kimlik (Persona) çıkartılıyor...' : 'Extracting financial identity...');
+      } else if (pct >= 100) {
+        clearInterval(interval);
+        
+        let demoExpenses = [];
+        if (profileName === 'Mert Oyuncu') {
+          demoExpenses = [
+            { name: "Steam Games", amount: "780", date: "12", type: "expense", isSubscription: false },
+            { name: "Xbox Game Pass", amount: "209", date: "3", type: "subscription", isSubscription: true },
+            { name: "YouTube Premium", amount: "110", date: "3", type: "subscription", isSubscription: true },
+            { name: "Netflix Premium", amount: "229", date: "3", type: "subscription", isSubscription: true },
+            { name: "Spotify Duo", amount: "129", date: "3", type: "subscription", isSubscription: true },
+            { name: "ChatGPT Plus", amount: "680", date: "3", type: "subscription", isSubscription: true },
+            { name: "Starbucks Coffee", amount: "180", date: "15", type: "expense", isSubscription: false },
+            { name: "GetirYemek", amount: "380", date: "8", type: "expense", isSubscription: false },
+            { name: "BP Fuel Station", amount: "2200", date: "18", type: "expense", isSubscription: false },
+            { name: "Site Aidati", amount: "1500", date: "10", type: "expense", isSubscription: false }
+          ];
+          localStorage.setItem("insomni_secure_bridge_meta", "KEY:Mert Oyuncu|5,2,0,1,1,4");
+        } else if (profileName === 'Selin Gurme') {
+          demoExpenses = [
+            { name: "Sahibinden Kira Odemesi", amount: "15000", date: "5", type: "expense", isSubscription: false },
+            { name: "Migros Sanal Market", amount: "2100", date: "14", type: "expense", isSubscription: false },
+            { name: "Starbucks Coffee", amount: "320", date: "10", type: "expense", isSubscription: false },
+            { name: "GetirYemek", amount: "580", date: "22", type: "expense", isSubscription: false },
+            { name: "Macrocenter Gourmet", amount: "1400", date: "18", type: "expense", isSubscription: false },
+            { name: "Yemeksepeti Siparis", amount: "620", date: "25", type: "expense", isSubscription: false },
+            { name: "Uber Yolculuk", amount: "450", date: "7", type: "expense", isSubscription: false },
+            { name: "Netflix Premium", amount: "229", date: "3", type: "subscription", isSubscription: true },
+            { name: "Evidea Mobilya", amount: "2800", date: "12", type: "expense", isSubscription: false }
+          ];
+          localStorage.setItem("insomni_secure_bridge_meta", "KEY:Selin Gurme|1,5,4,2,2,2");
+        } else if (profileName === 'Ahmet Tasarruf') {
+          demoExpenses = [
+            { name: "Kira Odemesi", amount: "12500", date: "5", type: "expense", isSubscription: false },
+            { name: "A101 Market", amount: "450", date: "15", type: "expense", isSubscription: false },
+            { name: "Netflix Premium", amount: "229", date: "3", type: "subscription", isSubscription: true },
+            { name: "Spotify Duo", amount: "129", date: "3", type: "subscription", isSubscription: true }
+          ];
+          localStorage.setItem("insomni_secure_bridge_meta", "KEY:Ahmet Tasarruf|0,1,2,1,1,1");
+        } else if (profileName === 'Can Gezgin') {
+          demoExpenses = [
+            { name: "Shell Akaryakit", amount: "4500", date: "10", type: "expense", isSubscription: false },
+            { name: "BP Fuel Station", amount: "3500", date: "22", type: "expense", isSubscription: false },
+            { name: "Uber Yolculuk", amount: "650", date: "7", type: "expense", isSubscription: false },
+            { name: "BiTaksi", amount: "180", date: "14", type: "expense", isSubscription: false },
+            { name: "Istanbulkart Yukleme", amount: "300", date: "5", type: "expense", isSubscription: false },
+            { name: "GetirYemek", amount: "380", date: "18", type: "expense", isSubscription: false },
+            { name: "Starbucks Coffee", amount: "180", date: "25", type: "expense", isSubscription: false },
+            { name: "Spotify Duo", amount: "129", date: "3", type: "subscription", isSubscription: true }
+          ];
+          localStorage.setItem("insomni_secure_bridge_meta", "KEY:Can Gezgin|1,3,0,1,5,2");
+        }
+        
+        setExpenses(demoExpenses.map(e => ({ ...e, id: uid() })));
+        setScanning(false);
+      }
+    }, 250);
+  };
+
   const submit = () => {
     const valid = expenses.filter(e => e.name && parseFloat(e.amount) > 0);
     onComplete(valid);
@@ -271,6 +346,52 @@ export default function ExpenseInput({ onComplete }) {
                 <div><Upload size={24} color="var(--text2)" style={{ marginBottom: 8 }} /><div style={{ fontSize: 13, color: 'var(--text2)' }}>{lang === 'tr' ? 'PDF banka ekstreni bırak veya tıkla' : 'Drop PDF or click'}</div></div>
               )}
             </div>
+
+            {/* 🚀 Quick Demo Profil Yükleyici (Tek Tıklama Modu!) */}
+            <div style={{ marginBottom: 28, background: 'rgba(255, 255, 255, 0.01)', border: '1px solid var(--glass-border)', padding: '20px', borderRadius: 16 }}>
+              <div className="label" style={{ marginBottom: 12, fontSize: 11, fontWeight: 800, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: 1 }}>
+                🚀 {lang === 'tr' ? 'Tek Tıkla Hazır Demo Profillerini Yükle' : 'Load Pre-compiled Demo Profiles in 1-Click'}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <button 
+                  type="button" 
+                  onClick={() => loadDemoProfile('Mert Oyuncu')} 
+                  className="btn btn-sm btn-ghost" 
+                  style={{ background: 'rgba(129, 140, 248, 0.03)', border: '1px solid rgba(129, 140, 248, 0.15)', padding: '12px', height: 'auto', borderRadius: 12, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}
+                >
+                  <strong style={{ fontSize: 13, color: 'var(--accent)' }}>Mert Oyuncu 🎮</strong>
+                  <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2 }}>{lang === 'tr' ? 'Steam, Xbox, Dijital Harcamalar' : 'Steam, Xbox, Digital Expenses'}</span>
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => loadDemoProfile('Selin Gurme')} 
+                  className="btn btn-sm btn-ghost" 
+                  style={{ background: 'rgba(244, 63, 94, 0.03)', border: '1px solid rgba(244, 63, 94, 0.15)', padding: '12px', height: 'auto', borderRadius: 12, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}
+                >
+                  <strong style={{ fontSize: 13, color: '#f43f5e' }}>Selin Gurme 🍔</strong>
+                  <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2 }}>{lang === 'tr' ? 'Macrocenter, Starbucks, Yemek' : 'Macrocenter, Starbucks, Food'}</span>
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => loadDemoProfile('Ahmet Tasarruf')} 
+                  className="btn btn-sm btn-ghost" 
+                  style={{ background: 'rgba(16, 185, 129, 0.03)', border: '1px solid rgba(16, 185, 129, 0.15)', padding: '12px', height: 'auto', borderRadius: 12, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}
+                >
+                  <strong style={{ fontSize: 13, color: '#10b981' }}>Ahmet Tasarruf 🏆</strong>
+                  <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2 }}>{lang === 'tr' ? 'Minimalist Yaşam, Yüksek Birikim' : 'Minimalist Living, High Savings'}</span>
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => loadDemoProfile('Can Gezgin')} 
+                  className="btn btn-sm btn-ghost" 
+                  style={{ background: 'rgba(245, 158, 11, 0.03)', border: '1px solid rgba(245, 158, 11, 0.15)', padding: '12px', height: 'auto', borderRadius: 12, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}
+                >
+                  <strong style={{ fontSize: 13, color: '#f59e0b' }}>Can Gezgin 🚗</strong>
+                  <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2 }}>{lang === 'tr' ? 'Yakıt, Uber, Seyahat Harcamaları' : 'BP, Uber, Travel Expenses'}</span>
+                </button>
+              </div>
+            </div>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <AnimatePresence>
                 {expenses.map((exp) => (
