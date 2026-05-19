@@ -85,13 +85,16 @@ Görsel sarsıntıları ve ani sayfa yükleme şoklarını tamamen önleyen, zih
 > * **Open Banking API (PSD2):** Doğrudan banka hesap hareketleri API'lerine (Garanti BBVA, Akbank vb.) güvenli otonom tüneller açarak live hesap hareketlerini tek tuşla, sıfır eforla çekebilmek.
 > * **Android SMS Rölesi:** Telefonunuza düşen harcama bildirimlerini veya banka SMS'lerini bizzat yakalayıp R.E.M AI asistanına otomatik paslayacak otonom arka plan servisleri.
 
-### 📅 4. Finansal Isı Haritası Takvimi
+### 🚀 4. Tek Tıkla Hazır Demo Profilleri & Canlı Tarama Simülatörü
+Sunum ve test kolaylığı için sisteme 4 adet yüksek kalibreli hazır demo profili entegre edilmiştir. Tek bir tıkla arayüz üzerinden **Mert Oyuncu, Selin Gurme, Ahmet Tasarruf veya Can Gezgin** karakterlerinin tüm finansal geçmişini, harcama analizlerini ve R.E.M AI finansal persona ayarlarını simüle yapay zeka tarama animasyonu eşliğinde anında yükleyebilirsiniz.
+
+### 📅 5. Finansal Isı Haritası Takvimi
 Bütçe sağlığını kırmızı/yeşil parlayan mikro ısı haritaları üzerinden dinamik olarak renklendiren etkileşimli günlük takvim görselleştirici.
 
-### 🎯 5. Fırsatlar Merkezi (Opportunities)
+### 🎯 6. Fırsatlar Merkezi (Opportunities)
 Atıl nakitleri, abonelik sızıntılarını tarayan ve aktif nakit iadesi (cashback) kampanyalarıyla işlemlerinizi eşleştirerek dinamik tasarruf sağlayan arka plan motoru.
 
-### 🧬 6. Bilişsel Çoklu Ajan Teşhis Merkezi (Multi-Agent Diagnostics)
+### 🧬 7. Bilişsel Çoklu Ajan Teşhis Merkezi (Multi-Agent Diagnostics)
 Hackathon değerlendirme kriterlerindeki **"Agentic Yapılar" (10 Puan)** ve **"Teknik Puan" (20 Puan)** gereksinimlerini karşılamak amacıyla geliştirilmiş interaktif Ajan Teşhis Monitörü:
 * **Canlı Ajan Teşhis Testi:** Jürinin önünde tek tuşla otonom karar yollarını, alet kullanımlarını (tool-use) ve alt ajan orkestrasyonunu (R.E.M. Core, V.R.E.M., Telegram OMNI Listener) canlı olarak test edebilme yeteneği.
 * **Bilişsel Karar Şeması:** Yapay zekanın niyet sınıflandırmasından başlayıp veri tabanına yazana kadar izlediği adımların görselleştirilmesi.
@@ -254,13 +257,16 @@ A context-aware financial companion powered by **Google Gemini**. Integrates wit
 > * **Open Banking API Integrations (PSD2):** Direct secure endpoints with major banks (Garanti BBVA, Akbank, etc.) to securely fetch and parse statements autonomously.
 > * **Background SMS Relay Services:** Lightweight background services to catch financial SMS arrivals and dispatch them instantly to your REM AI companion.
 
-### 📅 4. Financial Heatmap Calendar
+### 🚀 4. 1-Click Pre-compiled Demo Profiles & Scan Simulator
+To facilitate instant evaluation and high-fidelity testing, we integrated 4 distinct preset financial profiles. With a single click inside the onboarding screen, you can instantly load all transaction histories, rating cards, and customized R.E.M. AI cognitive persona signatures for **Mert Oyuncu, Selin Gurme, Ahmet Tasarruf, or Can Gezgin** backed by an interactive real-time simulated AI parser animation.
+
+### 📅 5. Financial Heatmap Calendar
 An interactive daily calendar visualizer that colors budget health via red/green glowing micro-heatmaps dynamically. Instantly visualizes the impact of daily spending.
 
-### 🎯 5. Opportunities Hub
+### 🎯 6. Opportunities Hub
 Under-the-hood engine scans for idle cash, subscription leakage, and matches your transactions with active cashback feeds (Netflix, Spotify, Grocery stores) to save cash dynamically.
 
-### 🧬 6. Interactive Multi-Agent Diagnostics Center
+### 🧬 7. Interactive Multi-Agent Diagnostics Center
 A custom interactive terminal designed to explicitly prove compliance with hackathon **"Agentic Architectures" (10 pts)** and **"Technical Score" (20 pts)** rubrics:
 * **Interactive Live Self-Test:** Allows users to run real-time diagnostic routines, visualizing intent routing, model failover pathways, tool-use invocations, and subagent synchronization logs (R.E.M. Core, V.R.E.M. Analyzer, OMNI Listener).
 * **Visual Cognitive Flow:** Maps LLM classifications directly to tool calls, showing multi-agent workflows transparently.
