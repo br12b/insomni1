@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-18",
+  "updatedAt": "2026-05-19",
   "data": [
     {
       "code": "KHP",
@@ -13,12 +13,12 @@
     },
     {
       "code": "PSE",
-      "name": "Atlas  Serbest Fon Para Piyasası",
+      "name": "Atlas Serbest Fon Para Piyasası",
       "yield": "%4.06"
     },
     {
       "code": "MT2",
-      "name": "Mt  Serbest Fon Para Piyasası",
+      "name": "Mt Serbest Fon Para Piyasası",
       "yield": "%4.03"
     },
     {
