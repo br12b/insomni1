@@ -364,7 +364,32 @@ export default function RemSync({ onSalaryUpdate }) {
                          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 30, background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', paddingLeft: 16 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff5f56', marginRight: 6 }}></div><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffbd2e', marginRight: 6 }}></div><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#27c93f' }}></div></div>
                          <div style={{ marginTop: 20 }}>{logs.map((l, i) => ( <div key={i} style={{ marginBottom: 6, fontSize: 14, display: 'flex', gap: 10 }}><span style={{ color: 'rgba(255,255,255,0.1)' }}>[{l.time}]</span><span style={{ color: l.type === 'system' ? '#6366f1' : l.type === 'success' ? '#10b981' : l.type === 'warning' ? '#f59e0b' : '#94a3b8' }}>{l.msg}</span></div> ))}</div>
                       </div>
-                      <button onClick={handleCalendarSync} style={{ width: '100%', padding: 20, borderRadius: 20, fontSize: 15, fontWeight: 950, background: 'linear-gradient(135deg, #6366f1 0%, #c084fc 100%)', color: '#fff', cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: '0 10px 20px rgba(99,102,241,0.2)' }}><CalendarIcon size={18} /> {lang === 'tr' ? 'TAKVİME SENKRONİZE ET' : 'SYNC TO CALENDAR'}</button>
+                      <motion.button 
+                        onClick={handleCalendarSync} 
+                        whileHover={{ scale: 1.02, background: 'rgba(99, 102, 241, 0.12)' }}
+                        whileTap={{ scale: 0.98 }}
+                        style={{ 
+                          width: '100%', 
+                          padding: 20, 
+                          borderRadius: 20, 
+                          fontSize: 15, 
+                          fontWeight: 950, 
+                          background: 'rgba(99, 102, 241, 0.05)', 
+                          backdropFilter: 'blur(12px)',
+                          border: '1px solid rgba(99, 102, 241, 0.25)',
+                          color: '#a855f7', 
+                          cursor: 'pointer', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          gap: 10, 
+                          boxShadow: '0 8px 32px rgba(99, 102, 241, 0.05)',
+                          transition: 'background 0.3s, border 0.3s'
+                        }}
+                      >
+                        <CalendarIcon size={18} color="#a855f7" /> 
+                        {lang === 'tr' ? 'TAKVİME SENKRONİZE ET' : 'SYNC TO CALENDAR'}
+                      </motion.button>
                     </div>
                     <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: 32, padding: 24, border: '1px solid var(--glass-border)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}><Activity size={18} color="#6366f1" /><h4 style={{ fontSize: 15, fontWeight: 900, margin: 0, color: 'var(--text1)' }}>{lang === 'tr' ? 'TRAFİK' : 'TRAFFIC'}</h4></div>
@@ -415,7 +440,45 @@ export default function RemSync({ onSalaryUpdate }) {
             {activePath === 1 && (
                <motion.div key="api" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 40 }}><div style={{ width: 80, height: 80, borderRadius: 24, background: '#10b98110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={40} color="#10b981" /></div><h3 style={{ fontSize: 28, fontWeight: 950, margin: 0, color: 'var(--text1)' }}>API Gateway</h3></div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 40 }}><div style={{ background: '#0a0f1e', borderRadius: 32, padding: 40, fontFamily: 'monospace', minHeight: 280, border: '1px solid rgba(255,255,255,0.05)' }}>{logs.map((l, i) => <div key={i} style={{ color: l.type === 'success' ? '#10b981' : '#34d399', fontSize: 15, marginBottom: 8 }}>{l.msg}</div>)}</div><div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 32 }}><button onClick={handleApiSync} disabled={isSyncing} style={{ width: '100%', padding: 28, borderRadius: 24, fontSize: 18, fontWeight: 950, background: '#111', color: '#fff', cursor: 'pointer', border: 'none' }}>{isSyncing ? (lang === 'tr' ? 'İŞLENİYOR...' : 'PROCESSING...') : (lang === 'tr' ? 'SENKRONİZASYONU BAŞLAT' : 'START SYNCHRONIZATION')}</button></div></div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 40 }}><div style={{ background: '#0a0f1e', borderRadius: 32, padding: 40, fontFamily: 'monospace', minHeight: 280, border: '1px solid rgba(255,255,255,0.05)' }}>{logs.map((l, i) => <div key={i} style={{ color: l.type === 'success' ? '#10b981' : '#34d399', fontSize: 15, marginBottom: 8 }}>{l.msg}</div>)}</div><div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 32 }}><motion.button 
+                     onClick={handleApiSync} 
+                     disabled={isSyncing} 
+                     whileHover={{ scale: isSyncing ? 1 : 1.02, background: 'rgba(16, 185, 129, 0.12)' }}
+                     whileTap={{ scale: isSyncing ? 1 : 0.98 }}
+                     style={{ 
+                       width: '100%', 
+                       padding: 28, 
+                       borderRadius: 24, 
+                       fontSize: 18, 
+                       fontWeight: 950, 
+                       background: 'rgba(16, 185, 129, 0.05)', 
+                       backdropFilter: 'blur(12px)',
+                       border: '1px solid rgba(16, 185, 129, 0.25)',
+                       color: '#10b981', 
+                       cursor: isSyncing ? 'not-allowed' : 'pointer', 
+                       display: 'flex',
+                       alignItems: 'center',
+                       justifyContent: 'center',
+                       gap: 12,
+                       boxShadow: '0 8px 32px rgba(16, 185, 129, 0.05)',
+                       opacity: isSyncing ? 0.6 : 1,
+                       transition: 'background 0.3s, border 0.3s'
+                     }}
+                  >
+                    {isSyncing ? (
+                      <>
+                        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}>
+                          <Loader2 size={20} color="#10b981" />
+                        </motion.div>
+                        <span>{lang === 'tr' ? 'İŞLENİYOR...' : 'PROCESSING...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw size={20} color="#10b981" />
+                        <span>{lang === 'tr' ? 'SENKRONİZASYONU BAŞLAT' : 'START SYNCHRONIZATION'}</span>
+                      </>
+                    )}
+                  </motion.button></div></div>
                </motion.div>
             )}
           </AnimatePresence>
