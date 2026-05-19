@@ -314,8 +314,8 @@ export default function RemSync({ onSalaryUpdate }) {
             TEST THE <span style={{ color: '#6366f1', WebkitTextFillColor: '#6366f1' }}>POWER</span> OF SYNC
           </h1>
         </motion.div>
-        <p style={{ fontSize: 18, color: 'var(--text2)', maxWidth: 600, margin: '0 auto', fontWeight: 600, lineHeight: 1.6 }}>
-          {lang === 'tr' ? "Banka API'leri ve Otonom Köprüler arasındaki gelişmiş senkronizasyonun gücünü keşfedin. Finansal verileriniz artık yüksek hızla merkeze akıyor." : "Discover the power of advanced synchronization between Banking APIs and Autonomous Bridges. Your financial data now streams to the hub at lightning speed."}
+        <p style={{ fontSize: 18, color: 'var(--text2)', maxWidth: 650, margin: '0 auto', fontWeight: 600, lineHeight: 1.6 }}>
+          {lang === 'tr' ? "Banka API'leri ve otonom köprülerin gücüyle manuel veri girişini tarihe gömün. Tüm harcamalarınız zahmetsizce ve anında merkeze işlenir." : "Banish manual data entry to history with the power of bank APIs and autonomous bridges. All your expenses are instantly and effortlessly synced to the command center."}
         </p>
       </motion.div>
 
