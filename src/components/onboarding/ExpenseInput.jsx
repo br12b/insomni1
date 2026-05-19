@@ -553,9 +553,6 @@ export default function ExpenseInput({ onComplete }) {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>-text2)', marginTop: 2 }}>{lang === 'tr' ? 'Yakıt, Uber, Seyahat Harcamaları' : 'BP, Uber, Travel Expenses'}</span>
-                </button>
-              </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
