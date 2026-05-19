@@ -20,6 +20,8 @@ const IconMap = ({ name, color }) => {
   if (name === 'Landmark') return <Landmark {...props} />;
   if (name === 'BellRing') return <BellRing {...props} />;
   if (name === 'Wallet') return <Wallet {...props} />;
+  if (name === 'AlertTriangle') return <AlertTriangle {...props} />;
+  if (name === 'Radio') return <Radio {...props} />;
   return <ShoppingBag {...props} />;
 };
 
@@ -98,6 +100,36 @@ export default function RemSync({ onSalaryUpdate }) {
   const processManual = (text, source = null) => {
     const actSource = source || (lang === 'tr' ? "OTONOM KÖPRÜ" : "AUTONOMOUS BRIDGE");
     addLog(`${lang === 'tr' ? 'Otonom sinyal yakalandı' : 'Autonomous signal captured'}: ${text}`, 'system');
+    
+    // Check if the signal contains both a digit and 'tl' (case-insensitive)
+    const hasDigit = /\d+/.test(text);
+    const hasTl = /tl/i.test(text);
+    const isValid = hasDigit && hasTl;
+
+    if (!isValid) {
+      addLog(lang === 'tr' ? `HATA: Geçersiz sinyal formatı (Rakam ve 'TL' bulunamadı!)` : `ERROR: Invalid signal format (No digits and 'TL' found!)`, 'warning');
+      const invalidTx = { 
+        id: Math.random().toString(36).substr(2, 9), 
+        type: 'TRANSACTION', 
+        clean: text.trim() || (lang === 'tr' ? "Geçersiz Sinyal" : "Invalid Signal"), 
+        amount: `0,00 ${t.currency || 'TL'}`, 
+        raw: "OMNI_BRIDGE_INVALID", 
+        category: lang === 'tr' ? "GEÇERSİZ" : "INVALID", 
+        source: actSource, 
+        icon: 'AlertTriangle', 
+        color: "#f59e0b", 
+        day: new Date().getDate() 
+      };
+      
+      setSyncedData(prev => {
+        if (prev.some(p => p.clean === text.trim() && p.raw === "OMNI_BRIDGE_INVALID")) {
+          return prev;
+        }
+        return [invalidTx, ...prev];
+      });
+      return;
+    }
+
     const amountMatch = text.match(/(\d+)/);
     const amountVal = amountMatch ? amountMatch[1] : "0";
     const formattedAmount = `-${parseInt(amountVal).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')},00 ${t.currency || 'TL'}`;
@@ -114,7 +146,13 @@ export default function RemSync({ onSalaryUpdate }) {
       color: "#6366f1", 
       day: new Date().getDate() 
     };
-    setSyncedData(prev => [newTx, ...prev]);
+    
+    setSyncedData(prev => {
+      if (prev.some(p => p.clean === newTx.clean && p.amount === newTx.amount && p.raw === "OMNI_BRIDGE")) {
+        return prev;
+      }
+      return [newTx, ...prev];
+    });
     addLog(`${lang === 'tr' ? 'BAŞARI: Veri mühürlendi' : 'SUCCESS: Data sealed'} (${formattedAmount}).`, 'success');
   };
 
@@ -322,10 +360,11 @@ export default function RemSync({ onSalaryUpdate }) {
                          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}><div style={{ width: 48, height: 48, borderRadius: 14, background: '#6366f110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Shield size={22} color="#6366f1" /></div><div><div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 900 }}>OMNI ID</div><div style={{ fontSize: 18, fontWeight: 950, color: 'var(--text1)' }}>{omniId}</div></div></div>
                          <button onClick={sendLocalTestSignal} style={{ fontSize: 11, color: '#f59e0b', fontWeight: 900, background: '#f59e0b10', padding: '10px 16px', borderRadius: 12, border: '1px solid #f59e0b20', cursor: 'pointer' }}>{lang === 'tr' ? 'TEST SİNYALİ' : 'TEST SIGNAL'}</button>
                       </div>
-                      <div style={{ background: '#0a0f1e', borderRadius: 28, padding: 32, fontFamily: 'monospace', minHeight: 320, border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
+                      <div style={{ background: '#0a0f1e', borderRadius: 28, padding: 32, fontFamily: 'monospace', minHeight: 320, border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden', marginBottom: 20 }}>
                          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 30, background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', paddingLeft: 16 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff5f56', marginRight: 6 }}></div><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffbd2e', marginRight: 6 }}></div><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#27c93f' }}></div></div>
                          <div style={{ marginTop: 20 }}>{logs.map((l, i) => ( <div key={i} style={{ marginBottom: 6, fontSize: 14, display: 'flex', gap: 10 }}><span style={{ color: 'rgba(255,255,255,0.1)' }}>[{l.time}]</span><span style={{ color: l.type === 'system' ? '#6366f1' : l.type === 'success' ? '#10b981' : l.type === 'warning' ? '#f59e0b' : '#94a3b8' }}>{l.msg}</span></div> ))}</div>
                       </div>
+                      <button onClick={handleCalendarSync} style={{ width: '100%', padding: 20, borderRadius: 20, fontSize: 15, fontWeight: 950, background: 'linear-gradient(135deg, #6366f1 0%, #c084fc 100%)', color: '#fff', cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: '0 10px 20px rgba(99,102,241,0.2)' }}><CalendarIcon size={18} /> {lang === 'tr' ? 'TAKVİME SENKRONİZE ET' : 'SYNC TO CALENDAR'}</button>
                     </div>
                     <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: 32, padding: 24, border: '1px solid var(--glass-border)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}><Activity size={18} color="#6366f1" /><h4 style={{ fontSize: 15, fontWeight: 900, margin: 0, color: 'var(--text1)' }}>{lang === 'tr' ? 'TRAFİK' : 'TRAFFIC'}</h4></div>
