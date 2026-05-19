@@ -20,6 +20,14 @@ export const getSector = (name, lang = 'tr') => {
   else if (n.includes('taksi') || n.includes('uber')) customIcon = '🚕';
   else if (n.includes('market') || n.includes('migros') || n.includes('getir') || n.includes('carrefour') || n.includes('bim') || n.includes('a101') || n.includes('şok') || n.includes('sok')) customIcon = '🍏';
 
+  if (n.includes('kira')) {
+    return {
+      name: lang === 'tr' ? 'Kira' : 'Rent',
+      color: '#ef4444',
+      icon: customIcon || '🔑'
+    };
+  }
+
   if (
     n.includes('steam') || 
     n.includes('eneba') || 
@@ -72,16 +80,20 @@ export const getSector = (name, lang = 'tr') => {
   }
   
   if (
-    n.includes('kira') || 
-    n.includes('rent') || 
     n.includes('ev') || 
     n.includes('konut') || 
     n.includes('depozito') ||
-    n.includes('emlak')
+    n.includes('emlak') ||
+    n.includes('aidat') ||
+    n.includes('dask') ||
+    n.includes('ikea') ||
+    n.includes('evidea') ||
+    n.includes('koçtaş') ||
+    n.includes('koctas')
   ) {
     return {
-      name: lang === 'tr' ? 'Barınma/Kira' : 'Housing/Rent',
-      color: '#ef4444',
+      name: lang === 'tr' ? 'Barınma' : 'Housing',
+      color: '#f97316',
       icon: customIcon || '🏠'
     };
   }
@@ -162,7 +174,8 @@ export const getSector = (name, lang = 'tr') => {
 export const SECTOR_LIST = (lang = 'tr') => [
   { id: 'gaming', name: lang === 'tr' ? 'Oyun/Eğlence' : 'Gaming/Entertainment', color: '#a855f7', icon: '🎮' },
   { id: 'food', name: lang === 'tr' ? 'Gıda/Market' : 'Food/Groceries', color: '#22c55e', icon: '🛒' },
-  { id: 'housing', name: lang === 'tr' ? 'Barınma/Kira' : 'Housing/Rent', color: '#ef4444', icon: '🏠' },
+  { id: 'kira', name: lang === 'tr' ? 'Kira' : 'Rent', color: '#ef4444', icon: '🔑' },
+  { id: 'housing', name: lang === 'tr' ? 'Barınma' : 'Housing', color: '#f97316', icon: '🏠' },
   { id: 'transport', name: lang === 'tr' ? 'Ulaşım/Yakıt' : 'Transport/Fuel', color: '#3b82f6', icon: '🚗' },
   { id: 'bills', name: lang === 'tr' ? 'Fatura/Abonelik' : 'Bills/Subscriptions', color: '#f59e0b', icon: '📄' },
   { id: 'finance', name: lang === 'tr' ? 'Finans/Borç' : 'Finance/Debt', color: '#ec4899', icon: '💳' },

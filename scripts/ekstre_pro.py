@@ -38,7 +38,6 @@ def get_user_config():
     print("      INSOMNI PREMIUM FİNANSAL KİMLİK & EKSTRE PANELİ")
     print("="*60)
     
-    # Varsayılan ifadesi kaldırıldı, doğrudan Müşteri Adı soruluyor
     name = input("Müşteri Adı: ").strip() or "Emre"
     
     print("\nLütfen aşağıdaki sektörlerdeki harcama eğiliminizi")
@@ -47,7 +46,7 @@ def get_user_config():
     sectors = [
         ("gaming", "Oyun / Dijital Eğlence (Steam, Eneba, Voidu...)"),
         ("food", "Gıda / Market / Dışarıda Yemek (Getir, Starbucks...)"),
-        ("housing", "Barınma / Kira / Aidat / Ev Eşyası (Kira, IKEA...)"),
+        ("housing", "Barınma / Ev Eşyası / Aidat (IKEA, Koçtaş, Aidat...)"),
         ("transport", "Ulaşım / Yakıt / Seyahat (Shell, Uber, Otobüs...)"),
         ("bills", "Faturalar / Dijital Abonelikler (Turkcell, Netflix...)")
     ]
@@ -113,7 +112,7 @@ def generate_custom_pdf():
         pdf = BankStatement()
         pdf.add_page()
         
-        # Zenginleştirilmiş Geniş Platform Veri Havuzu (Borç sektörü tamamen kaldırıldı)
+        # Zenginleştirilmiş Geniş Platform Veri Havuzu (Kira bağımsız bir kategori olarak ayrıldı!)
         merchants = {
             "gaming": [
                 ("Steam Games", 450), ("Eneba Key Market", 350), ("ByNoGame Pin", 250), 
@@ -128,7 +127,7 @@ def generate_custom_pdf():
                 ("A101 Market", 450)
             ],
             "housing": [
-                ("Sahibinden Kira Odemesi", 18000), ("Emlak Vergisi Odemesi", 2400), ("Site Aidati", 1500), 
+                ("Emlak Vergisi Odemesi", 2400), ("Site Aidati", 1500), 
                 ("Deprem Sigortasi DASK", 900), ("IKEA Ev Esyasi", 3500), ("Evidea Mobilya", 2800), 
                 ("Koctas Yapi Market", 1400)
             ],
@@ -148,6 +147,15 @@ def generate_custom_pdf():
         statement = []
         ratings = config["ratings"]
         persona = config["persona"]
+
+        # 1. KİRA GİDERİNİ BAĞIMSIZ VE NET OLARAK AYIRIP OTOMATİK EKLE!
+        # Sabit 12.500 TL Kira Ödemesi her ayın 5'ine ekleniyor.
+        statement.append({
+            "date": "05.05.2026",
+            "name": "Kira Odemesi",
+            "cat": "Kira",
+            "price": 12500
+        })
 
         # Sektör puanlarına göre işlem adetlerini ve miktarlarını ayarla
         for sec_id, score in ratings.items():
@@ -175,7 +183,7 @@ def generate_custom_pdf():
                 statement.append({
                     "date": f"{random.randint(1, 28):02d}.05.2026",
                     "name": item[0],
-                    "cat": sec_id.capitalize(),
+                    "cat": "Barinma" if sec_id == "housing" else sec_id.capitalize(),
                     "price": price
                 })
 
@@ -224,7 +232,7 @@ def generate_custom_pdf():
                     "name": x["name"],
                     "amount": x["price"],
                     "date": int(x["date"].split(".")[0]),
-                    "category": x["cat"]
+                    "category": x["cat"].lower()
                 }
                 for x in statement
             ]

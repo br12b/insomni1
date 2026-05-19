@@ -1,12 +1,121 @@
 {
-  "name": "Emre",
-  "persona": "Dengeli Harcamacı ⚖️",
+  "name": "emre özsan",
+  "persona": "Gurme Kaşif 🍔",
   "ratings": {
     "gaming": 3,
-    "food": 3,
-    "housing": 3,
-    "transport": 3,
-    "bills": 3,
-    "finance": 3
-  }
+    "food": 4,
+    "housing": 2,
+    "transport": 2,
+    "bills": 4
+  },
+  "generatedExpenses": [
+    {
+      "name": "YouTube Premium",
+      "amount": 161,
+      "date": 1,
+      "category": "Bills"
+    },
+    {
+      "name": "Burger King",
+      "amount": 451,
+      "date": 4,
+      "category": "Food"
+    },
+    {
+      "name": "Netflix Premium",
+      "amount": 378,
+      "date": 5,
+      "category": "Bills"
+    },
+    {
+      "name": "PlayStation Network",
+      "amount": 635,
+      "date": 6,
+      "category": "Gaming"
+    },
+    {
+      "name": "ChatGPT Plus",
+      "amount": 1177,
+      "date": 6,
+      "category": "Bills"
+    },
+    {
+      "name": "Macrocenter Gourmet",
+      "amount": 1324,
+      "date": 7,
+      "category": "Food"
+    },
+    {
+      "name": "Starbucks Coffee",
+      "amount": 295,
+      "date": 11,
+      "category": "Food"
+    },
+    {
+      "name": "BiTaksi",
+      "amount": 221,
+      "date": 13,
+      "category": "Transport"
+    },
+    {
+      "name": "Xbox Game Pass",
+      "amount": 319,
+      "date": 14,
+      "category": "Gaming"
+    },
+    {
+      "name": "GetirYemek",
+      "amount": 589,
+      "date": 14,
+      "category": "Food"
+    },
+    {
+      "name": "Koctas Yapi Market",
+      "amount": 1716,
+      "date": 17,
+      "category": "Housing"
+    },
+    {
+      "name": "Deprem Sigortasi DASK",
+      "amount": 1074,
+      "date": 17,
+      "category": "Housing"
+    },
+    {
+      "name": "Kahve Dunyasi",
+      "amount": 185,
+      "date": 19,
+      "category": "Food"
+    },
+    {
+      "name": "Humble Bundle Subscription",
+      "amount": 338,
+      "date": 22,
+      "category": "Gaming"
+    },
+    {
+      "name": "Shell Akaryakit",
+      "amount": 3366,
+      "date": 24,
+      "category": "Transport"
+    },
+    {
+      "name": "iCloud Saklama Alani",
+      "amount": 98,
+      "date": 25,
+      "category": "Bills"
+    },
+    {
+      "name": "Yemeksepeti Siparis",
+      "amount": 734,
+      "date": 26,
+      "category": "Food"
+    },
+    {
+      "name": "A101 Market",
+      "amount": 769,
+      "date": 27,
+      "category": "Food"
+    }
+  ]
 }
