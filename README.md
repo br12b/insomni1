@@ -3,7 +3,7 @@
 [![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
 [![Framer Motion](https://img.shields.io/badge/Framer_Motion-12.x-F024B6?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
-[![Gemini](https://img.shields.io/badge/Google_Gemini-2.5_Flash-8E75FF?style=for-the-badge&logo=googlegemini&logoColor=white)](https://deepmind.google/technologies/gemini/)
+[![Gemini](https://img.shields.io/badge/Google_Gemini-3.1_Flash_Lite-8E75FF?style=for-the-badge&logo=googlegemini&logoColor=white)](https://deepmind.google/technologies/gemini/)
 
 📌 *Bu döküman hem Türkçe (TR) hem de İngilizce (EN) dillerinde hazırlanmıştır. İngilizce versiyon için aşağı kaydırın.* / *This document is written in both Turkish and English. Scroll down for the English version.*
 
@@ -30,7 +30,7 @@
 
 ## 🤖 Antigravity ve Yapay Zeka Evrimi
 
-Insomni'nin kalbinde yer alan akıllı sohbet ve finansal analiz protokolü, başlangıçta Gemini 3.1 Flash ile tasarlanmıştı. Ancak en kararlı çalışma, optimum gecikme süresi (latency) ve kesintisiz entegrasyon amacıyla **Gemini 2.5 Flash** modeline taşınmıştır.
+Insomni'nin kalbinde yer alan akıllı sohbet ve finansal analiz protokolü, varsayılan olarak en yeni **Gemini 3.1 Flash Lite** modelini kullanır. Yüksek hız, minimum gecikme süresi (latency) ve limit aşımı gibi durumlarda kesintisiz entegrasyon sağlamak amacıyla **Gemini 2.5 Flash** modeline otomatik olarak düşüş (failover) yapan çift aşamalı akıllı bir mimariye sahiptir.
 
 > [!IMPORTANT]
 > Tüm bu geçiş süreci, kod yapısının düzenlenmesi, model parametrelerinin uyarlanması ve arayüz optimizasyonları, Google DeepMind ekibi tarafından geliştirilen güçlü **Antigravity AI Coding Assistant** ile çift programlama (pair-programming) yapılarak otonom ve hatasız bir şekilde gerçekleştirilmiştir.
@@ -87,7 +87,7 @@ Atıl nakitleri, abonelik sızıntılarını tarayan ve aktif nakit iadesi (cash
 - **Önyüz (Frontend)**: Hızlı derleme ve modüler kod bölme için `React 18` + `Vite`.
 - **Animasyon Motoru**: `Framer Motion` (donanım hızlandırmalı akıcı yay mekaniği).
 - **İkonlar**: `Lucide React`
-- **Yapay Zeka Mimarisi**: `Google Gemini 2.5 Flash` API'si.
+- **Yapay Zeka Mimarisi**: `Google Gemini 3.1 Flash Lite` API'si (`Gemini 2.5 Flash` yedekli/failover).
 - **Veritabanı Polling**: Gelişmiş otonom hibrit bulut veritabanı köprü yedekleme sistemi.
 
 ### 🏢 Hibrit & Sunucusuz (Serverless) Önyüz-Öncelikli Mimari Kararları
@@ -184,7 +184,7 @@ npm run preview
 
 ## 🤖 Antigravity and AI Evolution
 
-The core chat and financial analysis protocol of Insomni was originally designed using Gemini 3.1 Flash. For maximum reliability, lower latency, and seamless code integration, it has been successfully migrated to the **Gemini 2.5 Flash** model.
+The core chat and financial analysis protocol of Insomni default uses the advanced **Gemini 3.1 Flash Lite** model. It features a smart dual-stage failover architecture that automatically switches to **Gemini 2.5 Flash** to bypass rate-limits, reduce latency, and guarantee 100% production uptime.
 
 > [!IMPORTANT]
 > The entire migration process, refactoring of backend routes, model parameter tunings, and interface optimizations were executed autonomously and flawlessly via pair-programming with the powerful **Antigravity AI Coding Assistant** designed by Google DeepMind.
@@ -241,7 +241,7 @@ Under-the-hood engine scans for idle cash, subscription leakage, and matches you
 - **Frontend Core**: `React 18` + `Vite` for lightning-fast compilation and modular code splitting.
 - **Animation Engine**: `Framer Motion` (hardware-accelerated fluid spring physics).
 - **Icons**: `Lucide React`
-- **AI Core**: `Google Gemini 2.5 Flash` API.
+- **AI Core**: `Google Gemini 3.1 Flash Lite` API (`Gemini 2.5 Flash` failover backup).
 - **Database polling**: Automated direct cloud database fallback system.
 
 ### 🏢 Hybrid & Serverless Frontend-First Architecture Decisions
