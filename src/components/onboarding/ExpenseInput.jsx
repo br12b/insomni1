@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, ArrowRight, Upload, RefreshCw, Loader2, Calendar, Gamepad2, Utensils, Trophy, Car, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Trash2, ArrowRight, Upload, RefreshCw, Loader2, Calendar, Gamepad2, Utensils, Trophy, Car, ChevronDown, ChevronUp, Lightbulb, Sparkles, Download, Bot } from 'lucide-react';
 import { parseBankStatement } from '../../lib/pdfParser';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -195,8 +195,8 @@ export default function ExpenseInput({ onComplete }) {
                   textAlign: 'left'
                 }}
               >
-                <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  💡 {lang === 'tr' ? 'Test Ekstresi Kılavuzu & Örnek PDF İndir' : 'Test Statement Guide & Sample PDF Download'}
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Lightbulb size={16} color="var(--accent)" style={{ flexShrink: 0 }} /> {lang === 'tr' ? 'Test Ekstresi Kılavuzu & Örnek PDF İndir' : 'Test Statement Guide & Sample PDF Download'}
                 </span>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', opacity: 0.8 }}>
                   {showTip ? (lang === 'tr' ? 'Gizle ▲' : 'Hide ▲') : (lang === 'tr' ? 'Göster ▼' : 'Show ▼')}
@@ -242,7 +242,7 @@ export default function ExpenseInput({ onComplete }) {
                           }}
                         >
                           <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            📥 {lang === 'tr' ? 'Yöntem A: Örnek PDF Dosyalarını İndir (4 Adet)' : 'Method A: Download Sample PDFs (4 files)'}
+                            <Download size={14} color="var(--accent)" style={{ flexShrink: 0 }} /> {lang === 'tr' ? 'Yöntem A: Örnek PDF Dosyalarını İndir (4 Adet)' : 'Method A: Download Sample PDFs (4 files)'}
                           </span>
                           <span style={{ fontSize: '9px', opacity: 0.8 }}>
                             {showPdfList ? '▲' : '▼'}
@@ -269,17 +269,17 @@ export default function ExpenseInput({ onComplete }) {
                               }}
                             >
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 16px' }}>
-                                <a href="/samples/ekstre_kamil_ozkundura.pdf" download="Banka_Ekstresi_Ornek_1.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
-                                  📄 {lang === 'tr' ? 'Örnek Ekstre No 1' : 'Sample Statement No 1'}
+                                <a href="/samples/ekstre_kamil_ozkundura.pdf" download="Banka_Ekstresi_Ornek_1.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                  <Download size={12} color="var(--green)" /> {lang === 'tr' ? 'Örnek Ekstre No 1' : 'Sample Statement No 1'}
                                 </a>
-                                <a href="/samples/ekstre_kemal_ozbegen.pdf" download="Banka_Ekstresi_Ornek_2.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
-                                  📄 {lang === 'tr' ? 'Örnek Ekstre No 2' : 'Sample Statement No 2'}
+                                <a href="/samples/ekstre_kemal_ozbegen.pdf" download="Banka_Ekstresi_Ornek_2.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                  <Download size={12} color="var(--green)" /> {lang === 'tr' ? 'Örnek Ekstre No 2' : 'Sample Statement No 2'}
                                 </a>
-                                <a href="/samples/ekstre_sami_soylu.pdf" download="Banka_Ekstresi_Ornek_3.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
-                                  📄 {lang === 'tr' ? 'Örnek Ekstre No 3' : 'Sample Statement No 3'}
+                                <a href="/samples/ekstre_sami_soylu.pdf" download="Banka_Ekstresi_Ornek_3.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                  <Download size={12} color="var(--green)" /> {lang === 'tr' ? 'Örnek Ekstre No 3' : 'Sample Statement No 3'}
                                 </a>
-                                <a href="/samples/ekstre_selami_ozsahiner.pdf" download="Banka_Ekstresi_Ornek_4.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
-                                  📄 {lang === 'tr' ? 'Örnek Ekstre No 4' : 'Sample Statement No 4'}
+                                <a href="/samples/ekstre_selami_ozsahiner.pdf" download="Banka_Ekstresi_Ornek_4.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                  <Download size={12} color="var(--green)" /> {lang === 'tr' ? 'Örnek Ekstre No 4' : 'Sample Statement No 4'}
                                 </a>
                               </div>
 
@@ -289,7 +289,7 @@ export default function ExpenseInput({ onComplete }) {
                       </div>
 
                       <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 10 }}>
-                        <strong>🤖 {lang === 'tr' ? 'Yöntem B: Yerel Python Dosyasını Çalıştırın' : 'Method B: Run Local Python File'}</strong>
+                        <strong style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Bot size={16} color="var(--accent)" /> {lang === 'tr' ? 'Yöntem B: Yerel Python Dosyasını Çalıştırın' : 'Method B: Run Local Python File'}</strong>
                         <p style={{ margin: '4px 0 8px 0', color: 'var(--text2)' }}>
                           {lang === 'tr' 
                             ? 'Terminalinizden projenin yerelinde yer alan python dosyasını çalıştırarak saniyeler içinde kendi adınıza özel, zengin içerikli test ekstreleri oluşturabilirsiniz:'
@@ -377,7 +377,7 @@ export default function ExpenseInput({ onComplete }) {
                 }}
               >
                 <span style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--accent)' }}>
-                  ⚡ {lang === 'tr' ? 'Tek Tıkla Hazır Demo Profillerini Yükle' : 'Load Pre-compiled Demo Profiles'}
+                  <Sparkles size={16} color="var(--accent)" style={{ flexShrink: 0 }} /> {lang === 'tr' ? 'Tek Tıkla Hazır Demo Profillerini Yükle' : 'Load Pre-compiled Demo Profiles'}
                 </span>
                 <span style={{ color: 'var(--text2)', display: 'flex', alignItems: 'center' }}>
                   {showDemoList ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
