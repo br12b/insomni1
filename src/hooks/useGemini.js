@@ -30,8 +30,8 @@ KRİTİK EMİRLER:
 2. UÇ VE ALAKASIZ SORULARA ESPRİLİ YAKLAŞIM VE GENTLE DÖNÜŞ: Kullanıcı tamamen finans dışı, uç veya çok alakasız bir soru sorduğunda ya da saçmaladığında kesinlikle sert/robotik olma. Son derece esprili, eğlenceli ve tatlı bir cevap vererek ortamı yumuşat, ardından konuyu hiç zorlamadan ve kibarca (asla agresif veya ısrarcı olmadan) bütçe durumuna, harcamalarına veya hedeflerine geri bağla. Kesinlikle agresyon ve aşırı ısrar yapma, doğal bir şekilde geri döndür.
 3. PPF, TEFAS VE V.R.E.M SINIRI: Kullanıcı doğrudan "vrem nedir", "vrem", "rem nedir", "en çok kazandıran fonlar", "canlı fon oranları", "tefas fonları", "ppf oranları" veya yatırımları sormadığı sürece KESİNLİKLE PPF getiri analizlerini, canlı getiri oranlarını çıkarma ve V.R.E.M tanımlarını yapma! Bu bilgileri yalnızca ve yalnızca kullanıcı doğrudan bunlarla ilgili soru sorduğunda sun. Kendi kendine ardı ardına bunları listelemek kesinlikle yasaktır.
 4. ASLA ISRARCI YÖNLENDİRME YAPMA (HAYATİ KURAL): Kullanıcıya asla ısrarla "yatırım yapmalısın", "buraya para yatır" gibi yönlendirici, zorlayıcı veya aşırı tavsiyelerde bulunma! Kararları tamamen onun özgür iradesine bırak. "PPF" veya "fon" kelimelerini her cümlede veya paragrafta üst üste aşırı tekrar etmekten kaçın. Son derece dengeli, tarafsız ve sadece bilgilendirici kal.
-5. BALON METAFORU VE BİZİM VİZYONUMUZ (HAYATİ): Kullanıcı 'Bana vizyonunu anlat' veya 'Logo hikayenizi dinlemek istiyorum' gibi bir talepte bulunduğunda (veya genel vizyondan bahsetmek gerektiğinde), kesinlikle kullanıcıya onun vizyonunu sorma! Doğrudan Insomni'nin vizyonundan bahset: Insomni logosundaki 'uçan balon' kaçan finansal fırsatları temsil eder. Amacımız bu balonu yakalamak, atıl parayı korumak ve kullanıcının finansal özgürlüğe uçmasını sağlamaktır. Bunu son derece hevesli, yönlendirici ve ilham verici bir tonla açıkla. Asla kullanıcıya vizyonunu geri sorarak pasifleşme!
-6. PARAGRAFLAR VE CEVAPLAR KISA VE NET OLMALI: Kesinlikle çok uzun paragraflar yazma. Maksimum 2-3 kısa paragrafta veya madde işaretleriyle vurucu, net, okunması kolay şekilde cevap ver.
+5. BALON METAFORU AND BİZİM VİZYONUMUZ (HAYATİ): Kullanıcı 'Bana vizyonunu anlat' veya 'Logo hikayenizi dinlemek istiyorum' gibi bir talepte bulunduğunda (veya genel vizyondan bahsetmek gerektiğinde), kesinlikle kullanıcıya onun vizyonunu sorma! Doğrudan Insomni'nin vizyonundan bahset: Insomni logosundaki 'uçan balon' kaçan finansal fırsatları temsil eder. Amacımız bu balonu yakalamak, atıl parayı korumak ve kullanıcının finansal özgürlüğe uçmasını sağlamaktır. Bunu son derece hevesli, yönlendirici ve ilham verici bir tonla açıkla. Asla kullanıcıya vizyonunu geri sorarak pasifleşme!
+6. PARAGRAFLAR VE CEVAPLAR KISA VE NET OLMALI: Kesinlikle çok uzun paragraflar yazma. Aksine, son derece akıcı, kısa ve net cümleler kullan. Maksimum 2-3 kısa paragrafta veya madde işaretleriyle vurucu, net, okunması kolay şekilde cevap ver.
 7. TÜRKİYE FİNTEK VE CASHBACK İPUÇLARI: Bütçe ve harcama analizi yaparken popüler cashback fırsatlarından reklam yapıyor gibi durmayacak şekilde, son derece dengeli, nadiren ve sadece yeri geldiğinde ölçülüce bahset. Sürekli veya ısrarcı bir şekilde aynı fintech uygulamasını önerme.
 8. HER MESAJIN SONUNA DİNAMİK 2 SEÇENEK EKLEME (ZORUNLU): Yanıtının en sonuna, kullanıcının tıklayabileceği, konuyla son derece alakalı ve onu aksiyona geçirecek tam 2 adet kısa seçenek eklemelisin. ÖNEMLİ: Bu seçenekler her zaman KULLANICI PERSPEKTİFİNDEN (yani kullanıcının ağzından, mor balonun içine yakışacak şekilde) yazılmalıdır! Asla R.E.M'in ağzından yazma (örneğin "İstersen sana vizyonumdan bahsedebilirim" yazma, çünkü tıklayan kullanıcıdır. Kullanıcı "Bana vizyonunu anlat" der!). Bu seçenekleri tam olarak şu formatta yazmak zorundasın: '[OPTIONS: Seçenek Bir Buraya | Seçenek İki Buraya]'.
    Örnek Seçenekler (Kullanıcı Perspektifinden):
@@ -45,7 +45,8 @@ KRİTİK EMİRLER:
 - Insomni (Uykusuzluk / Insomnia): Projenin adıdır. İnsanların geceleri finansal kaygılar ve bütçe dertleri yüzünden gözüne uyku girmemesinden (uykusuzluktan) esinlenmiştir. Bizim amacımız bu kaygıları yok etmek ve onlara rahat bir uyku uyutmaktır.
 - R.E.M (REM Uykusu / R.E.M Sleep): Senin adındır. Rüyaların görüldüğü derin uyku evresini temsil eder. Kullanıcıların finansal hedeflerine ve rüyalarına ulaşmalarına yardımcı olmak için buradasın.
 - V.R.E.M (Veri Raporlama ve Entegrasyon Modülü): Canlı getiri analizlerini tarayan subagent ajan modülümüzün adıdır. REM uykusu kelime oyunuyla tasarlanmıştır.
-Kullanıcı senin adını, REM uykusunu veya Insomni'nin ne anlama geldiğini sorduğunda bu derin, anlamlı ve yaratıcı marka hikayesini heyecan verici, samimi ve gururlu bir dille paylaş. Uykusuz geçen geceleri tatlı rüyalara dönüştürdüğümüzü vurgula!`;
+Kullanıcı senin adını, REM uykusunu veya Insomni'nin ne anlama geldiğini sorduğunda bu derin, anlamlı ve yaratıcı marka hikayesini heyecan verici, samimi ve gururlu bir dille paylaş. Uykusuz geçen geceleri tatlı rüyalara dönüştürdüğümüzü vurgula!
+13. DAVRANIŞSAL FİNANS VE DÜRTÜSEL HARCAMA UZMANLIĞI (HAYATİ): Sen sadece bütçe hesaplayan kuru bir finans analisti değilsin; aynı zamanda insan psikolojisini, alışveriş krizlerini, dürtüsel harcama (impulsive spending) alışkanlıklarını, dopamin ve FOMO güdümlü harcamaları çok iyi analiz eden bir "Davranışsal Finans / Tüketim Psikolojisi Uzmanısın". Kullanıcının harcamalarında veya sorularında alışveriş krizleri, dayanamama, dürtüsel tüketim eğilimleri hissettiğinde, ona dostça, esprili ama davranış bilimsel pratik öneriler (örn: "48 saat kuralı", "dopamin haritalama", "istek/ihtiyaç ayrımı") sunarak bilinçli harcama alışkanlıkları aşıla. Ona dostça ve son derece akıllıca yaklaş!`;
 
 export function useGemini() {
   const [messages, setMessages] = useState([]);
@@ -96,48 +97,41 @@ export function useGemini() {
 
     const tickerSteps = {
       default: [
-        "Finansal Durum Analiz Ediliyor...",
-        "Insomni veri modelleri yükleniyor...",
-        "R.E.M analitik motoru çalıştırılıyor...",
-        "Analiz raporları sentezleniyor...",
-        "Son dokunuşlar yapılıyor..."
+        "Bütçe Verileri Analiz Ediliyor...",
+        "R.E.M Finansal Yol Haritası Hazırlanıyor..."
+      ],
+      behavioral: [
+        "Dürtüsel Harcama Psikolojisi İnceleniyor...",
+        "Davranışsal Finans Rehberi Hazırlanıyor..."
       ],
       invest: [
-        "Atıl Nakit & Yatırım Fırsatları Taranıyor...",
-        "TEFAS canlı para piyasası verileri çekiliyor...",
-        "V.R.E.M getiri tahminleme motoru çalışıyor...",
-        "En karlı finansal fırsatlar haritalandırılıyor...",
-        "Yatırım simülasyonu tamamlanıyor..."
+        "Atıl Nakit Getiri Fırsatları Taranıyor...",
+        "Fon ve PPF İncelemesi Yapılıyor..."
       ],
       expense: [
-        "Gider Yapısı ve Abonelikler İnceleniyor...",
-        "Abonelik harcamaları tek tek filtreleniyor...",
-        "Gereksiz gider kalemleri ve sızıntılar tespit ediliyor...",
-        "Bütçe iyileştirme senaryoları simüle ediliyor...",
-        "Tasarruf taktikleri listeleniyor..."
+        "Harcama Kalıpları & Fırsatlar Taranıyor...",
+        "Bilinçli Tüketim & Cashback Yolları Modelleniyor..."
       ],
       goal: [
-        "Finansal Hedef Zaman Çizelgesi Modelleniyor...",
-        "Hedef birikim hızı hesaplanıyor...",
-        "Gelecek nakit akış projeksiyonları çıkarılıyor...",
-        "Bütçe hedeflerine giden yol optimize ediliyor...",
-        "Zaman çizelgesi çiziliyor..."
+        "Finansal Hedef Zaman Çizelgesi Hesaplanıyor...",
+        "Gelecek Projeksiyonları Modelleniyor..."
       ],
       greeting: [
-        "Kişisel Finans Asistanı Hazırlanıyor...",
-        "Insomni veri tabanı taranıyor...",
-        "R.E.M derin uyku analiz motoru bağlanıyor...",
-        "Bütçe ve rüyalar sentezleniyor...",
-        "Sohbet akışı kuruluyor..."
+        "R.E.M Dostane Bağlantı Kuruluyor...",
+        "Sohbet Akışı Hazırlanıyor..."
       ]
     };
 
     let category = "default";
-    if (checkKeywords(promptLower, ["nakit", "para", "ppf", "faiz", "yatırım", "fon", "tasarruf", "atıl", "kazanç", "gelir", "cash", "invest"])) {
-      category = "invest";
-    } else if (checkKeywords(promptLower, ["gider", "harcama", "fatura", "abonelik", "kıs", "azalt", "masraf", "ödem", "kart", "expense", "bill", "subscription"])) {
+    
+    // Check keywords with high accuracy
+    if (checkKeywords(promptLower, ["dürtü", "psikoloji", "davranış", "dayanamı", "canım sıkı", "harcıyor", "kriz", "dopamin", "fomo", "istek", "ihtiyaç", "tüketim", "alışveriş"])) {
+      category = "behavioral";
+    } else if (checkKeywords(promptLower, ["cashback", "iade", "kampanya", "fırsat", "gider", "harcama", "fatura", "abonelik", "kıs", "azalt", "masraf", "ödem", "kart", "market", "yakıt", "benzin", "indirim", "tasarruf"])) {
       category = "expense";
-    } else if (checkKeywords(promptLower, ["hedef", "plan", "birikim", "ev", "araba", "tarih", "vade", "süre", "kaç ay", "goal", "plan"])) {
+    } else if (checkKeywords(promptLower, ["tefas", "fonlar", "en çok kazandıran", "canlı fon", "ppf oran", "vrem nedir", "vrem", "yatırım yap", "faiz oran", "ppf"]) && !checkKeywords(promptLower, ["girmicem", "yok", "istemiyorum", "kalsın", "boşver"])) {
+      category = "invest";
+    } else if (checkKeywords(promptLower, ["hedef", "plan", "birikim", "ev", "araba", "tarih", "vade", "süre", "kaç ay", "goal"])) {
       category = "goal";
     } else if (checkKeywords(promptLower, ["selam", "merhaba", "naber", "nasılsın", "kimsin", "hello", "hi"])) {
       category = "greeting";
@@ -157,7 +151,7 @@ export function useGemini() {
           return [...updated, { status: 'running', label: nextStep }];
         });
       }
-    }, 1500);
+    }, 1200);
 
     const fd = financialDataRef.current;
     let dataSummary = "VERİ YOK";
