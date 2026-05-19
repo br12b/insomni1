@@ -1,6 +1,25 @@
 export const getSector = (name, lang = 'tr') => {
   const n = name.toLowerCase();
   
+  // Brand-specific custom icon override for rich calendar logo variety!
+  let customIcon = null;
+  if (n.includes('netflix') || n.includes('netlix')) customIcon = '🎬';
+  else if (n.includes('spotify')) customIcon = '🎧';
+  else if (n.includes('youtube')) customIcon = '📺';
+  else if (n.includes('apple') || n.includes('icloud')) customIcon = '☁️';
+  else if (n.includes('elektrik')) customIcon = '⚡';
+  else if (n.includes('doğalgaz') || n.includes('dogalgaz')) customIcon = '🔥';
+  else if (n.includes('su')) customIcon = '💧';
+  else if (n.includes('internet') || n.includes('türk telekom') || n.includes('superonline')) customIcon = '🌐';
+  else if (n.includes('gsm') || n.includes('turkcell') || n.includes('vodafone')) customIcon = '📱';
+  else if (n.includes('starbucks') || n.includes('kahve') || n.includes('nescafe')) customIcon = '☕';
+  else if (n.includes('kira')) customIcon = '🔑';
+  else if (n.includes('steam')) customIcon = '🕹️';
+  else if (n.includes('eneba')) customIcon = '🎟️';
+  else if (n.includes('yakıt') || n.includes('benzin') || n.includes('shell') || n.includes('opet') || n.includes('petrol')) customIcon = '⛽';
+  else if (n.includes('taksi') || n.includes('uber')) customIcon = '🚕';
+  else if (n.includes('market') || n.includes('migros') || n.includes('getir') || n.includes('carrefour') || n.includes('bim') || n.includes('a101') || n.includes('şok') || n.includes('sok')) customIcon = '🍏';
+
   if (
     n.includes('steam') || 
     n.includes('eneba') || 
@@ -22,7 +41,7 @@ export const getSector = (name, lang = 'tr') => {
     return {
       name: lang === 'tr' ? 'Oyun/Eğlence' : 'Gaming/Entertainment',
       color: '#a855f7',
-      icon: '🎮'
+      icon: customIcon || '🎮'
     };
   }
   
@@ -48,7 +67,7 @@ export const getSector = (name, lang = 'tr') => {
     return {
       name: lang === 'tr' ? 'Gıda/Market' : 'Food/Groceries',
       color: '#22c55e',
-      icon: '🛒'
+      icon: customIcon || '🛒'
     };
   }
   
@@ -63,7 +82,7 @@ export const getSector = (name, lang = 'tr') => {
     return {
       name: lang === 'tr' ? 'Barınma/Kira' : 'Housing/Rent',
       color: '#ef4444',
-      icon: '🏠'
+      icon: customIcon || '🏠'
     };
   }
   
@@ -85,7 +104,7 @@ export const getSector = (name, lang = 'tr') => {
     return {
       name: lang === 'tr' ? 'Ulaşım/Yakıt' : 'Transport/Fuel',
       color: '#3b82f6',
-      icon: '🚗'
+      icon: customIcon || '🚗'
     };
   }
   
@@ -113,7 +132,7 @@ export const getSector = (name, lang = 'tr') => {
     return {
       name: lang === 'tr' ? 'Fatura/Abonelik' : 'Bills/Subscriptions',
       color: '#f59e0b',
-      icon: '📄'
+      icon: customIcon || '📄'
     };
   }
   
@@ -129,14 +148,14 @@ export const getSector = (name, lang = 'tr') => {
     return {
       name: lang === 'tr' ? 'Finans/Borç' : 'Finance/Debt',
       color: '#ec4899',
-      icon: '💳'
+      icon: customIcon || '💳'
     };
   }
   
   return {
     name: lang === 'tr' ? 'Diğer' : 'Other',
     color: '#6b7280',
-    icon: '🛍️'
+    icon: customIcon || '🛍️'
   };
 };
 
