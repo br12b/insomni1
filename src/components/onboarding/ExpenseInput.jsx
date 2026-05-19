@@ -63,30 +63,7 @@ export default function ExpenseInput({ onComplete }) {
   const update = (id, field, val) => setExpenses(p => p.map(e => e.id === id ? { ...e, [field]: val } : e));
   const remove = (id) => setExpenses(p => p.filter(e => e.id !== id));
 
-  // Bulletproof Programmatic PDF Direct Download Handler
-  const downloadPdf = async (url, filename) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
-    } catch (error) {
-      console.error("PDF download failed, using fallback open", error);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', filename);
-      link.target = "_blank";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  };
+
 
   const handlePdfUpload = async (file) => {
     if (!file) return;
@@ -216,19 +193,20 @@ export default function ExpenseInput({ onComplete }) {
                               }}
                             >
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 16px' }}>
-                                <button type="button" onClick={() => downloadPdf("/samples/Ekstre_kamil%20%C3%B6zkundura.pdf", "Banka_Ekstresi_Ornek_1.pdf")} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left', color: 'var(--green)', textDecoration: 'underline', fontWeight: 700, fontSize: '12px' }}>
+                                <a href="/samples/ekstre_kamil_ozkundura.pdf" download="Banka_Ekstresi_Ornek_1.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
                                   📄 {lang === 'tr' ? 'Örnek Ekstre No 1' : 'Sample Statement No 1'}
-                                </button>
-                                <button type="button" onClick={() => downloadPdf("/samples/Ekstre_kemal%20ozbegen.pdf", "Banka_Ekstresi_Ornek_2.pdf")} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left', color: 'var(--green)', textDecoration: 'underline', fontWeight: 700, fontSize: '12px' }}>
+                                </a>
+                                <a href="/samples/ekstre_kemal_ozbegen.pdf" download="Banka_Ekstresi_Ornek_2.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
                                   📄 {lang === 'tr' ? 'Örnek Ekstre No 2' : 'Sample Statement No 2'}
-                                </button>
-                                <button type="button" onClick={() => downloadPdf("/samples/Ekstre_sami%20soylu.pdf", "Banka_Ekstresi_Ornek_3.pdf")} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left', color: 'var(--green)', textDecoration: 'underline', fontWeight: 700, fontSize: '12px' }}>
+                                </a>
+                                <a href="/samples/ekstre_sami_soylu.pdf" download="Banka_Ekstresi_Ornek_3.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
                                   📄 {lang === 'tr' ? 'Örnek Ekstre No 3' : 'Sample Statement No 3'}
-                                </button>
-                                <button type="button" onClick={() => downloadPdf("/samples/Ekstre_selami%20ozsahiner.pdf", "Banka_Ekstresi_Ornek_4.pdf")} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left', color: 'var(--green)', textDecoration: 'underline', fontWeight: 700, fontSize: '12px' }}>
+                                </a>
+                                <a href="/samples/ekstre_selami_ozsahiner.pdf" download="Banka_Ekstresi_Ornek_4.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green)', textDecoration: 'underline', fontWeight: 700 }}>
                                   📄 {lang === 'tr' ? 'Örnek Ekstre No 4' : 'Sample Statement No 4'}
-                                </button>
+                                </a>
                               </div>
+
                             </motion.div>
                           )}
                         </AnimatePresence>

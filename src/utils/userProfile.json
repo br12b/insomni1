@@ -1,122 +1,110 @@
 {
-  "name": "sami özkundura",
-  "persona": "Konfor Odaklı Ev Kuşu 🏠",
+  "name": "kemalettin tuzcu",
+  "persona": "Dengeli Harcamacı ⚖️",
   "ratings": {
     "gaming": 3,
-    "food": 2,
-    "kira": 0,
-    "housing": 4,
+    "food": 3,
+    "kira": 3,
+    "housing": 3,
     "transport": 3,
-    "bills": 4
+    "bills": 3
   },
   "generatedExpenses": [
     {
-      "name": "PlayStation Network",
-      "amount": 598,
+      "name": "Epic Games Purchases",
+      "amount": 452,
       "date": 2,
       "category": "gaming"
     },
     {
-      "name": "IKEA Ev Esyasi",
-      "amount": 5373,
+      "name": "Steam Games",
+      "amount": 645,
       "date": 2,
-      "category": "barinma"
-    },
-    {
-      "name": "Voidu Game Store",
-      "amount": 766,
-      "date": 3,
-      "category": "gaming"
-    },
-    {
-      "name": "Site Aidati",
-      "amount": 2474,
-      "date": 6,
-      "category": "barinma"
-    },
-    {
-      "name": "Evidea Mobilya",
-      "amount": 4588,
-      "date": 7,
-      "category": "barinma"
-    },
-    {
-      "name": "Spotify Duo",
-      "amount": 198,
-      "date": 9,
-      "category": "bills"
-    },
-    {
-      "name": "Starbucks Coffee",
-      "amount": 217,
-      "date": 11,
-      "category": "food"
-    },
-    {
-      "name": "Emlak Vergisi Odemesi",
-      "amount": 3685,
-      "date": 13,
-      "category": "barinma"
-    },
-    {
-      "name": "ENERJISA Elektrik",
-      "amount": 1241,
-      "date": 15,
-      "category": "bills"
-    },
-    {
-      "name": "OGS/HGS Gecisi",
-      "amount": 373,
-      "date": 18,
-      "category": "transport"
-    },
-    {
-      "name": "Deprem Sigortasi DASK",
-      "amount": 1356,
-      "date": 19,
-      "category": "barinma"
-    },
-    {
-      "name": "Koctas Yapi Market",
-      "amount": 2189,
-      "date": 22,
-      "category": "barinma"
-    },
-    {
-      "name": "CarrefourSA Market",
-      "amount": 1247,
-      "date": 24,
-      "category": "food"
-    },
-    {
-      "name": "ChatGPT Plus",
-      "amount": 1047,
-      "date": 25,
-      "category": "bills"
-    },
-    {
-      "name": "Razer Gold Pin",
-      "amount": 281,
-      "date": 26,
       "category": "gaming"
     },
     {
       "name": "BP Fuel Station",
-      "amount": 3232,
-      "date": 26,
+      "amount": 3358,
+      "date": 3,
       "category": "transport"
     },
     {
-      "name": "Otogar Otobus Bileti",
-      "amount": 836,
-      "date": 27,
+      "name": "Daire Kira Bedeli",
+      "amount": 14556,
+      "date": 5,
+      "category": "kira"
+    },
+    {
+      "name": "GetirYemek",
+      "amount": 577,
+      "date": 9,
+      "category": "food"
+    },
+    {
+      "name": "BiTaksi",
+      "amount": 261,
+      "date": 12,
       "category": "transport"
+    },
+    {
+      "name": "Spotify Duo",
+      "amount": 179,
+      "date": 13,
+      "category": "bills"
+    },
+    {
+      "name": "Disney+ Monthly",
+      "amount": 225,
+      "date": 14,
+      "category": "bills"
+    },
+    {
+      "name": "Emlak Vergisi Odemesi",
+      "amount": 3625,
+      "date": 16,
+      "category": "barinma"
+    },
+    {
+      "name": "Site Aidati",
+      "amount": 2177,
+      "date": 18,
+      "category": "barinma"
     },
     {
       "name": "iCloud Saklama Alani",
-      "amount": 100,
-      "date": 27,
+      "amount": 95,
+      "date": 22,
       "category": "bills"
+    },
+    {
+      "name": "PlayStation Network",
+      "amount": 625,
+      "date": 26,
+      "category": "gaming"
+    },
+    {
+      "name": "Trendyol Yemek",
+      "amount": 542,
+      "date": 26,
+      "category": "food"
+    },
+    {
+      "name": "Starbucks Coffee",
+      "amount": 254,
+      "date": 27,
+      "category": "food"
+    },
+    {
+      "name": "Istanbulkart Yukleme",
+      "amount": 448,
+      "date": 27,
+      "category": "transport"
+    },
+    {
+      "name": "Koctas Yapi Market",
+      "amount": 1925,
+      "date": 28,
+      "category": "barinma"
     }
   ]
 }
