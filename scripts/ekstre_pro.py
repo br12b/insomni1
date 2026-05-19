@@ -4,6 +4,8 @@ import random
 import datetime
 import json
 import webbrowser
+import shutil
+
 
 # KUTUPHANE KONTROLU
 try:
@@ -238,6 +240,17 @@ def generate_custom_pdf():
         filename = f"Ekstre_{safe_name}.pdf"
         pdf.output(filename)
         print(f"\n[R.E.M AI]: {filename} basariyla uretildi.")
+
+        # Dynamically save a copy to the system Downloads folder for effortless drag-and-drop!
+        try:
+            home = os.path.expanduser("~")
+            downloads_dir = os.path.join(home, "Downloads")
+            if os.path.exists(downloads_dir):
+                shutil.copy2(filename, os.path.join(downloads_dir, filename))
+                print(f"[R.E.M AI]: Bir kopya Downloads (Indirilenler) klasorune kopyalandi: {os.path.join(downloads_dir, filename)}")
+        except Exception as copy_err:
+            pass
+
 
         
         # PROJE WORKSPACE'İNDEKİ userProfile.json DOSYASINI GUNCELLE!
