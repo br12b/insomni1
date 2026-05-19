@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { List, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getSector } from '../../utils/sectors';
+import PremiumIcon from '../ui/PremiumIcon';
+
 
 export default function ExpenseList({ expenses = [], currency = '₺' }) {
   const { lang } = useLanguage();
@@ -85,10 +87,9 @@ export default function ExpenseList({ expenses = [], currency = '₺' }) {
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'center',
-                      fontSize: 16,
                       border: `1px solid ${sec.color}25`
                     }}>
-                      {sec.icon}
+                      <PremiumIcon iconStr={sec.icon} size={16} color={sec.color} />
                     </div>
                     <span style={{ fontWeight: 800, fontSize: 14, color: sec.color }}>{sec.name}</span>
                     <span style={{ fontSize: 10, color: 'var(--text3)', fontWeight: 700 }}>({sec.items.length})</span>

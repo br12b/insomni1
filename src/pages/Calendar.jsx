@@ -8,6 +8,8 @@ import {
   Target, Sparkles, Zap, ShieldCheck, Globe
 } from 'lucide-react';
 import { getSector } from '../utils/sectors';
+import PremiumIcon from '../components/ui/PremiumIcon';
+
 
 const IconMap = ({ name, color, type }) => {
   const props = { color, size: 18 };
@@ -288,10 +290,13 @@ export default function Calendar({ financialData }) {
                                display: 'flex', 
                                alignItems: 'center', 
                                justifyContent: 'center',
-                               fontSize: 20,
                                border: item.type === 'BALANCE' ? '1px solid #10b98125' : `1px solid ${sector.color}25`
                              }}>
-                               {item.type === 'BALANCE' ? '💰' : sector.icon}
+                               {item.type === 'BALANCE' ? (
+                                 <PremiumIcon iconStr="💳" size={20} color="#10b981" />
+                               ) : (
+                                 <PremiumIcon iconStr={sector.icon} size={20} color={sector.color} />
+                               )}
                              </div>
                              <div>
                                <div style={{ fontSize: 16, fontWeight: 950, color: '#1e293b' }}>{item.clean}</div>

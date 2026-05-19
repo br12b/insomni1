@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { parseAmount } from '../../lib/calculations';
 import { useLanguage } from '../../context/LanguageContext';
 import { getSector } from '../../utils/sectors';
+import PremiumIcon from '../ui/PremiumIcon';
+import { Calendar } from 'lucide-react';
+
 
 // Secure date parser that matches numbers, strings, and full ISO dates
 const getExpenseDay = (dateVal) => {
@@ -73,7 +76,7 @@ function ExpBadge({ exp, onDragStart, lang, currency }) {
         boxShadow: `0 2px 6px ${sector.color}08`
       }}
       title={exp.name + ' (' + sector.name + '): ' + currency + parseAmount(exp.amount).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}>
-      <span style={{ fontSize: 10 }}>{sector.icon}</span>
+      <PremiumIcon iconStr={sector.icon} size={10} color={sector.color} />
       <span>{exp.name.length > 9 ? exp.name.slice(0,9) + '..' : exp.name}</span>
     </div>
   );
@@ -168,7 +171,7 @@ export default function MonthlyCalendar({ expenses = [], salaryDay = 1, income =
       {/* Dynamic Month/Year Selector with Navigation Arrows */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 8px' }}>
         <h3 style={{ fontSize: 18, fontWeight: 900, color: 'var(--text1)', letterSpacing: '-0.02em', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span>📅</span> {MONTHS[currentMonth]} {currentYear}
+          <Calendar size={20} color="var(--accent)" style={{ filter: 'drop-shadow(0 0 6px rgba(129,140,248,0.4))' }} /> {MONTHS[currentMonth]} {currentYear}
         </h3>
         <div style={{ display: 'flex', gap: 8 }}>
           <button 
