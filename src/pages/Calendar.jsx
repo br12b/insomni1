@@ -157,9 +157,10 @@ export default function Calendar({ financialData }) {
 
     const txs = dailyItems.filter(d => d.type === 'TRANSACTION');
     
-    // Add custom onboarding salary if this is the bounded salary day
+    // Add custom onboarding salary if this is the bounded salary day AND no synced balance exists on that day!
     const items = [...dailyItems];
-    if (isSalaryDay && salaryIncome > 0) {
+    const hasSyncedBalance = dailyItems.some(d => d.type === 'BALANCE');
+    if (isSalaryDay && salaryIncome > 0 && !hasSyncedBalance) {
       const formattedSalary = `+${Math.round(salaryIncome).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')} ${t.currency || '₺'}`;
       items.push({
         id: 'onboarding-salary',
@@ -173,6 +174,7 @@ export default function Calendar({ financialData }) {
         icon: 'Wallet'
       });
     }
+
 
     const expense = txs.reduce((acc, tx) => acc + parseCurrency(tx.amount), 0);
     const balanceItems = items.filter(d => d.type === 'BALANCE');
