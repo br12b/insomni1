@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, ArrowRight, Upload, RefreshCw, Loader2, Calendar } from 'lucide-react';
+import { Plus, Trash2, ArrowRight, Upload, RefreshCw, Loader2, Calendar, Gamepad2, Utensils, Trophy, Car, ChevronDown, ChevronUp } from 'lucide-react';
 import { parseBankStatement } from '../../lib/pdfParser';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -45,6 +45,7 @@ export default function ExpenseInput({ onComplete }) {
   const [showTip, setShowTip] = useState(false);
   const [showPdfList, setShowPdfList] = useState(false);
   const [dragHover, setDragHover] = useState(false);
+  const [showDemoList, setShowDemoList] = useState(false);
 
   useEffect(() => {
     const sync = () => {
@@ -347,47 +348,212 @@ export default function ExpenseInput({ onComplete }) {
               )}
             </div>
 
-            {/* 🚀 Quick Demo Profil Yükleyici (Tek Tıklama Modu!) */}
-            <div style={{ marginBottom: 28, background: 'rgba(255, 255, 255, 0.01)', border: '1px solid var(--glass-border)', padding: '20px', borderRadius: 16 }}>
-              <div className="label" style={{ marginBottom: 12, fontSize: 11, fontWeight: 800, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: 1 }}>
-                🚀 {lang === 'tr' ? 'Tek Tıkla Hazır Demo Profillerini Yükle' : 'Load Pre-compiled Demo Profiles in 1-Click'}
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <button 
-                  type="button" 
-                  onClick={() => loadDemoProfile('Mert Oyuncu')} 
-                  className="btn btn-sm btn-ghost" 
-                  style={{ background: 'rgba(129, 140, 248, 0.03)', border: '1px solid rgba(129, 140, 248, 0.15)', padding: '12px', height: 'auto', borderRadius: 12, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}
-                >
-                  <strong style={{ fontSize: 13, color: 'var(--accent)' }}>Mert Oyuncu 🎮</strong>
-                  <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2 }}>{lang === 'tr' ? 'Steam, Xbox, Dijital Harcamalar' : 'Steam, Xbox, Digital Expenses'}</span>
-                </button>
-                <button 
-                  type="button" 
-                  onClick={() => loadDemoProfile('Selin Gurme')} 
-                  className="btn btn-sm btn-ghost" 
-                  style={{ background: 'rgba(244, 63, 94, 0.03)', border: '1px solid rgba(244, 63, 94, 0.15)', padding: '12px', height: 'auto', borderRadius: 12, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}
-                >
-                  <strong style={{ fontSize: 13, color: '#f43f5e' }}>Selin Gurme 🍔</strong>
-                  <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2 }}>{lang === 'tr' ? 'Macrocenter, Starbucks, Yemek' : 'Macrocenter, Starbucks, Food'}</span>
-                </button>
-                <button 
-                  type="button" 
-                  onClick={() => loadDemoProfile('Ahmet Tasarruf')} 
-                  className="btn btn-sm btn-ghost" 
-                  style={{ background: 'rgba(16, 185, 129, 0.03)', border: '1px solid rgba(16, 185, 129, 0.15)', padding: '12px', height: 'auto', borderRadius: 12, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}
-                >
-                  <strong style={{ fontSize: 13, color: '#10b981' }}>Ahmet Tasarruf 🏆</strong>
-                  <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2 }}>{lang === 'tr' ? 'Minimalist Yaşam, Yüksek Birikim' : 'Minimalist Living, High Savings'}</span>
-                </button>
-                <button 
-                  type="button" 
-                  onClick={() => loadDemoProfile('Can Gezgin')} 
-                  className="btn btn-sm btn-ghost" 
-                  style={{ background: 'rgba(245, 158, 11, 0.03)', border: '1px solid rgba(245, 158, 11, 0.15)', padding: '12px', height: 'auto', borderRadius: 12, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' }}
-                >
-                  <strong style={{ fontSize: 13, color: '#f59e0b' }}>Can Gezgin 🚗</strong>
-                  <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2 }}>{lang === 'tr' ? 'Yakıt, Uber, Seyahat Harcamaları' : 'BP, Uber, Travel Expenses'}</span>
+            {/* 🚀 Quick Demo Profil Yükleyici (Tek Tıklama Modu - Expandable!) */}
+            <div style={{ 
+              marginBottom: 28, 
+              background: 'rgba(255, 255, 255, 0.01)', 
+              border: '1px solid var(--glass-border)', 
+              borderRadius: 16,
+              overflow: 'hidden' 
+            }}>
+              <button
+                type="button"
+                onClick={() => setShowDemoList(!showDemoList)}
+                style={{
+                  width: '100%',
+                  background: 'none',
+                  border: 'none',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  color: 'var(--text1)',
+                  fontWeight: 800,
+                  fontSize: '11px',
+                  textTransform: 'uppercase',
+                  letterSpacing: 1,
+                  textAlign: 'left'
+                }}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--accent)' }}>
+                  ⚡ {lang === 'tr' ? 'Tek Tıkla Hazır Demo Profillerini Yükle' : 'Load Pre-compiled Demo Profiles'}
+                </span>
+                <span style={{ color: 'var(--text2)', display: 'flex', alignItems: 'center' }}>
+                  {showDemoList ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </span>
+              </button>
+
+              <AnimatePresence>
+                {showDemoList && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    style={{ padding: '0 20px 20px 20px', borderTop: '1px solid rgba(255, 255, 255, 0.03)', overflow: 'hidden' }}
+                  >
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
+                      <button 
+                        type="button" 
+                        onClick={() => loadDemoProfile('Mert Oyuncu')} 
+                        className="btn btn-sm btn-ghost" 
+                        style={{ 
+                          background: 'rgba(129, 140, 248, 0.03)', 
+                          border: '1px solid rgba(129, 140, 248, 0.15)', 
+                          padding: '16px', 
+                          height: 'auto', 
+                          borderRadius: 12, 
+                          display: 'flex', 
+                          flexDirection: 'row', 
+                          alignItems: 'center', 
+                          gap: 12,
+                          textAlign: 'left', 
+                          cursor: 'pointer', 
+                          transition: 'all 0.2s ease',
+                          boxShadow: '0 4px 12px rgba(129, 140, 248, 0.03)'
+                        }}
+                      >
+                        <div style={{ 
+                          background: 'rgba(129, 140, 248, 0.1)', 
+                          border: '1px solid rgba(129, 140, 248, 0.2)', 
+                          borderRadius: 10, 
+                          width: 38, 
+                          height: 38, 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          flexShrink: 0
+                        }}>
+                          <Gamepad2 size={20} color="var(--accent)" />
+                        </div>
+                        <div>
+                          <strong style={{ fontSize: 13, color: 'var(--accent)', display: 'block' }}>Mert Oyuncu</strong>
+                          <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2, display: 'block' }}>{lang === 'tr' ? 'Steam, Xbox, Dijital Abonelikler' : 'Steam, Xbox, Digital Subs'}</span>
+                        </div>
+                      </button>
+                      
+                      <button 
+                        type="button" 
+                        onClick={() => loadDemoProfile('Selin Gurme')} 
+                        className="btn btn-sm btn-ghost" 
+                        style={{ 
+                          background: 'rgba(244, 63, 94, 0.03)', 
+                          border: '1px solid rgba(244, 63, 94, 0.15)', 
+                          padding: '16px', 
+                          height: 'auto', 
+                          borderRadius: 12, 
+                          display: 'flex', 
+                          flexDirection: 'row', 
+                          alignItems: 'center', 
+                          gap: 12,
+                          textAlign: 'left', 
+                          cursor: 'pointer', 
+                          transition: 'all 0.2s ease',
+                          boxShadow: '0 4px 12px rgba(244, 63, 94, 0.03)'
+                        }}
+                      >
+                        <div style={{ 
+                          background: 'rgba(244, 63, 94, 0.1)', 
+                          border: '1px solid rgba(244, 63, 94, 0.2)', 
+                          borderRadius: 10, 
+                          width: 38, 
+                          height: 38, 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          flexShrink: 0
+                        }}>
+                          <Utensils size={20} color="#f43f5e" />
+                        </div>
+                        <div>
+                          <strong style={{ fontSize: 13, color: '#f43f5e', display: 'block' }}>Selin Gurme</strong>
+                          <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2, display: 'block' }}>{lang === 'tr' ? 'Macrocenter, Starbucks, Yemek' : 'Macrocenter, Starbucks, Food'}</span>
+                        </div>
+                      </button>
+
+                      <button 
+                        type="button" 
+                        onClick={() => loadDemoProfile('Ahmet Tasarruf')} 
+                        className="btn btn-sm btn-ghost" 
+                        style={{ 
+                          background: 'rgba(16, 185, 129, 0.03)', 
+                          border: '1px solid rgba(16, 185, 129, 0.15)', 
+                          padding: '16px', 
+                          height: 'auto', 
+                          borderRadius: 12, 
+                          display: 'flex', 
+                          flexDirection: 'row', 
+                          alignItems: 'center', 
+                          gap: 12,
+                          textAlign: 'left', 
+                          cursor: 'pointer', 
+                          transition: 'all 0.2s ease',
+                          boxShadow: '0 4px 12px rgba(16, 185, 129, 0.03)'
+                        }}
+                      >
+                        <div style={{ 
+                          background: 'rgba(16, 185, 129, 0.1)', 
+                          border: '1px solid rgba(16, 185, 129, 0.2)', 
+                          borderRadius: 10, 
+                          width: 38, 
+                          height: 38, 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          flexShrink: 0
+                        }}>
+                          <Trophy size={20} color="#10b981" />
+                        </div>
+                        <div>
+                          <strong style={{ fontSize: 13, color: '#10b981', display: 'block' }}>Ahmet Tasarruf</strong>
+                          <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2, display: 'block' }}>{lang === 'tr' ? 'Minimalist Yaşam, Yüksek Birikim' : 'Minimal Living, High Savings'}</span>
+                        </div>
+                      </button>
+
+                      <button 
+                        type="button" 
+                        onClick={() => loadDemoProfile('Can Gezgin')} 
+                        className="btn btn-sm btn-ghost" 
+                        style={{ 
+                          background: 'rgba(245, 158, 11, 0.03)', 
+                          border: '1px solid rgba(245, 158, 11, 0.15)', 
+                          padding: '16px', 
+                          height: 'auto', 
+                          borderRadius: 12, 
+                          display: 'flex', 
+                          flexDirection: 'row', 
+                          alignItems: 'center', 
+                          gap: 12,
+                          textAlign: 'left', 
+                          cursor: 'pointer', 
+                          transition: 'all 0.2s ease',
+                          boxShadow: '0 4px 12px rgba(245, 158, 11, 0.03)'
+                        }}
+                      >
+                        <div style={{ 
+                          background: 'rgba(245, 158, 11, 0.1)', 
+                          border: '1px solid rgba(245, 158, 11, 0.2)', 
+                          borderRadius: 10, 
+                          width: 38, 
+                          height: 38, 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          flexShrink: 0
+                        }}>
+                          <Car size={20} color="#f59e0b" />
+                        </div>
+                        <div>
+                          <strong style={{ fontSize: 13, color: '#f59e0b', display: 'block' }}>Can Gezgin</strong>
+                          <span style={{ fontSize: 10, color: 'var(--text2)', marginTop: 2, display: 'block' }}>{lang === 'tr' ? 'Yakıt, Uber, Seyahat Harcamaları' : 'BP, Uber, Travel Expenses'}</span>
+                        </div>
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>-text2)', marginTop: 2 }}>{lang === 'tr' ? 'Yakıt, Uber, Seyahat Harcamaları' : 'BP, Uber, Travel Expenses'}</span>
                 </button>
               </div>
             </div>
