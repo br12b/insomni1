@@ -116,7 +116,7 @@ export default function RemSync({ onSalaryUpdate }) {
     const isValid = hasDigit && hasTl;
 
     if (!isValid) {
-      addLog(lang === 'tr' ? `HATA: Geçersiz sinyal formatı (Rakam ve 'TL' bulunamadı!)` : `ERROR: Invalid signal format (No digits and 'TL' found!)`, 'warning');
+      addLog(lang === 'tr' ? `HATA: Sinyal formatı geçersiz (Rakam ve 'TL' bulunamadı!)` : `ERROR: Invalid signal format (No digits and 'TL' found!)`, 'warning');
       const invalidTx = { 
         id: Math.random().toString(36).substr(2, 9), 
         type: 'TRANSACTION', 
@@ -319,6 +319,72 @@ export default function RemSync({ onSalaryUpdate }) {
         </p>
       </motion.div>
 
+      {/* R.E.M Sync Premium Glassmorphism Info Slogan Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="glass"
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto 40px auto',
+          width: '100%',
+          padding: '32px 40px',
+          borderRadius: 32,
+          background: 'linear-gradient(135deg, rgba(99,102,241,0.03) 0%, rgba(192,132,252,0.03) 100%)',
+          border: '1px solid rgba(99,102,241,0.15)',
+          backdropFilter: 'blur(25px)',
+          display: 'grid',
+          gridTemplateColumns: '1.2fr 1fr',
+          gap: 40,
+          alignItems: 'center'
+        }}
+      >
+        <div style={{ textAlign: 'left' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <span style={{ fontSize: 11, fontWeight: 900, color: '#a855f7', background: 'rgba(168, 85, 247, 0.1)', padding: '6px 12px', borderRadius: 20, letterSpacing: '0.1em' }}>
+              R.E.M SYNC™ VİZYONU
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#10b981', fontSize: 11, fontWeight: 900 }}>
+              <ShieldCheck size={14} /> {lang === 'tr' ? 'Güvenli & Otonom' : 'Secure & Autonomous'}
+            </div>
+          </div>
+          <h2 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 950, margin: '0 0 16px 0', letterSpacing: '-0.03em', color: 'var(--text1)' }}>
+            {lang === 'tr' ? "Siz Hiç Zahmet Etmeyin." : "Zero Friction. Zero Effort."}
+          </h2>
+          <p style={{ fontSize: 15, color: 'var(--text2)', lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
+            {lang === 'tr' 
+              ? "Her kahveyi, her faturayı tek tek elle girmekle vakit kaybetmeyin. R.E.M Sync; banka bildirimleri, Telegram mesajları ve Açık Bankacılık (Open Banking) API'leri ile harcamalarınızı tamamen otonom olarak yakalar, kategorize eder ve finansal kontrol panelinize mühürler."
+              : "Stop wasting time manually logging every coffee or bill. R.E.M Sync captures, categorizes, and seals your expenses autonomously via bank notifications, Telegram bot signals, and Open Banking APIs directly into your command center."}
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {[
+            { 
+              icon: <Zap size={18} color="#6366f1" />, 
+              title: lang === 'tr' ? "Şu An Neler Yapabiliyor?" : "What Can It Do Now?",
+              desc: lang === 'tr' ? "Telegram Bot Köprüsü (@insomni_test_bot) ile otonom veri yakalama ve anlık bulut KV senkronizasyonu." : "Autonomous Telegram Bot Bridge (@insomni_test_bot) data capture and live cloud KV synchronization." 
+            },
+            { 
+              icon: <BrainCircuit size={18} color="#a855f7" />, 
+              title: lang === 'tr' ? "Gelecekteki Rolü & Hedefi" : "Future Role & Roadmap",
+              desc: lang === 'tr' ? "Doğrudan Açık Bankacılık (Open Banking - PSD2) API'leri ile Garanti BBVA, Akbank vb. hesap hareketlerinizi sıfır eforla canlı çekebilmek." : "Direct Open Banking (PSD2) API connections to stream Garanti BBVA, Akbank, etc. live transactions without any manual typing." 
+            }
+          ].map((item, idx) => (
+            <div key={idx} style={{ display: 'flex', gap: 16, background: 'rgba(255,255,255,0.02)', padding: 16, borderRadius: 20, border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                {item.icon}
+              </div>
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontSize: 13, fontWeight: 900, color: 'var(--text1)', marginBottom: 4 }}>{item.title}</div>
+                <div style={{ fontSize: 11, color: 'var(--text2)', lineHeight: 1.5 }}>{item.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
       <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', position: 'relative' }}>
         
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
@@ -442,9 +508,9 @@ export default function RemSync({ onSalaryUpdate }) {
                         { step: "02", title: lang === 'tr' ? "Sinyal Formatı" : "Signal Format", desc: lang === 'tr' ? "Veri göndermek için önce ID, sonra boşluk ve harcama yazın." : "To send data, enter your ID first, followed by space and your expense.", icon: <MessageSquare size={18} /> },
                         { step: "03", title: lang === 'tr' ? "Örnek Veri" : "Example Signal", desc: `${omniId} ${lang === 'tr' ? 'Kahve 120 tl' : 'Coffee 120 tl'}`, icon: <Zap size={18} />, highlight: true }
                       ].map((item, idx) => (
-                        <div key={idx} style={{ padding: 20, borderRadius: 20, background: item.highlight ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid \${item.highlight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.05)'}` }}>
+                        <div key={idx} style={{ padding: 20, borderRadius: 20, background: item.highlight ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${item.highlight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.05)'}` }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                            <span style={{ fontSize: 10, fontWeight: 900, color: '#6366f1', letterSpacing: '0.2em' }}>ADIM ${item.step}</span>
+                            <span style={{ fontSize: 10, fontWeight: 900, color: '#6366f1', letterSpacing: '0.2em' }}>ADIM {item.step}</span>
                             <div style={{ color: '#6366f1' }}>{item.icon}</div>
                           </div>
                           <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>{item.title}</div>

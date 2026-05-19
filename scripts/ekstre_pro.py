@@ -46,6 +46,7 @@ def get_user_config():
     sectors = [
         ("gaming", "Oyun / Dijital Eğlence (Steam, Eneba, Voidu...)"),
         ("food", "Gıda / Market / Dışarıda Yemek (Getir, Starbucks...)"),
+        ("kira", "Kira Ödemesi (Sahibinden Kira, Rezidans...)"),
         ("housing", "Barınma / Ev Eşyası / Aidat (IKEA, Koçtaş, Aidat...)"),
         ("transport", "Ulaşım / Yakıt / Seyahat (Shell, Uber, Otobüs...)"),
         ("bills", "Faturalar / Dijital Abonelikler (Turkcell, Netflix...)")
@@ -70,6 +71,7 @@ def get_user_config():
     # Persona Hesaplama
     gaming = ratings["gaming"]
     food = ratings["food"]
+    kira = ratings["kira"]
     housing = ratings["housing"]
     transport = ratings["transport"]
     bills = ratings["bills"]
@@ -112,7 +114,7 @@ def generate_custom_pdf():
         pdf = BankStatement()
         pdf.add_page()
         
-        # Zenginleştirilmiş Geniş Platform Veri Havuzu (Kira bağımsız bir kategori olarak ayrıldı!)
+        # Zengin platform veri havuzu
         merchants = {
             "gaming": [
                 ("Steam Games", 450), ("Eneba Key Market", 350), ("ByNoGame Pin", 250), 
@@ -125,6 +127,11 @@ def generate_custom_pdf():
                 ("Yemeksepeti Siparis", 420), ("Trendyol Yemek", 350), ("CarrefourSA Market", 950), 
                 ("Kahve Dunyasi", 120), ("Burger King", 280), ("Macrocenter Gourmet", 850), 
                 ("A101 Market", 450)
+            ],
+            "kira": [
+                ("Sahibinden Kira Odemesi", 12500),
+                ("Kira Odemesi", 12500),
+                ("Daire Kira Bedeli", 12500)
             ],
             "housing": [
                 ("Emlak Vergisi Odemesi", 2400), ("Site Aidati", 1500), 
@@ -148,15 +155,6 @@ def generate_custom_pdf():
         ratings = config["ratings"]
         persona = config["persona"]
 
-        # 1. KİRA GİDERİNİ BAĞIMSIZ VE NET OLARAK AYIRIP OTOMATİK EKLE!
-        # Sabit 12.500 TL Kira Ödemesi her ayın 5'ine ekleniyor.
-        statement.append({
-            "date": "05.05.2026",
-            "name": "Kira Odemesi",
-            "cat": "Kira",
-            "price": 12500
-        })
-
         # Sektör puanlarına göre işlem adetlerini ve miktarlarını ayarla
         for sec_id, score in ratings.items():
             base_count = score
@@ -169,6 +167,21 @@ def generate_custom_pdf():
                 
             if "Tasarruf" in persona:
                 base_count = max(1, base_count - 1)
+
+            # Kira için özel durum: Puanı 0 ise hiç kira eklemesin, 1 veya üzeri ise tek bir kira ödemesi eklesin (Çünkü 2 kira ödenmez!)
+            if sec_id == "kira":
+                if score > 0:
+                    available_merchants = merchants.get(sec_id, [])
+                    item = random.choice(available_merchants)
+                    multiplier = 1.0 + (score * 0.05) + (random.uniform(-0.02, 0.02))
+                    price = int(item[1] * multiplier)
+                    statement.append({
+                        "date": "05.05.2026",
+                        "name": item[0],
+                        "cat": "Kira",
+                        "price": price
+                    })
+                continue
 
             available_merchants = merchants.get(sec_id, [])
             count = min(base_count, len(available_merchants))

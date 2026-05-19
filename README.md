@@ -71,8 +71,19 @@ Görsel sarsıntıları ve ani sayfa yükleme şoklarını tamamen önleyen, zih
 ### 2. 🧠 R.E.M. Yapay Zeka Chat + V.R.E.M. Alt Ajanı
 **Google Gemini** tarafından desteklenen finansal yol arkadaşınız. Canlı TEFAS para piyasası fonu (PPF) getirilerini chat içinde anlık sorgulayan ve listeleyen özel alt ajanı **V.R.E.M.** (*Veri Raporlama ve Entegrasyon Modülü*) ile entegredir.
 
-### 🔄 3. REM Sync: Otonom Veri Köprüsü
-Yapılandırılmamış banka API'lerini ve anlık **Telegram Bot** girişlerini saniyeler içinde çözen kritik otonom köprü. Statik geriye dönük listeler yerine, harcamalarınızı canlı sinir sistemine aktararak gelecek nakit akışı projeksiyonları yapmanızı sağlar.
+### 🔄 3. R.E.M. Sync™: Otonom Veri Köprüsü
+> **"Siz Hiç Zahmet Etmeyin."**
+> 
+> Bütçe takip uygulamalarının en büyük ve en hızlı vazgeçilme sebebi, her harcamayı tek tek elle girmenin yarattığı zihinsel ve fiziksel yorgunluktur. **R.E.M. Sync™**, bu zahmeti tamamen ortadan kaldıran otonom ve sıfır-sürtünmeli bir senkronizasyon hattıdır.
+> 
+> **Mevcut Yetenekler:**
+> * **Telegram Bot Entegrasyonu (@insomni_test_bot):** Telegram'a yazılan basit bir mesajı (`OMNI_ID Harcama Miktar tl` formatında) anlık yakalar, otonom olarak anlamlandırıp kategorize eder ve doğrudan yerel takvime akıtır.
+> * **Test Sinyal Simülatörü:** Banka SMS veya Android bildirimlerinin tünelden akışını test eden anlık yerel sinyal simülasyonu.
+> * **Bulut KV Veri Köprüsü:** Yüksek hızlı cloud KV depolama entegrasyonu ile yerel ortam ile Vercel/Netlify canlı sunucularını saniyeler içinde senkronize eder.
+>
+> **Gelecekteki Rolü & Hedefi (Açık Bankacılık):**
+> * **Open Banking API (PSD2):** Doğrudan banka hesap hareketleri API'lerine (Garanti BBVA, Akbank vb.) güvenli otonom tüneller açarak live hesap hareketlerini tek tuşla, sıfır eforla çekebilmek.
+> * **Android SMS Rölesi:** Telefonunuza düşen harcama bildirimlerini veya banka SMS'lerini bizzat yakalayıp R.E.M AI asistanına otomatik paslayacak otonom arka plan servisleri.
 
 ### 📅 4. Finansal Isı Haritası Takvimi
 Bütçe sağlığını kırmızı/yeşil parlayan mikro ısı haritaları üzerinden dinamik olarak renklendiren etkileşimli günlük takvim görselleştirici.
@@ -85,7 +96,7 @@ Atıl nakitleri, abonelik sızıntılarını tarayan ve aktif nakit iadesi (cash
 ## 🛠️ Teknoloji Yığını ve Mimari
 
 - **Önyüz (Frontend)**: Hızlı derleme ve modüler kod bölme için `React 18` + `Vite`.
-- **Animasyon Motoru**: `Framer Motion` (donanım hızlandırmalı akıcı yay mekaniği).
+- **Animasyon Engine**: `Framer Motion` (donanım hızlandırmalı akıcı yay mekaniği).
 - **İkonlar**: `Lucide React`
 - **Yapay Zeka Mimarisi**: `Google Gemini 3.1 Flash Lite` API'si (`Gemini 2.5 Flash` yedekli/failover).
 - **Veritabanı Polling**: Gelişmiş otonom hibrit bulut veritabanı köprü yedekleme sistemi.
@@ -117,7 +128,7 @@ npm install
 ```bash
 npm run dev
 ```
-Uygulama yerel adresinizde
+Uygulama yerel adresinizde (`http://localhost:5200/` veya `http://localhost:5173/`) çalışmaya başlayacaktır.
 
 ### 💡 Örnek Banka Ekstreleri (PDF) ve Simülasyon Üretici:
 Eğer REM Sync testleriniz veya önyüz onboarding testleriniz için hazır bir banka ekstresi (PDF) dosyanız yoksa, aşağıdaki pratik yolları izleyebilirsiniz. **En sağlıklı ve kararlı analiz sonuçları için lütfen Ekstre Pro aracıyla üretilen PDF dosyalarını tercih edin!**
@@ -134,7 +145,6 @@ Eğer REM Sync testleriniz veya önyüz onboarding testleriniz için hazır bir 
    python scripts/ekstre_pro.py
    ```
    Bu komut, belirlediğiniz isim ve harcama alışkanlıklarına göre zengin bir PDF ekstresi hazırlayıp bilgisayarınızda otomatik olarak açacaktır!
-Bu komut, belirlediğiniz isim ve harcama alışkanlıklarına göre zengin bir PDF ekstresi hazırlayıp bilgisayarınızda otomatik olarak açacaktır! (`http://localhost:5200/` veya `http://localhost:5173/`) çalışmaya başlayacaktır.
 
 ### 4. Yayına Hazırlama (Build)
 ```bash
@@ -209,7 +219,7 @@ To transition Insomni into a fully mature financial ecosystem, we plan to implem
 
 ## ⚡ Core Philosophy & Vision
 
-Insomni draws its name from sleeplessness (**insomnia**), and **R.E.M.** represents the deepest, most active dream state of sleep (REM sleep). 
+Insomni draws its name from sleeplessness (**insomnia**), and **R.E.M.** represents the deepest, most active dream state of sleep (REM sleep).
 
 1. **Idle Cash is the Enemy**: Money sitting in non-yield accounts loses power every second. Insomni tracks and quantifies this down to the millisecond.
 2. **Dynamic Timing**: By optimizing the timeline mismatch between salary dates and large bills, we maintain your liquidity at peak levels.
@@ -225,8 +235,19 @@ A physics-based holographic spring exit transition that completely prevents visu
 ### 2. 🧠 R.E.M. AI Chat + V.R.E.M. Subagent
 A context-aware financial companion powered by **Google Gemini**. Integrates with its specialized subagent **V.R.E.M.** (*Data Reporting and Integration Module*) to fetch, filter, and display live TEFAS money market fund (PPF) yields directly inside the chat.
 
-### 🔄 3. REM Sync: The Autonomous Bridge
-A critical autonomous bridge that parses unstructured banking APIs and instant **Telegram Bot** inputs in seconds. Instead of static retro lists, it projects your expenses into the live nervous system, allowing you to run future cash flow projections and guard your active wealth.
+### 🔄 3. R.E.M. Sync™: The Autonomous Bridge
+> **"Zero Friction. Zero Effort."**
+> 
+> The number one reason why users abandon budget apps is the mental fatigue of manually logging every transaction. **R.E.M. Sync™** is an autonomous pipeline built to banish manual entry to the history books.
+> 
+> **Present Capabilities:**
+> * **Telegram Bot Bridge (@insomni_test_bot):** Send a simple telegram message (using `OMNI_ID Details Amount tl`) and it's captured instantly, dynamically parsed, categorized, and streamed to your calendar.
+> * **Direct Test Signal Relays:** Simulates local Android push notifications or bank SMS streams directly to verify connection.
+> * **Cloud KV Synchronization:** Instantly syncs state across your local environment and live Netlify/Vercel sites within milliseconds.
+>
+> **Future Roadmap & Role (Open Banking):**
+> * **Open Banking API Integrations (PSD2):** Direct secure endpoints with major banks (Garanti BBVA, Akbank, etc.) to securely fetch and parse statements autonomously.
+> * **Background SMS Relay Services:** Lightweight background services to catch financial SMS arrivals and dispatch them instantly to your REM AI companion.
 
 ### 📅 4. Financial Heatmap Calendar
 An interactive daily calendar visualizer that colors budget health via red/green glowing micro-heatmaps dynamically. Instantly visualizes the impact of daily spending.
@@ -271,7 +292,7 @@ npm install
 ```bash
 npm run dev
 ```
-The application will launch
+The application will launch on your local host (usually `http://localhost:5173/` or `http://localhost:5200/`).
 
 ### 💡 Sample Bank Statements (PDF) & Simulation Generator:
 If you do not have a PDF bank statement ready for testing the REM Sync or onboarding statement parser, you can use the following resources. **For the healthiest and most accurate analysis, we highly recommend using statements generated by the Ekstre Pro tool!**
@@ -288,7 +309,6 @@ If you do not have a PDF bank statement ready for testing the REM Sync or onboar
    python scripts/ekstre_pro.py
    ```
    This CLI tool will dynamically compile a beautifully formatted PDF bank statement matching your preferred spending level and open it automatically!
-This CLI tool will dynamically compile a beautifully formatted PDF bank statement matching your preferred spending level and open it automatically! on your local host (usually `http://localhost:5173/` or `http://localhost:5200/`).
 
 ### 4. Build for Production
 ```bash
@@ -315,7 +335,7 @@ The **REM Sync** module features a hybrid autonomous bridge linked with a Telegr
    ```text
    <OMNI_ID> <Expense Details> <Amount> tl
    ```
-   
+
 ### 📝 Examples:
 - `481920 Kahve 120 tl` (Turkish Mode)
 - `481920 Coffee 120 tl` (English Mode)
