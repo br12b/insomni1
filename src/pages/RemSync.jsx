@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   RefreshCw, ShieldCheck, Zap, Loader2, Lock, ArrowRight, Database, 
@@ -66,7 +66,6 @@ export default function RemSync({ onSalaryUpdate }) {
             throw new Error("API Offline or Vite Fallback");
           }
         } catch (apiErr) {
-          // Direct Bulut Veritabanı Fallback!
           const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${omniId}`);
           if (getRes.ok) {
             const rawText = await getRes.text();
@@ -132,10 +131,8 @@ export default function RemSync({ onSalaryUpdate }) {
       addLog(lang === 'tr' ? `Takvim senkronizasyonu baslatildi...` : `Calendar synchronization started...`, 'system');
       localStorage.setItem('insomni_synced_txs', JSON.stringify(syncedData));
       
-      // Dynamic active asset to salary mapping
       const balanceItem = syncedData.find(d => d.type === 'BALANCE');
       if (balanceItem) {
-        // Parse numerical value (e.g. "42.850,20 ₺" -> 42850.2)
         const cleanVal = balanceItem.amount.replace(/[^\d,]/g, '').replace(',', '.');
         const parsedBalance = parseFloat(cleanVal) || 0;
         
@@ -153,7 +150,6 @@ export default function RemSync({ onSalaryUpdate }) {
           
           storage.saveProfile(currentProfileName, 'salary', updatedSalary);
           
-          // Instantly notify main React context
           if (onSalaryUpdate) {
             onSalaryUpdate(updatedSalary);
           }
@@ -198,7 +194,7 @@ export default function RemSync({ onSalaryUpdate }) {
         }
         const updatedLog = [newEntry, ...currentLog].slice(0, 50);
         const encodedVal = encodeURIComponent(JSON.stringify(updatedLog));
-        await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${omniId}?value=${encodedVal}`, {
+        await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${omniId}?value=\${encodedVal}`, {
           method: 'POST',
           body: ''
         });
@@ -211,12 +207,34 @@ export default function RemSync({ onSalaryUpdate }) {
   const handleApiSync = async () => {
     setIsSyncing(true); addLog(lang === 'tr' ? "Gateway baglantisi kuruluyor..." : "Establishing Gateway connection...", "system");
     await new Promise(r => setTimeout(r, 800));
+    
     const mock = [
-      { id: 1, type: 'TRANSACTION', clean: "Starbucks Coffee", amount: `-185,00 ${t.currency || 'TL'}`, raw: "VTM-3910", category: lang === 'tr' ? "YEME-İÇME" : "FOOD & DRINK", source: lang === 'tr' ? "BANKA GATEWAY" : "BANK GATEWAY", icon: 'Coffee', color: "#00704A", day: 15 },
-      { id: 2, type: 'TRANSACTION', clean: "Netflix Digital", amount: `-149,90 ${t.currency || 'TL'}`, raw: "NETFLIX", category: lang === 'tr' ? "EĞLENCE" : "ENTERTAINMENT", source: lang === 'tr' ? "BANKA GATEWAY" : "BANK GATEWAY", icon: 'Play', color: "#e11d48", day: 14 }
+      { id: 'tx-starbucks', type: 'TRANSACTION', clean: "Starbucks Coffee", amount: `-185,00 ${t.currency || 'TL'}`, raw: "VTM-3910", category: lang === 'tr' ? "YEME-İÇME" : "FOOD & DRINK", source: lang === 'tr' ? "BANKA GATEWAY" : "BANK GATEWAY", icon: 'Coffee', color: "#00704A", day: 15 },
+      { id: 'tx-netflix', type: 'TRANSACTION', clean: "Netflix Digital", amount: `-149,90 ${t.currency || 'TL'}`, raw: "NETFLIX", category: lang === 'tr' ? "EĞLENCE" : "ENTERTAINMENT", source: lang === 'tr' ? "BANKA GATEWAY" : "BANK GATEWAY", icon: 'Play', color: "#e11d48", day: 14 }
     ];
-    setSyncedData(prev => [{ id: 'bal', type: 'BALANCE', clean: lang === 'tr' ? "Garanti BBVA Hesabı" : "Garanti BBVA Account", amount: `42.850,20 \${t.currency || '₺'}`, raw: "TR92...", category: lang === 'tr' ? "ANA BAKİYE" : "MAIN BALANCE", source: lang === 'tr' ? "BANKA GATEWAY" : "BANK GATEWAY", icon: 'Wallet', color: "#10b981", day: 1 }, ...mock, ...prev]);
-    setIsSyncing(false); addLog(lang === 'tr' ? "Senkronizasyon tamamlandi." : "Synchronization completed.", "success");
+    
+    const balanceItem = { 
+      id: 'bal-garanti', 
+      type: 'BALANCE', 
+      clean: lang === 'tr' ? "Garanti BBVA Hesabı" : "Garanti BBVA Account", 
+      amount: `42.850,20 ${t.currency || '₺'}`, 
+      raw: "TR92...", 
+      category: lang === 'tr' ? "ANA BAKİYE" : "MAIN BALANCE", 
+      source: lang === 'tr' ? "BANKA GATEWAY" : "BANK GATEWAY", 
+      icon: 'Wallet', 
+      color: "#10b981", 
+      day: 1 
+    };
+
+    setSyncedData(prev => {
+      // Prevent duplicate clone synchronizations by matching IDs
+      const newIds = new Set(['bal-garanti', 'tx-starbucks', 'tx-netflix']);
+      const filteredPrev = prev.filter(item => !newIds.has(item.id));
+      return [balanceItem, ...mock, ...filteredPrev];
+    });
+
+    setIsSyncing(false); 
+    addLog(lang === 'tr' ? "Senkronizasyon tamamlandi." : "Synchronization completed.", "success");
   };
 
   const filteredData = syncedData.filter(d => d.source === (activePath === 1 ? (lang === 'tr' ? "BANKA GATEWAY" : "BANK GATEWAY") : (lang === 'tr' ? "OTONOM KÖPRÜ" : "AUTONOMOUS BRIDGE")));
@@ -292,7 +310,7 @@ export default function RemSync({ onSalaryUpdate }) {
                 </div>
              </motion.button>
            ))}
-        </div>
+         </div>
 
         <div className="glass" style={{ padding: 48, borderRadius: 44, background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(30px)', minHeight: 400, border: '1px solid var(--glass-border)' }}>
           <AnimatePresence mode="wait">
@@ -342,9 +360,9 @@ export default function RemSync({ onSalaryUpdate }) {
                         { step: "02", title: lang === 'tr' ? "Sinyal Formatı" : "Signal Format", desc: lang === 'tr' ? "Veri göndermek için önce ID, sonra boşluk ve harcama yazın." : "To send data, enter your ID first, followed by space and your expense.", icon: <MessageSquare size={18} /> },
                         { step: "03", title: lang === 'tr' ? "Örnek Veri" : "Example Signal", desc: `${omniId} ${lang === 'tr' ? 'Kahve 120 tl' : 'Coffee 120 tl'}`, icon: <Zap size={18} />, highlight: true }
                       ].map((item, idx) => (
-                        <div key={idx} style={{ padding: 20, borderRadius: 20, background: item.highlight ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${item.highlight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.05)'}` }}>
+                        <div key={idx} style={{ padding: 20, borderRadius: 20, background: item.highlight ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid \${item.highlight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.05)'}` }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                            <span style={{ fontSize: 10, fontWeight: 900, color: '#6366f1', letterSpacing: '0.2em' }}>ADIM {item.step}</span>
+                            <span style={{ fontSize: 10, fontWeight: 900, color: '#6366f1', letterSpacing: '0.2em' }}>ADIM ${item.step}</span>
                             <div style={{ color: '#6366f1' }}>{item.icon}</div>
                           </div>
                           <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>{item.title}</div>

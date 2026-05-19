@@ -59,6 +59,15 @@ export default function Calendar({ financialData }) {
     // 1. Load R.E.M Synced Transactions
     const synced = JSON.parse(localStorage.getItem('insomni_synced_txs') || '[]');
     
+    // Deduplicate synced transactions by unique ID to prevent multi-sync clone duplication!
+    const seenIds = new Set();
+    const uniqueSynced = synced.filter(item => {
+      if (!item.id) return true;
+      if (seenIds.has(item.id)) return false;
+      seenIds.add(item.id);
+      return true;
+    });
+
     // 2. Use reactive expensesData passed down from parent App state (Direct Information Bridge!)
     const userExpenses = financialData?.expensesData || [];
     
@@ -77,7 +86,7 @@ export default function Calendar({ financialData }) {
     }));
 
     const combined = [
-      ...synced,
+      ...uniqueSynced,
       ...mappedUserExpenses
     ];
     setSyncedData(Array.isArray(combined) ? combined : []);
@@ -147,10 +156,11 @@ export default function Calendar({ financialData }) {
     // Add custom onboarding salary if this is the bounded salary day
     const items = [...dailyItems];
     if (isSalaryDay && salaryIncome > 0) {
+      const formattedSalary = `+${Math.round(salaryIncome).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')} ${t.currency || '₺'}`;
       items.push({
         id: 'onboarding-salary',
         clean: lang === 'tr' ? 'Maaş Ödemesi' : 'Salary Payment',
-        amount: `+${salaryIncome}`,
+        amount: formattedSalary,
         day: salaryDay,
         category: lang === 'tr' ? 'Maaş' : 'Salary',
         type: 'BALANCE',
@@ -233,7 +243,7 @@ export default function Calendar({ financialData }) {
                       <div style={{ fontSize: 22, fontWeight: 950, color: '#064e3b' }}>{t.currency || '₺'}{selectedData.income.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}</div>
                    </div>
                    <div style={{ padding: 20, borderRadius: 24, background: '#ef444405', border: '1px solid #ef444415' }}>
-                      <div style={{ fontSize: 10, fontWeight: 900, color: '#ef4444', marginBottom: 6 }}>{lang === 'tr' ? 'GİDER' : 'EXPENSE'}</div>
+                      <div style={{ fontSize: 10, fontWeight: 900, color: '#ef4444', marginBottom: 6 }}>{lang === 'tr' ? 'GİDER' : 'GİDER'}</div>
                       <div style={{ fontSize: 22, fontWeight: 950, color: '#7f1d1d' }}>-{t.currency || '₺'}{selectedData.expense.toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}</div>
                    </div>
                 </div>
