@@ -71,11 +71,20 @@ export default function RemSync({ onSalaryUpdate }) {
           const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${omniId}`);
           if (getRes.ok) {
             const rawText = await getRes.text();
-            let parsedText = JSON.parse(rawText);
-            if (typeof parsedText === 'string') {
-              history = JSON.parse(parsedText) || [];
-            } else {
-              history = parsedText || [];
+            try {
+              if (rawText && rawText !== '""' && rawText !== 'Key not found') {
+                let parsedText = JSON.parse(rawText);
+                if (typeof parsedText === 'string') {
+                  if (parsedText.trim() && parsedText !== 'Key not found') {
+                    history = JSON.parse(parsedText) || [];
+                  }
+                } else {
+                  history = parsedText || [];
+                }
+              }
+            } catch (jsonErr) {
+              console.error("Poller JSON parse error caught gracefully:", jsonErr);
+              history = [];
             }
           }
         }
@@ -223,16 +232,25 @@ export default function RemSync({ onSalaryUpdate }) {
         const getRes = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/s30yicqv/${omniId}`);
         if (getRes.ok) {
           const rawText = await getRes.text();
-          let parsedText = JSON.parse(rawText);
-          if (typeof parsedText === 'string') {
-            currentLog = JSON.parse(parsedText) || [];
-          } else {
-            currentLog = parsedText || [];
+          try {
+            if (rawText && rawText !== '""' && rawText !== 'Key not found') {
+              let parsedText = JSON.parse(rawText);
+              if (typeof parsedText === 'string') {
+                if (parsedText.trim() && parsedText !== 'Key not found') {
+                  currentLog = JSON.parse(parsedText) || [];
+                }
+              } else {
+                currentLog = parsedText || [];
+              }
+            }
+          } catch (jsonErr) {
+            console.error("Sender JSON parse error caught gracefully:", jsonErr);
+            currentLog = [];
           }
         }
         const updatedLog = [newEntry, ...currentLog].slice(0, 50);
         const encodedVal = encodeURIComponent(JSON.stringify(updatedLog));
-        await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${omniId}?value=\${encodedVal}`, {
+        await fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/s30yicqv/${omniId}?value=${encodedVal}`, {
           method: 'POST',
           body: ''
         });
@@ -465,19 +483,19 @@ export default function RemSync({ onSalaryUpdate }) {
                        transition: 'background 0.3s, border 0.3s'
                      }}
                   >
-                    {isSyncing ? (
-                      <>
-                        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}>
-                          <Loader2 size={20} color="#10b981" />
-                        </motion.div>
-                        <span>{lang === 'tr' ? 'İŞLENİYOR...' : 'PROCESSING...'}</span>
-                      </>
-                    ) : (
-                      <>
-                        <RefreshCw size={20} color="#10b981" />
-                        <span>{lang === 'tr' ? 'SENKRONİZASYONU BAŞLAT' : 'START SYNCHRONIZATION'}</span>
-                      </>
-                    )}
+                     {isSyncing ? (
+                       <>
+                         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}>
+                           <Loader2 size={20} color="#10b981" />
+                         </motion.div>
+                         <span>{lang === 'tr' ? 'İŞLENİYOR...' : 'PROCESSING...'}</span>
+                       </>
+                     ) : (
+                       <>
+                         <RefreshCw size={20} color="#10b981" />
+                         <span>{lang === 'tr' ? 'SENKRONİZASYONU BAŞLAT' : 'START SYNCHRONIZATION'}</span>
+                       </>
+                     )}
                   </motion.button></div></div>
                </motion.div>
             )}
