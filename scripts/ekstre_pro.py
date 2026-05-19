@@ -5,6 +5,10 @@ import datetime
 import json
 import webbrowser
 import shutil
+import http.server
+import socketserver
+import threading
+
 
 
 # KUTUPHANE KONTROLU
@@ -275,10 +279,36 @@ def generate_custom_pdf():
             json.dump(profile_data, f, ensure_ascii=False, indent=2)
         print("[R.E.M AI]: Proje workspace'indeki 'userProfile.json' başarıyla güncellendi!")
 
-        # Otomatik tarayıcıda açma mekanizması (webbrowser ile 100% kararlı!)
-        pdf_absolute_path = os.path.abspath(filename)
-        print(f"[R.E.M AI]: PDF tarayıcıda açılıyor: {pdf_absolute_path}")
-        webbrowser.open(f"file:///{pdf_absolute_path.replace(chr(92), '/')}")
+        # Otomatik yerel HTTP sunucusu başlatma (tarayıcının file:// indirme engelini tamamen aşar!)
+        port = 8085
+        httpd = None
+        while True:
+            try:
+                # Silence standard library http server logging
+                class QuietHandler(http.server.SimpleHTTPRequestHandler):
+                    def log_message(self, format, *args):
+                        pass
+                httpd = socketserver.TCPServer(("127.0.0.1", port), QuietHandler)
+                break
+            except OSError:
+                port += 1
+                if port > 8100: # Protection limit
+                    break
+        
+        if httpd:
+            def serve():
+                httpd.serve_forever()
+            t_srv = threading.Thread(target=serve, daemon=True)
+            t_srv.start()
+            
+            print(f"[R.E.M AI]: PDF yerel HTTP sunucusundan aciliyor: http://127.0.0.1:{port}/{filename}")
+            webbrowser.open(f"http://127.0.0.1:{port}/{filename}")
+        else:
+            # Fallback to file:// if port binding fails completely
+            pdf_absolute_path = os.path.abspath(filename)
+            print(f"[R.E.M AI]: PDF yerel dosyadan aciliyor: {pdf_absolute_path}")
+            webbrowser.open(f"file:///{pdf_absolute_path.replace(chr(92), '/')}")
+
 
     except Exception as e:
         print(f"\nHata: {str(e)}")
